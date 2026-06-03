@@ -1,49 +1,60 @@
 import express from 'express';
 import cors from 'cors';
-import * as dotenv from 'dotenv';
-import apiRoutes from './routes/api';
-import { seedDb } from './services/dbService';
+import dotenv from 'dotenv';
+import { initializeApp, cert } from 'firebase-admin/app';
+import { getFirestore } from 'firebase-admin/firestore';
+import { getAuth } from 'firebase-admin/auth';
+import authRoutes from './routes/auth.routes.js';
+import productRoutes from './routes/product.routes.js';
+import orderRoutes from './routes/order.routes.js';
+import { authMiddleware } from './middleware/auth.middleware.js';
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
-// Enable CORS
+// Middleware
+app.use(express.json());
 app.use(cors({
-  origin: '*', // For local dev integration, allow all origins
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Parse request bodies
-app.use(express.json());
+// Firebase Admin Initialization
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT || '{}');
+try {
+  initializeApp({
+    credential: cert(serviceAccount)
+  });
+} catch (error) {
+  console.log('Firebase already initialized or using emulator');
+}
 
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.status(200).json({
-    status: 'UP',
-    timestamp: new Date(),
-    mockMode: process.env.FIREBASE_PRIVATE_KEY ? false : true
+export const db = getFirestore();
+export const auth = getAuth();
+
+// Health Check
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'Server is running', timestamp: new Date() });
+});
+
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/orders', authMiddleware, orderRoutes);
+
+// Error handling middleware
+app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error(err.stack);
+  res.status(err.status || 500).json({
+    error: err.message || 'Internal Server Error'
   });
 });
 
-// Mount API routes
-app.use('/api', apiRoutes);
+const PORT = process.env.PORT || 3000;
 
-// Database Seeding and Start Server
-const startServer = async () => {
-  try {
-    console.log('Seeding products and categories...');
-    await seedDb();
-    
-    app.listen(PORT, () => {
-      console.log(`Server is running in development mode on http://localhost:${PORT}`);
-    });
-  } catch (error) {
-    console.error('Error starting server:', error);
-    process.exit(1);
-  }
-};
-
-startServer();
+app.listen(PORT, () => {
+  console.log(`✓ Server running on port ${PORT}`);
+  console.log(`✓ Health check: http://localhost:${PORT}/api/health`);
+});
