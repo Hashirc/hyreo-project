@@ -1,0 +1,163 @@
+@use '@angular/material' as mat;
+
+// Include standard core styles
+@include mat.core();
+
+// Define Material 3 Light Theme using Olive colors
+$custom-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: #556B2F,
+    secondary: #8A9A5B,
+    tertiary: #D0DCA0
+  ),
+  typography: (
+    brand-family: '"Outfit", sans-serif',
+    plain-family: '"Inter", sans-serif'
+  ),
+  density: 0
+));
+
+// Apply the custom theme to all Angular Material components
+@include mat.all-component-themes($custom-theme);
+
+
+// --- GLOBAL STYLING & UTILITIES ---
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #fcfcf9;
+  color: #2c351c;
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  color: #1e2610;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.2s ease;
+}
+
+// Custom theme utilities
+.bg-olive {
+  background-color: #556B2F !important;
+}
+
+.text-olive {
+  color: #556B2F !important;
+}
+
+.bg-light-olive {
+  background-color: #f0f3e6 !important;
+}
+
+.text-white {
+  color: #ffffff !important;
+}
+
+// Reusable Hover Animations
+.hover-lift {
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(85, 107, 47, 0.12);
+  }
+}
+
+.hover-glow {
+  transition: box-shadow 0.2s ease-in-out;
+  &:hover {
+    box-shadow: 0 0 15px rgba(85, 107, 47, 0.3);
+  }
+}
+
+// Modern Button styling
+.mat-mdc-raised-button.mat-primary {
+  --mdc-protected-button-container-color: #556B2F;
+  --mdc-protected-button-label-text-color: #ffffff;
+  border-radius: 25px;
+  font-family: 'Outfit', sans-serif;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    background-color: #445625 !important;
+    transform: scale(1.02);
+  }
+}
+
+.mat-mdc-outlined-button {
+  border-radius: 25px;
+  border-color: #556B2F !important;
+  color: #556B2F !important;
+  
+  &:hover {
+    background-color: rgba(85, 107, 47, 0.05) !important;
+  }
+}
+
+// Custom Form Field Styling
+.mat-mdc-form-field {
+  width: 100%;
+  margin-bottom: 12px;
+  --mdc-outlined-text-field-focus-outline-color: #556B2F;
+  --mdc-outlined-text-field-focus-label-text-color: #556B2F;
+  --mdc-outlined-text-field-caret-color: #556B2F;
+}
+
+// Admin / Customer Role Badges
+.badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  display: inline-block;
+
+  &.badge-admin {
+    background-color: rgba(85, 107, 47, 0.15);
+    color: #556B2F;
+  }
+
+  &.badge-customer {
+    background-color: rgba(30, 144, 255, 0.1);
+    color: #1e90ff;
+  }
+  
+  &.badge-status {
+    background-color: #f2f5eb;
+    color: #556B2F;
+    &.pending { background-color: #fff8e1; color: #ffb300; }
+    &.paid { background-color: #e8f5e9; color: #4caf50; }
+    &.shipped { background-color: #e3f2fd; color: #2196f3; }
+    &.delivered { background-color: #e8f5e9; color: #2e7d32; }
+    &.cancelled { background-color: #ffebee; color: #c62828; }
+  }
+}
+
+// Grid structure
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+@media (max-width: 600px) {
+  .product-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+    gap: 16px;
+  }
+}
