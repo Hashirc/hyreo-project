@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
@@ -13,6 +13,19 @@ import { RouterLink } from '@angular/router';
         <p class="section-subtitle">Grab these exclusive discounts before time runs out!</p>
         
         <div class="deal-card-container">
+          <!-- Navigation Arrows -->
+          <button class="nav-btn prev-btn" (click)="prevSlide()" aria-label="Previous Deal">
+            <svg viewBox="0 0 24 24" width="24" height="24">
+              <path fill="currentColor" d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+            </svg>
+          </button>
+          
+          <button class="nav-btn next-btn" (click)="nextSlide()" aria-label="Next Deal">
+            <svg viewBox="0 0 24 24" width="24" height="24">
+              <path fill="currentColor" d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+            </svg>
+          </button>
+
           <div class="deal-slides-frame">
             <div 
               *ngFor="let deal of deals; let i = index" 
@@ -65,10 +78,10 @@ import { RouterLink } from '@angular/router';
   `,
   styles: [`
     .deal-of-the-day-section {
-      padding: 60px 0;
+      padding: 40px 0;
       background: linear-gradient(to bottom, #fafbfa 0%, #f4f6f1 100%);
       border-radius: 24px;
-      margin: 40px 0;
+      margin: 20px 0;
       box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02);
     }
 
@@ -91,7 +104,7 @@ import { RouterLink } from '@angular/router';
       font-size: 16px;
       color: #63791d;
       text-align: center;
-      margin-bottom: 40px;
+      margin-bottom: 30px;
       font-weight: 500;
     }
 
@@ -118,7 +131,7 @@ import { RouterLink } from '@angular/router';
       display: flex;
       opacity: 0;
       visibility: hidden;
-      transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
+      transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out;
       transform: scale(0.98);
     }
 
@@ -129,33 +142,74 @@ import { RouterLink } from '@angular/router';
       position: relative; /* Keep height dynamic/fixed */
     }
 
+    /* Arrows navigation styles */
+    .nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 1px solid rgba(112, 134, 35, 0.15);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #708623;
+      transition: all 0.25s ease;
+      outline: none;
+    }
+
+    .nav-btn:hover {
+      background: #708623;
+      color: #ffffff;
+      border-color: #708623;
+      box-shadow: 0 6px 18px rgba(112, 134, 35, 0.35);
+    }
+
+    .prev-btn {
+      left: 16px;
+    }
+
+    .next-btn {
+      right: 16px;
+    }
+
     .image-area {
       flex: 1.2;
       height: 100%;
-      overflow: hidden;
+      background-color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
       position: relative;
-      background-color: #f7f9f6;
+      border-right: 1px solid rgba(112, 134, 35, 0.05);
     }
 
     .deal-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 6s ease-in-out;
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain; /* Ensures TV and Trimmer fit perfectly without cropping */
+      transition: transform 0.4s ease;
     }
 
     .deal-slide.active .deal-img {
-      transform: scale(1.04);
+      transform: scale(1.02);
     }
 
     .details-area {
       flex: 1;
-      padding: 48px;
+      padding: 48px 48px 48px 64px; /* extra padding to prevent overlapping with next arrow */
       display: flex;
       flex-direction: column;
       justify-content: center;
       background: #ffffff;
-      border-left: 1px solid rgba(112, 134, 35, 0.08);
     }
 
     .deal-badge-row {
@@ -310,15 +364,28 @@ import { RouterLink } from '@angular/router';
         height: auto;
       }
 
+      .nav-btn {
+        width: 40px;
+        height: 40px;
+      }
+
+      .prev-btn {
+        left: 8px;
+      }
+
+      .next-btn {
+        right: 8px;
+      }
+
       .image-area {
         height: 300px;
         width: 100%;
+        border-right: none;
+        border-bottom: 1px solid rgba(112, 134, 35, 0.05);
       }
 
       .details-area {
         padding: 32px 24px;
-        border-left: none;
-        border-top: 1px solid rgba(112, 134, 35, 0.08);
       }
       
       .product-title {
@@ -327,7 +394,7 @@ import { RouterLink } from '@angular/router';
     }
   `]
 })
-export class DealOfTheDayComponent implements OnInit, OnDestroy {
+export class DealOfTheDayComponent {
   deals = [
     {
       name: 'Dynamic Sports Running Shoes',
@@ -362,26 +429,9 @@ export class DealOfTheDayComponent implements OnInit, OnDestroy {
   ];
 
   activeSlide = 0;
-  private intervalId: any;
 
-  ngOnInit() {
-    this.startAutoPlay();
-  }
-
-  ngOnDestroy() {
-    this.stopAutoPlay();
-  }
-
-  startAutoPlay() {
-    this.intervalId = setInterval(() => {
-      this.nextSlide();
-    }, 2000);
-  }
-
-  stopAutoPlay() {
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-    }
+  prevSlide() {
+    this.activeSlide = (this.activeSlide - 1 + this.deals.length) % this.deals.length;
   }
 
   nextSlide() {
@@ -390,8 +440,6 @@ export class DealOfTheDayComponent implements OnInit, OnDestroy {
 
   goToSlide(index: number) {
     this.activeSlide = index;
-    this.stopAutoPlay();
-    this.startAutoPlay();
   }
 
   getDiscountPercentage(original: number, offer: number): number {

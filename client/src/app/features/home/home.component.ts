@@ -13,6 +13,9 @@ import { DealOfTheDayComponent } from './deal-of-the-day/deal-of-the-day.compone
   imports: [RouterLink, MatButtonModule, MatIconModule, ProductCardComponent, DealOfTheDayComponent],
   template: `
     <div class="home-page">
+      <!-- Deal of the Day Section -->
+      <app-deal-of-the-day></app-deal-of-the-day>
+
       <!-- Hero Banner -->
       <section class="hero bg-light-olive">
         <div class="hero-content">
@@ -50,9 +53,6 @@ import { DealOfTheDayComponent } from './deal-of-the-day/deal-of-the-day.compone
           }
         </div>
       </section>
-
-      <!-- Deal of the Day Section -->
-      <app-deal-of-the-day></app-deal-of-the-day>
 
       <!-- Featured Products Section -->
       <section class="featured-section">
