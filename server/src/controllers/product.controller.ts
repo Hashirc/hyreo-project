@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { db } from '../server.js';
-import { Product, Category } from '../models/index.js';
+import { db } from '../server';
+import { Product, Category } from '../models/index';
 
 export async function getAllProducts(req: Request, res: Response) {
   try {

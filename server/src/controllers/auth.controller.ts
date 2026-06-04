@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { auth, db } from '../server.js';
-import { User } from '../models/index.js';
+import { auth, db } from '../server';
+import { User } from '../models/index';
 
 export async function register(req: Request, res: Response) {
   try {

@@ -1,4 +1,5 @@
 import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,7 +11,7 @@ import { CartItem } from '../../core/models/types';
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [RouterLink, MatButtonModule, MatIconModule, MatDividerModule, MatCardModule],
+  imports: [CommonModule, RouterLink, MatButtonModule, MatIconModule, MatDividerModule, MatCardModule],
   template: `
     <div class="cart-page">
       <h1 class="page-title">Shopping Cart</h1>

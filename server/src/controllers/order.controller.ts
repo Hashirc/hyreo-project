@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { db } from '../server.js';
-import { AuthRequest } from '../middleware/auth.middleware.js';
-import { Order } from '../models/index.js';
+import { db } from '../server';
+import { AuthRequest } from '../middleware/auth.middleware';
+import { Order } from '../models/index';
 
 export async function createOrder(req: AuthRequest, res: Response) {
   try {

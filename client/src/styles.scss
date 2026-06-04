@@ -3,24 +3,17 @@
 // Include standard core styles
 @include mat.core();
 
-// Define Material 3 Light Theme using Olive colors
-$custom-theme: mat.define-theme((
-  color: (
-    theme-type: light,
-    primary: #556B2F,
-    secondary: #8A9A5B,
-    tertiary: #D0DCA0
-  ),
-  typography: (
-    brand-family: '"Outfit", sans-serif',
-    plain-family: '"Inter", sans-serif'
-  ),
-  density: 0
-));
-
-// Apply the custom theme to all Angular Material components
-@include mat.all-component-themes($custom-theme);
-
+// Define CSS custom properties for theming
+:root {
+  --primary-color: #556B2F;
+  --primary-light: #8A9A5B;
+  --primary-dark: #3d4e1f;
+  --accent-color: #D0DCA0;
+  --text-primary: #2c351c;
+  --text-secondary: #666666;
+  --bg-light: #fcfcf9;
+  --bg-white: #ffffff;
+}
 
 // --- GLOBAL STYLING & UTILITIES ---
 * {

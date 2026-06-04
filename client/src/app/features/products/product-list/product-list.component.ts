@@ -47,7 +47,7 @@ import { ProductCardComponent } from '../../../shared/components/product-card/pr
       <div class="shop-main">
         <!-- Search and Category filters (Mobile) -->
         <div class="search-filter-bar">
-          <mat-form-field appearance="outlined" class="search-field">
+          <mat-form-field appearance="outline" class="search-field">
             <mat-label>Search products...</mat-label>
             <input matInput type="text" [(ngModel)]="searchQuery" (input)="onSearchChange()" placeholder="e.g. Olive oil">
             <mat-icon matPrefix>search</mat-icon>

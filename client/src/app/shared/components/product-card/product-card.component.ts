@@ -1,4 +1,5 @@
 import { Component, input, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,7 +10,7 @@ import { CartService } from '../../../core/services/cart.service';
 @Component({
   selector: 'app-product-card',
   standalone: true,
-  imports: [RouterLink, MatCardModule, MatButtonModule, MatIconModule],
+  imports: [CommonModule, RouterLink, MatCardModule, MatButtonModule, MatIconModule],
   template: `
     <mat-card class="product-card hover-lift">
       <div class="image-container" [routerLink]="['/products', product().id]">

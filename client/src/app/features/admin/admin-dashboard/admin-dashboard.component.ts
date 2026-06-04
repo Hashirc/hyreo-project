@@ -141,7 +141,7 @@ import { Order, DashboardMetrics, OrderStatus, Category } from '../../../core/mo
                 <h3 class="form-title">Product Details</h3>
                 <form [formGroup]="productForm" (ngSubmit)="onCreateProduct()" class="product-form">
                   <div class="form-row-2">
-                    <mat-form-field appearance="outlined">
+                    <mat-form-field appearance="outline">
                       <mat-label>Product Name</mat-label>
                       <input matInput type="text" formControlName="name" placeholder="e.g. Lavender Olive Soap">
                       @if (productForm.get('name')?.hasError('required') && productForm.get('name')?.touched) {
@@ -149,7 +149,7 @@ import { Order, DashboardMetrics, OrderStatus, Category } from '../../../core/mo
                       }
                     </mat-form-field>
 
-                    <mat-form-field appearance="outlined">
+                    <mat-form-field appearance="outline">
                       <mat-label>Category</mat-label>
                       <mat-select formControlName="categoryId">
                         @for (cat of categories(); track cat.id) {
@@ -159,13 +159,13 @@ import { Order, DashboardMetrics, OrderStatus, Category } from '../../../core/mo
                     </mat-form-field>
                   </div>
 
-                  <mat-form-field appearance="outlined">
+                  <mat-form-field appearance="outline">
                     <mat-label>Description</mat-label>
                     <textarea matInput formControlName="description" rows="3" placeholder="Describe the product details and benefits..."></textarea>
                   </mat-form-field>
 
                   <div class="form-row-3">
-                    <mat-form-field appearance="outlined">
+                    <mat-form-field appearance="outline">
                       <mat-label>Price ($)</mat-label>
                       <input matInput type="number" formControlName="price" placeholder="15.00">
                       @if (productForm.get('price')?.hasError('required') && productForm.get('price')?.touched) {
@@ -176,7 +176,7 @@ import { Order, DashboardMetrics, OrderStatus, Category } from '../../../core/mo
                       }
                     </mat-form-field>
 
-                    <mat-form-field appearance="outlined">
+                    <mat-form-field appearance="outline">
                       <mat-label>Stock Level</mat-label>
                       <input matInput type="number" formControlName="stock" placeholder="50">
                       @if (productForm.get('stock')?.hasError('required') && productForm.get('stock')?.touched) {
@@ -184,13 +184,13 @@ import { Order, DashboardMetrics, OrderStatus, Category } from '../../../core/mo
                       }
                     </mat-form-field>
 
-                    <mat-form-field appearance="outlined">
+                    <mat-form-field appearance="outline">
                       <mat-label>Rating (Default)</mat-label>
                       <input matInput type="number" formControlName="rating" step="0.1" placeholder="4.5">
                     </mat-form-field>
                   </div>
 
-                  <mat-form-field appearance="outlined">
+                  <mat-form-field appearance="outline">
                     <mat-label>Image URL</mat-label>
                     <input matInput type="url" formControlName="imageUrl" placeholder="https://images.unsplash.com/... (optional)">
                   </mat-form-field>

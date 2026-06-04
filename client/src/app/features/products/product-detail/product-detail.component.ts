@@ -1,4 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,7 +12,7 @@ import { Product } from '../../../core/models/types';
 @Component({
   selector: 'app-product-detail',
   standalone: true,
-  imports: [RouterLink, MatButtonModule, MatIconModule, MatDividerModule, MatProgressSpinnerModule],
+  imports: [CommonModule, RouterLink, MatButtonModule, MatIconModule, MatDividerModule, MatProgressSpinnerModule],
   template: `
     <div class="detail-container">
       <div class="back-link-row">

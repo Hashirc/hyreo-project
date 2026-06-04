@@ -41,7 +41,7 @@ import { AuthService } from '../../../core/services/auth.service';
           }
 
           <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
-            <mat-form-field appearance="outlined">
+            <mat-form-field appearance="outline">
               <mat-label>Email Address</mat-label>
               <input matInput type="email" formControlName="email" placeholder="example@olive.com">
               @if (loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched) {
@@ -52,7 +52,7 @@ import { AuthService } from '../../../core/services/auth.service';
               }
             </mat-form-field>
 
-            <mat-form-field appearance="outlined">
+            <mat-form-field appearance="outline">
               <mat-label>Password</mat-label>
               <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password">
               <button mat-icon-button matSuffix type="button" (click)="hidePassword.set(!hidePassword())" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword()">

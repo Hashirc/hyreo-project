@@ -1,10 +1,12 @@
 import { Component, inject, output } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatDividerModule } from '@angular/material/divider';
 import { AuthService } from '../../core/services/auth.service';
 import { CartService } from '../../core/services/cart.service';
 
@@ -12,13 +14,15 @@ import { CartService } from '../../core/services/cart.service';
   selector: 'app-header',
   standalone: true,
   imports: [
+    CommonModule,
     RouterLink, 
     RouterLinkActive, 
     MatToolbarModule, 
     MatButtonModule, 
     MatIconModule, 
     MatBadgeModule, 
-    MatMenuModule
+    MatMenuModule,
+    MatDividerModule
   ],
   template: `
     <mat-toolbar color="primary" class="header bg-olive mat-elevation-z4">
