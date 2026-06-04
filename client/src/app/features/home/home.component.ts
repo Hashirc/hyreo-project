@@ -1,309 +1,273 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { ProductService } from '../../core/services/product.service';
-import { Product, Category } from '../../core/models/types';
-import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
 import { DealOfTheDayComponent } from './deal-of-the-day/deal-of-the-day.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, MatButtonModule, MatIconModule, ProductCardComponent, DealOfTheDayComponent],
+  imports: [RouterLink, MatButtonModule, MatIconModule, DealOfTheDayComponent],
   template: `
     <div class="home-page">
       <!-- Deal of the Day Section -->
       <app-deal-of-the-day></app-deal-of-the-day>
 
-      <!-- Hero Banner -->
-      <section class="hero bg-light-olive">
-        <div class="hero-content">
-          <span class="hero-tag">100% Organic & Sustainable</span>
-          <h1 class="hero-title">Experience the Purity of Olive Living</h1>
-          <p class="hero-description">
-            Explore our curated collections of cold-pressed extra virgin olive oils, botanical body care infused with olive leaf extracts, and handcrafted olive wood essentials.
-          </p>
-          <div class="hero-actions">
-            <button mat-raised-button color="primary" routerLink="/products" class="cta-btn font-outfit">
-              Shop Collections <mat-icon>trending_flat</mat-icon>
-            </button>
-            <button mat-outlined-button routerLink="/products" class="sec-btn font-outfit">
-              Learn More
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <!-- Categories Section -->
-      <section class="categories-section">
+      <!-- Flat 50% Off Section -->
+      <section class="promo-section">
         <div class="section-header">
-          <h2>Shop by Category</h2>
-          <p>Carefully selected items grouped for easy discovery</p>
+          <span class="promo-badge badge-50">MEGA DEALS</span>
+          <h2>Flat 50% Off</h2>
+          <p>Unbeatable half-price discounts on daily essentials and tech</p>
         </div>
-        <div class="categories-grid">
-          @for (cat of categories(); track cat.id) {
-            <div class="category-card" [routerLink]="['/products']" [queryParams]="{category: cat.id}">
-              <img [src]="cat.imageUrl" [alt]="cat.name" class="cat-img">
-              <div class="cat-overlay">
-                <h3>{{ cat.name }}</h3>
-                <span class="explore-btn">Explore <mat-icon>arrow_forward</mat-icon></span>
+        <div class="promo-grid">
+          @for (prod of flat50Products; track prod.name) {
+            <div class="promo-card" [routerLink]="['/products']">
+              <div class="promo-image-wrapper">
+                <img [src]="prod.image" [alt]="prod.name" class="promo-img">
+                <span class="discount-tag">-50% OFF</span>
+              </div>
+              <div class="promo-info">
+                <h3>{{ prod.name }}</h3>
+                <span class="shop-now-text">Shop Now <mat-icon>arrow_right_alt</mat-icon></span>
               </div>
             </div>
           }
         </div>
       </section>
 
-      <!-- Featured Products Section -->
-      <section class="featured-section">
+      <!-- Flat Above 25% Off Section -->
+      <section class="promo-section">
         <div class="section-header">
-          <h2>Featured Products</h2>
-          <p>Our top-rated products loved by customers</p>
+          <span class="promo-badge badge-25">FESTIVE OFFERS</span>
+          <h2>Flat Above 25% Off</h2>
+          <p>Premium home appliance and lifestyle brands at best prices</p>
         </div>
-        <div class="product-grid">
-          @for (prod of featuredProducts(); track prod.id) {
-            <app-product-card [product]="prod"></app-product-card>
+        <div class="promo-grid">
+          @for (prod of flat25Products; track prod.name) {
+            <div class="promo-card" [routerLink]="['/products']">
+              <div class="promo-image-wrapper">
+                <img [src]="prod.image" [alt]="prod.name" class="promo-img">
+                <span class="discount-tag">Min 25% Off</span>
+              </div>
+              <div class="promo-info">
+                <h3>{{ prod.name }}</h3>
+                <span class="shop-now-text">Shop Now <mat-icon>arrow_right_alt</mat-icon></span>
+              </div>
+            </div>
           }
         </div>
       </section>
-
-      <div class="view-all-row">
-        <button mat-outlined-button color="primary" routerLink="/products" class="view-all-btn">
-          View All Products
-        </button>
-      </div>
     </div>
   `,
   styles: [`
     .home-page {
       display: flex;
       flex-direction: column;
-      gap: 56px;
+      gap: 40px;
+      padding-bottom: 60px;
     }
 
-    // Hero Section
-    .hero {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-radius: 20px;
-      padding: 56px;
-      min-height: 480px;
-      gap: 32px;
-      overflow: hidden;
+    /* Promo Sections Layout */
+    .promo-section {
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 40px 24px;
+      border: 1px solid rgba(112, 134, 35, 0.08);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
     }
 
-    .hero-content {
-      flex: 1;
-      max-width: 550px;
-    }
-
-    .hero-tag {
-      font-size: 12px;
-      text-transform: uppercase;
-      font-weight: 700;
-      color: #708623;
-      letter-spacing: 1.5px;
-      margin-bottom: 12px;
-      display: inline-block;
-    }
-
-    .hero-title {
-      font-size: 44px;
-      line-height: 1.15;
-      margin-bottom: 16px;
-      color: #1e2610;
-    }
-
-    .hero-description {
-      font-size: 16px;
-      line-height: 1.6;
-      color: #4a5435;
-      margin-bottom: 32px;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 16px;
-    }
-
-    .cta-btn {
-      padding: 0 24px !important;
-      height: 48px !important;
-      font-size: 15px !important;
-
-      mat-icon {
-        margin-left: 8px;
-        font-size: 20px;
-        height: 20px;
-        width: 20px;
-      }
-    }
-
-    .sec-btn {
-      height: 48px !important;
-      padding: 0 24px !important;
-      font-size: 15px !important;
-    }
-
-    .hero-image-wrapper {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      max-width: 450px;
-      height: 380px;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 12px 30px rgba(85, 107, 47, 0.15);
-    }
-
-    .hero-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 8s ease;
-
-      &:hover {
-        transform: scale(1.05);
-      }
-    }
-
-    // Section Header
     .section-header {
       text-align: center;
-      margin-bottom: 32px;
+      margin-bottom: 36px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .promo-badge {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        padding: 4px 12px;
+        border-radius: 12px;
+        margin-bottom: 12px;
+      }
+
+      .badge-50 {
+        background-color: #fce8e6;
+        color: #c53929;
+      }
+
+      .badge-25 {
+        background-color: #eaf1dc;
+        color: #556b2f;
+      }
 
       h2 {
         font-size: 32px;
         color: #1e2610;
         margin-bottom: 8px;
+        font-weight: 700;
+        font-family: 'Outfit', sans-serif;
       }
 
       p {
         font-size: 15px;
         color: #63791d;
+        margin: 0;
       }
     }
 
-    // Categories Section
-    .categories-grid {
+    /* 4x2 Grid Layout (4 columns on desktop) */
+    .promo-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(4, 1fr);
       gap: 24px;
     }
 
-    .category-card {
-      position: relative;
-      height: 280px;
-      border-radius: 12px;
+    .promo-card {
+      background: #ffffff;
+      border-radius: 16px;
       overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+      border: 1px solid rgba(112, 134, 35, 0.06);
       cursor: pointer;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+      position: relative;
+    }
 
-      .cat-img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 0.5s ease;
-      }
+    .promo-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 24px rgba(85, 107, 47, 0.1);
+      border-color: rgba(112, 134, 35, 0.2);
+    }
 
-      .cat-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(to top, rgba(85, 107, 47, 0.8) 10%, rgba(0, 0, 0, 0.2) 100%);
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        padding: 24px;
-        color: #ffffff;
-        transition: background-color 0.3s ease;
+    .promo-image-wrapper {
+      height: 200px;
+      background-color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      position: relative;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+    }
 
-        h3 {
-          color: #ffffff;
-          font-size: 20px;
-          margin-bottom: 6px;
-        }
+    .promo-img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      transition: transform 0.4s ease;
+    }
 
-        .explore-btn {
-          font-size: 13px;
-          font-weight: 600;
-          display: inline-flex;
-          align-items: center;
-          gap: 4px;
-          opacity: 0.8;
-          transition: transform 0.2s ease, opacity 0.2s ease;
+    .promo-card:hover .promo-img {
+      transform: scale(1.04);
+    }
 
-          mat-icon {
-            font-size: 16px;
-            height: 16px;
-            width: 16px;
-          }
-        }
-      }
+    .discount-tag {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: #e65c00;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      box-shadow: 0 2px 6px rgba(230, 92, 0, 0.25);
+    }
 
-      &:hover {
-        .cat-img {
-          transform: scale(1.05);
-        }
+    .promo-info {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      justify-content: space-between;
 
-        .cat-overlay {
-          background-color: rgba(85, 107, 47, 0.4);
-        }
-
-        .explore-btn {
-          opacity: 1;
-          transform: translateX(4px);
-        }
+      h3 {
+        font-size: 15px;
+        font-weight: 600;
+        color: #1e2610;
+        margin: 0 0 12px 0;
+        font-family: 'Outfit', sans-serif;
+        line-height: 1.3;
       }
     }
 
-    // View All button
-    .view-all-row {
-      .hero-content {
-        max-width: 100%;
-      }
+    .shop-now-text {
+      font-size: 13px;
+      font-weight: 600;
+      color: #708623;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: auto;
+      transition: color 0.2s ease;
 
-      .hero-title {
-        font-size: 32px;
+      mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+        transition: transform 0.2s ease;
       }
+    }
 
-      .hero-actions {
-        justify-content: center;
+    .promo-card:hover .shop-now-text {
+      color: #556b2f;
+    }
+
+    .promo-card:hover .shop-now-text mat-icon {
+      transform: translateX(4px);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+      .promo-grid {
+        grid-template-columns: repeat(3, 1fr);
       }
+    }
 
-      .hero-image-wrapper {
-        max-width: 100%;
-        width: 100%;
-        height: 280px;
+    @media (max-width: 768px) {
+      .promo-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .section-header h2 {
+        font-size: 26px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .promo-grid {
+        grid-template-columns: 1fr;
       }
     }
   `]
 })
-export class HomeComponent implements OnInit {
-  private productService = inject(ProductService);
+export class HomeComponent {
+  flat50Products = [
+    { name: 'Adidas Running Shoe', image: 'assets/flat_50/adidas_shoe.jpg' },
+    { name: 'Comfort Bean Bag', image: 'assets/flat_50/bean_bag.jpg' },
+    { name: 'Wireless Headphone', image: 'assets/flat_50/headphone.jpg' },
+    { name: 'Kitchen Mixie', image: 'assets/flat_50/mixie.jpg' },
+    { name: 'Smart Phone', image: 'assets/flat_50/phone.jpg' },
+    { name: 'Fast-Charging Power Bank', image: 'assets/flat_50/power_bank.jpg' },
+    { name: 'Dining Table & Chair Set', image: 'assets/flat_50/table_with_chair.jpg' },
+    { name: 'Smart LED TV', image: 'assets/flat_50/tv.jpg' }
+  ];
 
-  readonly categories = signal<Category[]>([]);
-  readonly featuredProducts = signal<Product[]>([]);
-  readonly dealImages = signal<string[]>([]);
-
-  ngOnInit() {
-    this.productService.getCategories().subscribe(cats => {
-      this.categories.set(cats);
-    });
-
-    this.productService.getProducts().subscribe(prods => {
-      const sorted = [...prods].sort((a, b) => b.rating - a.rating);
-      this.featuredProducts.set(sorted.slice(0, 4));
-      this.dealImages.set([
-        'assets/deal-of-the-day/earpod_deal.jpg',
-        'assets/deal-of-the-day/shoe_deal.jpg',
-        'assets/deal-of-the-day/trimmer_deal.jpg',
-        'assets/deal-of-the-day/tv_deal.jpg',
-        'assets/deal-of-the-day/whey_deal.jpg'
-      ]);
-    });
-  }
+  flat25Products = [
+    { name: 'Inverter Split AC', image: 'assets/flat_25/AC.jpg' },
+    { name: 'Best Selling Books', image: 'assets/flat_25/book.jpg' },
+    { name: 'Designer Dress Collection', image: 'assets/flat_25/dress.jpg' },
+    { name: 'Clothes Drying Stand', image: 'assets/flat_25/drying_stand.jpg' },
+    { name: 'High-Speed Ceiling Fan', image: 'assets/flat_25/fan.jpg' },
+    { name: 'Food Mixer Grinder', image: 'assets/flat_25/mixer.jpg' },
+    { name: 'Luxury Living Room Sofa', image: 'assets/flat_25/sofa.jpg' },
+    { name: 'Portable Bluetooth Speaker', image: 'assets/flat_25/speaker.jpg' }
+  ];
 }
