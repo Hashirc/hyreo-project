@@ -79,7 +79,8 @@ import { CartService } from '../../core/services/cart.service';
     }
 
     .logo-img {
-      height: 40px;
+      height: 52px;
+      display: block;
     }
 
     .spacer { flex: 1 1 auto; }
