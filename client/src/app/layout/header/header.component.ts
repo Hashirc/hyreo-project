@@ -7,6 +7,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { CartService } from '../../core/services/cart.service';
 
@@ -22,126 +26,123 @@ import { CartService } from '../../core/services/cart.service';
     MatIconModule, 
     MatBadgeModule, 
     MatMenuModule,
-    MatDividerModule
+    MatDividerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    FormsModule
   ],
   template: `
-    <mat-toolbar color="primary" class="header bg-olive mat-elevation-z4">
-      <button mat-icon-button class="mobile-menu-btn" (click)="toggleSidenav.emit()">
-        <mat-icon>menu</mat-icon>
-      </button>
-
-      <span class="logo-text" routerLink="/">Olive & Co.</span>
-      
-      <div class="spacer"></div>
-      
-      <nav class="desktop-nav">
-        <a routerLink="/" routerLinkActive="active-link" [routerLinkActiveOptions]="{exact: true}" class="nav-link">Home</a>
-        <a routerLink="/products" routerLinkActive="active-link" class="nav-link">Shop</a>
-        @if (authService.isAdmin()) {
-          <a routerLink="/admin" routerLinkActive="active-link" class="nav-link admin-link">Admin Dashboard</a>
-        }
-      </nav>
-
-      <div class="actions">
-        <!-- Shopping Cart Icon -->
-        <button mat-icon-button routerLink="/cart" aria-label="Shopping Cart" class="cart-btn">
-          @if (cartService.cartCount() > 0) {
-            <mat-icon [matBadge]="cartService.cartCount()" matBadgeColor="accent">shopping_cart</mat-icon>
-          } @else {
-            <mat-icon>shopping_cart</mat-icon>
-          }
+      <mat-toolbar color="primary" class="header bg-olive mat-elevation-z4">
+        <!-- Left side: logo and account centre -->
+        <a routerLink="/">
+          <img src="assets/logo.png" alt="Quick Kart" class="logo-img"/>
+        </a>
+        <button mat-button routerLink="/auth/profile" class="account-centre">Account Centre</button>
+        <!-- Mobile menu button (visible on small screens) -->
+        <button mat-icon-button class="mobile-menu-btn" (click)="toggleSidenav.emit()">
+          <mat-icon>menu</mat-icon>
         </button>
-
-        <!-- User Menu -->
-        @if (authService.isAuthenticated()) {
-          <button mat-icon-button [matMenuTriggerFor]="userMenu" aria-label="User Account" class="user-btn">
-            <mat-icon>account_circle</mat-icon>
-          </button>
-          <mat-menu #userMenu="matMenu" xPosition="before" class="custom-menu">
-            <div class="menu-header">
-              <p class="user-name">{{ authService.currentUser()?.displayName }}</p>
-              <p class="user-email">{{ authService.currentUser()?.email }}</p>
-              <span class="badge" [class.badge-admin]="authService.isAdmin()" [class.badge-customer]="!authService.isAdmin()">
-                {{ authService.currentUser()?.role }}
-              </span>
-            </div>
-            <mat-divider></mat-divider>
-            <button mat-menu-item routerLink="/auth/profile">
-              <mat-icon>person</mat-icon>
-              <span>My Profile</span>
-            </button>
-            <button mat-menu-item routerLink="/orders">
-              <mat-icon>history</mat-icon>
-              <span>Order History</span>
-            </button>
-            @if (authService.isAdmin()) {
-              <button mat-menu-item routerLink="/admin">
-                <mat-icon>dashboard</mat-icon>
-                <span>Admin Panel</span>
+        <span class="spacer"></span>
+        <!-- Center: Search -->
+            <div class="search-bar">
+              <input type="text" placeholder="Search..." [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" />
+              <button mat-icon-button aria-label="Search" (click)="onSearch()">
+                <mat-icon>search</mat-icon>
               </button>
-            }
-            <mat-divider></mat-divider>
-            <button mat-menu-item (click)="authService.logout()">
-              <mat-icon>exit_to_app</mat-icon>
-              <span>Logout</span>
-            </button>
-          </mat-menu>
-        } @else {
-          <button mat-flat-button routerLink="/auth/login" class="login-btn">Login</button>
-        }
-      </div>
-    </mat-toolbar>
+            </div>
+        <span class="spacer"></span>
+        <!-- Right side: language selector, orders, cart -->
+        <mat-select [(value)]="selectedLang" class="lang-select" disableRipple>
+          <mat-option *ngFor="let lang of languages" [value]="lang.value">{{ lang.viewValue }}</mat-option>
+        </mat-select>
+        <button mat-button routerLink="/orders" class="orders-btn">Orders</button>
+        <button mat-icon-button routerLink="/cart" aria-label="Shopping Cart">
+          <mat-icon [matBadge]="cartService.cartCount()" matBadgeColor="accent" *ngIf="cartService.cartCount() > 0">shopping_cart</mat-icon>
+          <mat-icon *ngIf="cartService.cartCount() === 0">shopping_cart</mat-icon>
+        </button>
+      </mat-toolbar>
+
+      <!-- Category navigation below the main toolbar -->
+      <mat-toolbar color="primary" class="categories-toolbar bg-olive">
+        <a *ngFor="let cat of categories" routerLink="/category/{{cat}}" class="category-link">{{ cat }}</a>
+      </mat-toolbar>
   `,
   styles: [`
     .header {
       display: flex;
       align-items: center;
       padding: 0 24px;
-      height: 70px;
-      color: #ffffff;
+      height: 64px;
+      background-color: #131921;
+      color: #fff;
     }
 
-    .logo-text {
-      font-family: 'Outfit', sans-serif;
-      font-size: 24px;
-      font-weight: 800;
-      letter-spacing: 0.5px;
-      cursor: pointer;
-      margin-right: 32px;
-      
-      &:hover {
-        opacity: 0.9;
-      }
+    .logo-img {
+      height: 40px;
     }
 
-    .spacer {
-      flex: 1 1 auto;
-    }
+    .spacer { flex: 1 1 auto; }
 
-    .desktop-nav {
+    .search-bar {
       display: flex;
-      gap: 24px;
+      flex: 1;
+      max-width: 600px;
+      height: 40px;
+      background: #fff;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 0 auto;
+    }
+    .search-bar input {
+      flex: 1;
+      border: none;
+      padding: 0 8px;
+      font-size: 14px;
+    }
+    .search-bar button {
+      width: 48px;
+      background-color: #febd69;
+      color: #111;
+      border-left: 1px solid #ddd;
+      display: flex;
       align-items: center;
-      margin-right: 24px;
+      justify-content: center;
+      border-radius: 0 4px 4px 0;
     }
 
-    .nav-link {
-      color: rgba(255, 255, 255, 0.85);
-      font-family: 'Outfit', sans-serif;
-      font-weight: 500;
-      font-size: 15px;
-      padding: 8px 12px;
-      border-radius: 4px;
-      
-      &:hover {
-        color: #ffffff;
-        background-color: rgba(255, 255, 255, 0.08);
-      }
+    .lang-select { display:none; }
+    .orders-btn, .cart-btn {
+      color: #fff;
+      margin-left: 12px;
+      font-size: 16px;
+    }
+    .cart-btn mat-icon {
+      font-size: 24px;
+    }
 
-      &.active-link {
-        color: #ffffff;
-        background-color: rgba(255, 255, 255, 0.15);
-      }
+    .categories-toolbar {
+      background: #232F3E;
+      padding: 0 12px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .category-link {
+      color: #fff;
+      text-transform: uppercase;
+      margin: 0 12px;
+      font-size: 16px;
+      font-weight: 600;
+      transition: background-color .2s;
+    }
+    .category-link:hover { text-decoration: underline; }
+
+    .mobile-menu-btn { display: none; color: #fff; margin-right: 12px; }
+    @media (max-width: 800px) {
+      .desktop-nav { display: none; }
+      .mobile-menu-btn { display: inline-flex; }
+      .logo-text { font-size: 22px; margin-right: 0; }
     }
 
     .admin-link {
@@ -228,4 +229,29 @@ export class HeaderComponent {
   cartService = inject(CartService);
 
   toggleSidenav = output<void>();
+
+  // Language selection
+  selectedLang = 'en';
+  languages = [
+    { value: 'en', viewValue: 'EN' },
+    { value: 'es', viewValue: 'ES' },
+    { value: 'fr', viewValue: 'FR' }
+  ];
+
+  // Category navigation
+  categories = [
+    'Mobile & Computers',
+    'Household Appliances',
+    "Men's Fashion",
+    "Women's Fashion",
+    'Sports & Fitness',
+    'Books'
+  ];
+
+  // Search term handling
+  searchTerm = '';
+  onSearch() {
+    console.log('Search:', this.searchTerm);
+    // TODO: Implement actual search navigation
+  }
 }

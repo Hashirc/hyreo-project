@@ -8,7 +8,7 @@ export async function getAllProducts(req: Request, res: Response) {
     const limit = parseInt(req.query.limit as string) || 12;
     const skip = (page - 1) * limit;
 
-    const snapshot = await db.collection('products').limit(limit).offset(skip).get();
+    const snapshot = await db.collection('products').get();
     const products: Product[] = [];
     
     snapshot.forEach(doc => {

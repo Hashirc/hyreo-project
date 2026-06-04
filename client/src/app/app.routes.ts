@@ -48,7 +48,7 @@ export const routes: Routes = [
     loadComponent: () => import('./features/admin/admin-dashboard/admin-dashboard.component').then(c => c.AdminDashboardComponent)
   },
   {
-    path: '**',
-    redirectTo: ''
-  }
+    path: 'category/:cat',
+    loadComponent: () => import('./features/products/product-list/product-list.component').then(c => c.ProductListComponent)
+  },
 ];

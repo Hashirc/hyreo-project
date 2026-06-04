@@ -5,11 +5,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { ProductService } from '../../core/services/product.service';
 import { Product, Category } from '../../core/models/types';
 import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
+import { DealOfTheDayComponent } from './deal-of-the-day/deal-of-the-day.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, MatButtonModule, MatIconModule, ProductCardComponent],
+  imports: [RouterLink, MatButtonModule, MatIconModule, ProductCardComponent, DealOfTheDayComponent],
   template: `
     <div class="home-page">
       <!-- Hero Banner -->
@@ -29,10 +30,6 @@ import { ProductCardComponent } from '../../shared/components/product-card/produ
             </button>
           </div>
         </div>
-        <div class="hero-image-wrapper">
-          <img src="https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=600&auto=format&fit=crop&q=80" 
-               alt="Gourmet Olive Oil and Branch" class="hero-img">
-        </div>
       </section>
 
       <!-- Categories Section -->
@@ -41,7 +38,6 @@ import { ProductCardComponent } from '../../shared/components/product-card/produ
           <h2>Shop by Category</h2>
           <p>Carefully selected items grouped for easy discovery</p>
         </div>
-        
         <div class="categories-grid">
           @for (cat of categories(); track cat.id) {
             <div class="category-card" [routerLink]="['/products']" [queryParams]="{category: cat.id}">
@@ -55,25 +51,27 @@ import { ProductCardComponent } from '../../shared/components/product-card/produ
         </div>
       </section>
 
+      <!-- Deal of the Day Section -->
+      <app-deal-of-the-day></app-deal-of-the-day>
+
       <!-- Featured Products Section -->
       <section class="featured-section">
         <div class="section-header">
           <h2>Featured Products</h2>
           <p>Our top-rated products loved by customers</p>
         </div>
-        
         <div class="product-grid">
           @for (prod of featuredProducts(); track prod.id) {
             <app-product-card [product]="prod"></app-product-card>
           }
         </div>
-        
-        <div class="view-all-row">
-          <button mat-outlined-button color="primary" routerLink="/products" class="view-all-btn">
-            View All Products
-          </button>
-        </div>
       </section>
+
+      <div class="view-all-row">
+        <button mat-outlined-button color="primary" routerLink="/products" class="view-all-btn">
+          View All Products
+        </button>
+      </div>
     </div>
   `,
   styles: [`
@@ -264,23 +262,6 @@ import { ProductCardComponent } from '../../shared/components/product-card/produ
 
     // View All button
     .view-all-row {
-      display: flex;
-      justify-content: center;
-      margin-top: 40px;
-    }
-
-    .view-all-btn {
-      border-radius: 20px !important;
-      padding: 8px 24px !important;
-    }
-
-    @media (max-width: 900px) {
-      .hero {
-        flex-direction: column;
-        padding: 32px;
-        text-align: center;
-      }
-
       .hero-content {
         max-width: 100%;
       }
@@ -306,6 +287,7 @@ export class HomeComponent implements OnInit {
 
   readonly categories = signal<Category[]>([]);
   readonly featuredProducts = signal<Product[]>([]);
+  readonly dealImages = signal<string[]>([]);
 
   ngOnInit() {
     this.productService.getCategories().subscribe(cats => {
@@ -313,9 +295,15 @@ export class HomeComponent implements OnInit {
     });
 
     this.productService.getProducts().subscribe(prods => {
-      // Pick top-rated products as featured
       const sorted = [...prods].sort((a, b) => b.rating - a.rating);
       this.featuredProducts.set(sorted.slice(0, 4));
+      this.dealImages.set([
+        'assets/deal-of-the-day/earpod_deal.jpg',
+        'assets/deal-of-the-day/shoe_deal.jpg',
+        'assets/deal-of-the-day/trimmer_deal.jpg',
+        'assets/deal-of-the-day/tv_deal.jpg',
+        'assets/deal-of-the-day/whey_deal.jpg'
+      ]);
     });
   }
 }
