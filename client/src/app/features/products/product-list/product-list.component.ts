@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, effect, computed } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -11,6 +11,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ProductService } from '../../../core/services/product.service';
 import { Product, Category } from '../../../core/models/types';
 import { ProductCardComponent } from '../../../shared/components/product-card/product-card.component';
+import { combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-product-list',
@@ -290,10 +291,13 @@ export class ProductListComponent implements OnInit {
   });
 
   constructor() {
-    // Listen to query parameters
-    this.route.queryParams.subscribe(params => {
-      this.selectedCategory.set(params['category'] || undefined);
-      this.searchQuery.set(params['search'] || '');
+    // Listen to route parameters AND query parameters
+    combineLatest([this.route.params, this.route.queryParams]).subscribe(([params, queryParams]) => {
+      const routeCat = params['cat'];
+      const queryCat = queryParams['category'];
+      
+      this.selectedCategory.set(routeCat || queryCat || undefined);
+      this.searchQuery.set(queryParams['search'] || '');
       this.loadProducts();
     });
   }
@@ -324,11 +328,17 @@ export class ProductListComponent implements OnInit {
   }
 
   filterByCategory(catId?: string) {
-    this.router.navigate([], {
-      relativeTo: this.route,
-      queryParams: { category: catId },
-      queryParamsHandling: 'merge'
-    });
+    if (catId) {
+      this.router.navigate(['/category', catId], {
+        queryParams: { search: this.searchQuery() || null },
+        queryParamsHandling: 'merge'
+      });
+    } else {
+      this.router.navigate(['/products'], {
+        queryParams: { search: this.searchQuery() || null },
+        queryParamsHandling: 'merge'
+      });
+    }
   }
 
   onSearchChange() {

@@ -65,7 +65,7 @@ import { CartService } from '../../core/services/cart.service';
 
       <!-- Category navigation below the main toolbar -->
       <mat-toolbar color="primary" class="categories-toolbar bg-olive">
-        <a *ngFor="let cat of categories" routerLink="/category/{{cat}}" class="category-link">{{ cat }}</a>
+        <a *ngFor="let cat of categories" routerLink="/category/{{cat.slug}}" class="category-link">{{ cat.name }}</a>
       </mat-toolbar>
   `,
   styles: [`
@@ -241,12 +241,12 @@ export class HeaderComponent {
 
   // Category navigation
   categories = [
-    'Mobile & Computers',
-    'Household Appliances',
-    "Men's Fashion",
-    "Women's Fashion",
-    'Sports & Fitness',
-    'Books'
+    { name: 'Mobile & Computers', slug: 'mobile-computers' },
+    { name: 'Household Appliances', slug: 'household-appliances' },
+    { name: 'Men\'s Fashion', slug: 'mens-fashion' },
+    { name: 'Women\'s Fashion', slug: 'womens-fashion' },
+    { name: 'Sports & Fitness', slug: 'sports-fitness' },
+    { name: 'Books', slug: 'books' }
   ];
 
   // Search term handling

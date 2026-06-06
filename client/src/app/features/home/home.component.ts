@@ -250,24 +250,24 @@ import { DealOfTheDayComponent } from './deal-of-the-day/deal-of-the-day.compone
 })
 export class HomeComponent {
   flat50Products = [
-    { name: 'Adidas Running Shoe', image: 'assets/flat_50/adidas_shoe.jpg' },
-    { name: 'Comfort Bean Bag', image: 'assets/flat_50/bean_bag.jpg' },
-    { name: 'Wireless Headphone', image: 'assets/flat_50/headphone.jpg' },
-    { name: 'Kitchen Mixie', image: 'assets/flat_50/mixie.jpg' },
-    { name: 'Smart Phone', image: 'assets/flat_50/phone.jpg' },
-    { name: 'Fast-Charging Power Bank', image: 'assets/flat_50/power_bank.jpg' },
-    { name: 'Dining Table & Chair Set', image: 'assets/flat_50/table_with_chair.jpg' },
-    { name: 'Smart LED TV', image: 'assets/flat_50/tv.jpg' }
+    { name: 'Adidas Running Shoe', image: '/assets/flat_50/adidas_shoe.jpg' },
+    { name: 'Comfort Bean Bag', image: '/assets/flat_50/bean_bag.jpg' },
+    { name: 'Wireless Headphone', image: '/assets/flat_50/headphone.jpg' },
+    { name: 'Kitchen Mixie', image: '/assets/flat_50/mixie.jpg' },
+    { name: 'Smartphone', image: '/assets/flat_50/phone.jpg' },
+    { name: 'Power Bank', image: '/assets/flat_50/power_bank.jpg' },
+    { name: 'Table with Chair', image: '/assets/flat_50/table_with_chair.jpg' },
+    { name: 'Smart TV', image: '/assets/flat_50/tv.jpg' }
   ];
 
   flat25Products = [
-    { name: 'Inverter Split AC', image: 'assets/flat_25/AC.jpg' },
-    { name: 'Best Selling Books', image: 'assets/flat_25/book.jpg' },
-    { name: 'Designer Dress Collection', image: 'assets/flat_25/dress.jpg' },
-    { name: 'Clothes Drying Stand', image: 'assets/flat_25/drying_stand.jpg' },
-    { name: 'High-Speed Ceiling Fan', image: 'assets/flat_25/fan.jpg' },
-    { name: 'Food Mixer Grinder', image: 'assets/flat_25/mixer.jpg' },
-    { name: 'Luxury Living Room Sofa', image: 'assets/flat_25/sofa.jpg' },
-    { name: 'Portable Bluetooth Speaker', image: 'assets/flat_25/speaker.jpg' }
+    { name: 'Split AC', image: '/assets/flat_25/AC.jpg' },
+    { name: 'Books Collection', image: '/assets/flat_25/book.jpg' },
+    { name: 'Elegant Dress', image: '/assets/flat_25/dress.jpg' },
+    { name: 'Drying Stand', image: '/assets/flat_25/drying_stand.jpg' },
+    { name: 'Ceiling Fan', image: '/assets/flat_25/fan.jpg' },
+    { name: 'Premium Mixer', image: '/assets/flat_25/mixer.jpg' },
+    { name: 'Living Room Sofa', image: '/assets/flat_25/sofa.jpg' },
+    { name: 'Bluetooth Speaker', image: '/assets/flat_25/speaker.jpg' }
   ];
 }

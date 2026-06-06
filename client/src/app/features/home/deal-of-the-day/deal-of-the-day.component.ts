@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -78,10 +78,10 @@ import { RouterLink } from '@angular/router';
   `,
   styles: [`
     .deal-of-the-day-section {
-      padding: 40px 0;
+      padding: 30px 0 40px 0;
       background: linear-gradient(to bottom, #fafbfa 0%, #f4f6f1 100%);
       border-radius: 24px;
-      margin: 20px 0;
+      margin: -16px 0 20px 0;
       box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02);
     }
 
@@ -394,52 +394,80 @@ import { RouterLink } from '@angular/router';
     }
   `]
 })
-export class DealOfTheDayComponent {
+export class DealOfTheDayComponent implements OnInit, OnDestroy {
   deals = [
     {
       name: 'Dynamic Sports Running Shoes',
       originalPrice: 1999,
       offerPrice: 1599,
-      image: 'assets/deal-of-the-day/shoe_deal.jpg'
+      image: '/assets/deal-of-the-day/shoe_deal.jpg'
     },
     {
       name: 'Precision Waterproof Beard Trimmer',
       originalPrice: 2599,
       offerPrice: 2199,
-      image: 'assets/deal-of-the-day/trimmer_deal.jpg'
+      image: '/assets/deal-of-the-day/trimmer_deal.jpg'
     },
     {
       name: '4K Ultra HD Smart LED Android TV',
       originalPrice: 53599,
       offerPrice: 50099,
-      image: 'assets/deal-of-the-day/tv_deal.jpg'
+      image: '/assets/deal-of-the-day/tv_deal.jpg'
     },
     {
       name: 'Premium Ultra Whey Protein Isolate',
       originalPrice: 6599,
       offerPrice: 6099,
-      image: 'assets/deal-of-the-day/whey_deal.jpg'
+      image: '/assets/deal-of-the-day/whey_deal.jpg'
     },
     {
       name: 'Noise Cancelling Wireless Earpods',
       originalPrice: 2099,
       offerPrice: 1799,
-      image: 'assets/deal-of-the-day/earpod_deal.jpg'
+      image: '/assets/deal-of-the-day/earpod_deal.jpg'
     }
   ];
 
   activeSlide = 0;
+  private intervalId: any;
+  private platformId = inject(PLATFORM_ID);
+
+  ngOnInit() {
+    this.startAutoPlay();
+  }
+
+  ngOnDestroy() {
+    this.stopAutoPlay();
+  }
+
+  startAutoPlay() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.stopAutoPlay();
+      this.intervalId = setInterval(() => {
+        this.nextSlide();
+      }, 5000);
+    }
+  }
+
+  stopAutoPlay() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
+  }
 
   prevSlide() {
     this.activeSlide = (this.activeSlide - 1 + this.deals.length) % this.deals.length;
+    this.startAutoPlay();
   }
 
   nextSlide() {
     this.activeSlide = (this.activeSlide + 1) % this.deals.length;
+    this.startAutoPlay();
   }
 
   goToSlide(index: number) {
     this.activeSlide = index;
+    this.startAutoPlay();
   }
 
   getDiscountPercentage(original: number, offer: number): number {

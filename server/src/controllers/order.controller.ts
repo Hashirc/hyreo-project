@@ -46,7 +46,7 @@ export async function getOrders(req: AuthRequest, res: Response) {
     const snapshot = await query.limit(limit).offset(skip).get();
     const orders: Order[] = [];
 
-    snapshot.forEach(doc => {
+    snapshot.forEach((doc: any) => {
       orders.push({
         id: doc.id,
         ...doc.data()
@@ -122,7 +122,7 @@ export async function getAllOrders(req: Request, res: Response) {
     const snapshot = await db.collection('orders').limit(limit).offset(skip).get();
     const orders: Order[] = [];
 
-    snapshot.forEach(doc => {
+    snapshot.forEach((doc: any) => {
       orders.push({
         id: doc.id,
         ...doc.data()

@@ -11,7 +11,7 @@ export async function getAllProducts(req: Request, res: Response) {
     const snapshot = await db.collection('products').get();
     const products: Product[] = [];
     
-    snapshot.forEach(doc => {
+    snapshot.forEach((doc: any) => {
       products.push({
         id: doc.id,
         ...doc.data()
@@ -75,8 +75,8 @@ export async function createProduct(req: Request, res: Response) {
     const docRef = await db.collection('products').add(newProduct);
 
     res.status(201).json({
-      id: docRef.id,
-      ...newProduct
+      ...newProduct,
+      id: docRef.id
     });
   } catch (error) {
     console.error('Error creating product:', error);
@@ -121,7 +121,7 @@ export async function getCategories(req: Request, res: Response) {
     const snapshot = await db.collection('categories').get();
     const categories: Category[] = [];
 
-    snapshot.forEach(doc => {
+    snapshot.forEach((doc: any) => {
       categories.push({
         id: doc.id,
         ...doc.data()
