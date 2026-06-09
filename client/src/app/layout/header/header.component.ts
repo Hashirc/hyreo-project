@@ -33,60 +33,13 @@ import { CartService } from '../../core/services/cart.service';
   ],
   template: `
       <mat-toolbar color="primary" class="header bg-olive mat-elevation-z4">
-        <!-- Left side: logo and account centre -->
+        <!-- Left side: logo -->
         <a routerLink="/" class="logo-link">
           <img src="assets/logo.png" alt="Quick Kart" class="logo-img"/>
         </a>
         @if (authService.currentUser()?.role === 'admin') {
           <button mat-button routerLink="/admin" class="admin-panel-btn"><mat-icon>admin_panel_settings</mat-icon> Admin Panel</button>
         }
-        
-        <!-- Account Centre Dropdown Menu -->
-        <button mat-button [matMenuTriggerFor]="accountMenu" class="account-centre">
-          <mat-icon>account_circle</mat-icon>
-          <span>Account Centre</span>
-        </button>
-
-        <mat-menu #accountMenu="matMenu" class="account-menu-panel">
-          <!-- Logged in state -->
-          @if (authService.currentUser()) {
-            <div class="menu-header">
-              <div class="user-name">{{ authService.currentUser()?.displayName }}</div>
-              <div class="user-email">{{ authService.currentUser()?.email }}</div>
-              <span class="badge" [class.badge-admin]="authService.currentUser()?.role === 'admin'" [class.badge-customer]="authService.currentUser()?.role === 'customer'">
-                {{ authService.currentUser()?.role }}
-              </span>
-            </div>
-            <mat-divider></mat-divider>
-            <button mat-menu-item routerLink="/auth/profile">
-              <mat-icon>person</mat-icon>
-              <span>My Profile</span>
-            </button>
-            <button mat-menu-item (click)="useAnotherAccount()">
-              <mat-icon>switch_account</mat-icon>
-              <span>Use another account</span>
-            </button>
-            <button mat-menu-item (click)="logout()">
-              <mat-icon>logout</mat-icon>
-              <span>Logout</span>
-            </button>
-          } @else {
-            <!-- Not logged in state -->
-            <div class="menu-header">
-              <div class="user-name">Welcome, Guest</div>
-              <div class="user-email">Please sign in to access your account</div>
-            </div>
-            <mat-divider></mat-divider>
-            <button mat-menu-item routerLink="/auth/login">
-              <mat-icon>login</mat-icon>
-              <span>Sign In</span>
-            </button>
-            <button mat-menu-item routerLink="/auth/register">
-              <mat-icon>person_add</mat-icon>
-              <span>Create Account</span>
-            </button>
-          }
-        </mat-menu>
 
         <!-- Mobile menu button (visible on small screens) -->
         <button mat-icon-button class="mobile-menu-btn" (click)="toggleSidenav.emit()">
