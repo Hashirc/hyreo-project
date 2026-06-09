@@ -41,19 +41,66 @@ import { CartService } from '../../core/services/cart.service';
         @if (authService.currentUser()?.role === 'admin') {
           <button mat-button routerLink="/admin" class="admin-panel-btn"><mat-icon>admin_panel_settings</mat-icon> Admin Panel</button>
         }
-        <button mat-button routerLink="/auth/profile" class="account-centre">Account Centre</button>
+        
+        <!-- Account Centre Dropdown Menu -->
+        <button mat-button [matMenuTriggerFor]="accountMenu" class="account-centre">
+          <mat-icon style="margin-right: 4px; vertical-align: middle;">account_circle</mat-icon>
+          <span>Account Centre</span>
+        </button>
+
+        <mat-menu #accountMenu="matMenu" class="account-menu">
+          <!-- Logged in state -->
+          @if (authService.currentUser()) {
+            <div class="menu-header">
+              <div class="user-name" style="font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 15px; color: #1e2610;">{{ authService.currentUser()?.displayName }}</div>
+              <div class="user-email" style="font-size: 12px; color: #666; margin-bottom: 6px;">{{ authService.currentUser()?.email }}</div>
+              <span class="badge badge-status" [class.paid]="authService.currentUser()?.role === 'admin'" style="text-transform: capitalize; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">
+                {{ authService.currentUser()?.role }}
+              </span>
+            </div>
+            <mat-divider></mat-divider>
+            <button mat-menu-item routerLink="/auth/profile">
+              <mat-icon>person</mat-icon>
+              <span>My Profile</span>
+            </button>
+            <button mat-menu-item (click)="useAnotherAccount()">
+              <mat-icon>switch_account</mat-icon>
+              <span>Use another account</span>
+            </button>
+            <button mat-menu-item (click)="logout()">
+              <mat-icon>logout</mat-icon>
+              <span>Logout</span>
+            </button>
+          } @else {
+            <!-- Not logged in state -->
+            <div class="menu-header">
+              <div class="user-name" style="font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 15px; color: #1e2610;">Welcome, Guest</div>
+              <div class="user-email" style="font-size: 12px; color: #666;">Please sign in to access your account</div>
+            </div>
+            <mat-divider></mat-divider>
+            <button mat-menu-item routerLink="/auth/login">
+              <mat-icon>login</mat-icon>
+              <span>Sign In</span>
+            </button>
+            <button mat-menu-item routerLink="/auth/register">
+              <mat-icon>person_add</mat-icon>
+              <span>Create Account</span>
+            </button>
+          }
+        </mat-menu>
+
         <!-- Mobile menu button (visible on small screens) -->
         <button mat-icon-button class="mobile-menu-btn" (click)="toggleSidenav.emit()">
           <mat-icon>menu</mat-icon>
         </button>
         <span class="spacer"></span>
         <!-- Center: Search -->
-            <div class="search-bar">
-              <input type="text" placeholder="Search..." [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" />
-              <button mat-icon-button aria-label="Search" (click)="onSearch()">
-                <mat-icon>search</mat-icon>
-              </button>
-            </div>
+        <div class="search-bar">
+          <input type="text" placeholder="Search..." [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" />
+          <button mat-icon-button aria-label="Search" (click)="onSearch()">
+            <mat-icon>search</mat-icon>
+          </button>
+        </div>
         <span class="spacer"></span>
         <!-- Right side: language selector, orders, cart -->
         <mat-select [(value)]="selectedLang" class="lang-select" disableRipple>
@@ -269,5 +316,13 @@ export class HeaderComponent {
   onSearch() {
     console.log('Search:', this.searchTerm);
     // TODO: Implement actual search navigation
+  }
+
+  useAnotherAccount() {
+    this.authService.logout();
+  }
+
+  logout() {
+    this.authService.logout();
   }
 }
