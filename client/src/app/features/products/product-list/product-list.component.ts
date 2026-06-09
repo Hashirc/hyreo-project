@@ -121,8 +121,8 @@ const SUB_CATEGORIES: { [slug: string]: string[] } = {
           <p class="results-count">{{ filteredProducts().length }} products found</p>
         </div>
 
-        <!-- Sub-category chip bar OR Brand Filter bar for Mobiles (visible on all screen sizes) -->
-        @if (selectedSubCategory() === 'Mobiles') {
+        <!-- Sub-category chip bar OR Brand Filter bar (visible on all screen sizes) -->
+        @if (hasBrandFilters()) {
           <div class="brand-filter-bar">
             <span class="brand-bar-label">Top Brands:</span>
             <button
@@ -131,7 +131,7 @@ const SUB_CATEGORIES: { [slug: string]: string[] } = {
               (click)="filterByBrand(undefined)">
               All Brands
             </button>
-            @for (brand of mobileBrands; track brand) {
+            @for (brand of currentBrandList(); track brand) {
               <button
                 class="brand-chip"
                 [class.brand-chip-active]="selectedBrand() === brand"
@@ -564,7 +564,23 @@ export class ProductListComponent implements OnInit {
   readonly searchQuery = signal<string>('');
   readonly isLoading = signal(true);
 
-  readonly mobileBrands = ['Apple', 'Samsung', 'Oppo', 'Vivo', 'Xiaomi'];
+  // Brands by subCategory
+  readonly brandFiltersMap: { [subCat: string]: string[] } = {
+    'Mobiles': ['Apple', 'Samsung', 'Oppo', 'Vivo', 'Xiaomi'],
+    'Laptops': ['Dell', 'Apple', 'Acer', 'HP', 'Asus', 'Samsung', 'Lenovo'],
+    'Tablets': ['Honor', 'Xiaomi', 'Apple', 'Samsung', 'OnePlus'],
+    'Headphones': ['JBL', 'boAt', 'Samsung', 'Apple', 'Sony']
+  };
+
+  readonly hasBrandFilters = computed(() => {
+    const subCat = this.selectedSubCategory();
+    return !!(subCat && this.brandFiltersMap[subCat]);
+  });
+
+  readonly currentBrandList = computed(() => {
+    const subCat = this.selectedSubCategory();
+    return subCat ? (this.brandFiltersMap[subCat] || []) : [];
+  });
 
   readonly currentCategoryName = computed(() => {
     const activeId = this.selectedCategory();
@@ -590,7 +606,7 @@ export class ProductListComponent implements OnInit {
       prods = prods.filter(p => p.subCategory?.toLowerCase() === subCat.toLowerCase());
     }
 
-    if (subCat === 'Mobiles' && brand) {
+    if (subCat && this.brandFiltersMap[subCat] && brand) {
       prods = prods.filter(p => p.name?.toLowerCase().includes(brand.toLowerCase()) || p.description?.toLowerCase().includes(brand.toLowerCase()));
     }
 
