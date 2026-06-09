@@ -46,14 +46,40 @@ const SUB_CATEGORIES: { [slug: string]: string[] } = {
         <h3 class="sidebar-title">Categories</h3>
         <mat-nav-list class="category-list">
           <a mat-list-item [class.active-cat]="!selectedCategory()" (click)="filterByCategory(undefined)">
+            <mat-icon matListItemIcon>apps</mat-icon>
             <span matListItemTitle>All Products</span>
           </a>
           @for (cat of categories(); track cat.id) {
             <a mat-list-item [class.active-cat]="selectedCategory() === cat.id" (click)="filterByCategory(cat.id)">
+              <mat-icon matListItemIcon>{{ getCategoryIcon(cat.id) }}</mat-icon>
               <span matListItemTitle>{{ cat.name }}</span>
             </a>
           }
         </mat-nav-list>
+
+        <!-- Sub-categories section (shown when a category with sub-cats is selected) -->
+        @if (availableSubCategories().length > 0) {
+          <mat-divider style="margin: 12px 0;"></mat-divider>
+          <h4 class="sub-sidebar-title">Filter by Type</h4>
+          <div class="sub-sidebar-list">
+            <button
+              class="sub-sidebar-item"
+              [class.sub-sidebar-active]="!selectedSubCategory()"
+              (click)="filterBySubCategory(undefined)">
+              <mat-icon class="sub-sidebar-icon">apps</mat-icon>
+              <span>All</span>
+            </button>
+            @for (sub of availableSubCategories(); track sub) {
+              <button
+                class="sub-sidebar-item"
+                [class.sub-sidebar-active]="selectedSubCategory() === sub"
+                (click)="filterBySubCategory(sub)">
+                <mat-icon class="sub-sidebar-icon">{{ getSubCategoryIcon(sub) }}</mat-icon>
+                <span>{{ sub }}</span>
+              </button>
+            }
+          </div>
+        }
       </aside>
 
       <!-- Main Shop Content -->
@@ -62,7 +88,7 @@ const SUB_CATEGORIES: { [slug: string]: string[] } = {
         <div class="search-filter-bar">
           <mat-form-field appearance="outline" class="search-field">
             <mat-label>Search products...</mat-label>
-            <input matInput type="text" [(ngModel)]="searchQuery" (input)="onSearchChange()" placeholder="e.g. Olive oil">
+            <input matInput type="text" [(ngModel)]="searchQuery" (input)="onSearchChange()" placeholder="e.g. Shirts, Watches...">
             <mat-icon matPrefix>search</mat-icon>
             @if (searchQuery()) {
               <button mat-icon-button matSuffix (click)="clearSearch()">
@@ -82,12 +108,20 @@ const SUB_CATEGORIES: { [slug: string]: string[] } = {
           }
         </div>
 
-        <!-- Category Header & Sub-category Filter Chips -->
+        <!-- Category Header -->
         <div class="results-header">
-          <h2 class="results-title">{{ currentCategoryName() }}</h2>
-          <p class="results-count">{{ products().length }} products found</p>
+          <div>
+            <h2 class="results-title">
+              {{ currentCategoryName() }}
+              @if (selectedSubCategory()) {
+                <span class="sub-cat-breadcrumb"> › {{ selectedSubCategory() }}</span>
+              }
+            </h2>
+          </div>
+          <p class="results-count">{{ filteredProducts().length }} products found</p>
         </div>
 
+        <!-- Sub-category chip bar (visible on all screen sizes) -->
         @if (availableSubCategories().length > 0) {
           <div class="sub-category-bar">
             <button
@@ -115,9 +149,9 @@ const SUB_CATEGORIES: { [slug: string]: string[] } = {
             <mat-progress-spinner mode="indeterminate" diameter="60" color="primary"></mat-progress-spinner>
           </div>
         } @else {
-          @if (products().length > 0) {
+          @if (filteredProducts().length > 0) {
             <div class="product-grid">
-              @for (prod of products(); track prod.id) {
+              @for (prod of filteredProducts(); track prod.id) {
                 <app-product-card [product]="prod"></app-product-card>
               }
             </div>
@@ -175,6 +209,73 @@ const SUB_CATEGORIES: { [slug: string]: string[] } = {
         color: #556B2F !important;
         font-weight: 600;
       }
+    }
+
+    // Sub-category sidebar section
+    .sub-sidebar-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #708623;
+      margin: 0 0 10px 4px;
+    }
+
+    .sub-sidebar-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .sub-sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: #4a5435;
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background-color: rgba(85, 107, 47, 0.05);
+        color: #556B2F;
+      }
+
+      .sub-sidebar-icon {
+        font-size: 18px;
+        height: 18px;
+        width: 18px;
+        color: #708623;
+        flex-shrink: 0;
+      }
+
+      span {
+        flex: 1;
+      }
+    }
+
+    .sub-sidebar-active {
+      background: linear-gradient(135deg, rgba(85,107,47,0.12), rgba(107,142,35,0.08)) !important;
+      color: #556B2F !important;
+      font-weight: 700 !important;
+
+      .sub-sidebar-icon {
+        color: #556B2F !important;
+      }
+    }
+
+    .sub-cat-breadcrumb {
+      font-size: 18px;
+      font-weight: 400;
+      color: #708623;
     }
 
     // Main shop area
@@ -395,7 +496,7 @@ export class ProductListComponent implements OnInit {
     const activeId = this.selectedCategory();
     if (!activeId) return 'All Products';
     const match = this.categories().find(c => c.id === activeId);
-    return match ? match.name : 'All Products';
+    return match ? match.name : activeId.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
   });
 
   // Get sub-categories for current main category
@@ -403,6 +504,17 @@ export class ProductListComponent implements OnInit {
     const catSlug = this.selectedCategory();
     if (!catSlug) return [];
     return SUB_CATEGORIES[catSlug] || [];
+  });
+
+  // Client-side sub-category filtering (fallback when products don't have subCategory field)
+  readonly filteredProducts = computed(() => {
+    const subCat = this.selectedSubCategory();
+    const allProds = this.products();
+    if (!subCat) return allProds;
+    // Filter by subCategory field; if product has no subCategory, include it only when "All" is selected
+    return allProds.filter(p =>
+      p.subCategory?.toLowerCase() === subCat.toLowerCase()
+    );
   });
 
   constructor() {
@@ -487,6 +599,18 @@ export class ProductListComponent implements OnInit {
       relativeTo: this.route,
       queryParams: {}
     });
+  }
+
+  getCategoryIcon(catId: string): string {
+    const iconMap: { [key: string]: string } = {
+      'mens-fashion': 'checkroom',
+      'womens-fashion': 'dry_cleaning',
+      'mobile-computers': 'smartphone',
+      'household-appliances': 'kitchen',
+      'sports-fitness': 'fitness_center',
+      'books': 'menu_book',
+    };
+    return iconMap[catId] || 'category';
   }
 
   getSubCategoryIcon(sub: string): string {
