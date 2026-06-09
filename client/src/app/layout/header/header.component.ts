@@ -44,17 +44,17 @@ import { CartService } from '../../core/services/cart.service';
         
         <!-- Account Centre Dropdown Menu -->
         <button mat-button [matMenuTriggerFor]="accountMenu" class="account-centre">
-          <mat-icon style="margin-right: 4px; vertical-align: middle;">account_circle</mat-icon>
+          <mat-icon>account_circle</mat-icon>
           <span>Account Centre</span>
         </button>
 
-        <mat-menu #accountMenu="matMenu" class="account-menu">
+        <mat-menu #accountMenu="matMenu" class="account-menu-panel">
           <!-- Logged in state -->
           @if (authService.currentUser()) {
             <div class="menu-header">
-              <div class="user-name" style="font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 15px; color: #1e2610;">{{ authService.currentUser()?.displayName }}</div>
-              <div class="user-email" style="font-size: 12px; color: #666; margin-bottom: 6px;">{{ authService.currentUser()?.email }}</div>
-              <span class="badge badge-status" [class.paid]="authService.currentUser()?.role === 'admin'" style="text-transform: capitalize; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">
+              <div class="user-name">{{ authService.currentUser()?.displayName }}</div>
+              <div class="user-email">{{ authService.currentUser()?.email }}</div>
+              <span class="badge" [class.badge-admin]="authService.currentUser()?.role === 'admin'" [class.badge-customer]="authService.currentUser()?.role === 'customer'">
                 {{ authService.currentUser()?.role }}
               </span>
             </div>
@@ -74,8 +74,8 @@ import { CartService } from '../../core/services/cart.service';
           } @else {
             <!-- Not logged in state -->
             <div class="menu-header">
-              <div class="user-name" style="font-family: 'Outfit', sans-serif; font-weight: 600; font-size: 15px; color: #1e2610;">Welcome, Guest</div>
-              <div class="user-email" style="font-size: 12px; color: #666;">Please sign in to access your account</div>
+              <div class="user-name">Welcome, Guest</div>
+              <div class="user-email">Please sign in to access your account</div>
             </div>
             <mat-divider></mat-divider>
             <button mat-menu-item routerLink="/auth/login">
@@ -252,22 +252,86 @@ import { CartService } from '../../core/services/cart.service';
       margin-right: 12px;
     }
 
+    // Account Centre Pill Button
+    .account-centre {
+      margin-left: 16px;
+      display: inline-flex !important;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 16px !important;
+      border-radius: 20px !important;
+      background-color: rgba(255, 255, 255, 0.12) !important;
+      color: #ffffff !important;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+      height: 38px;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.22) !important;
+        border-color: #ffffff !important;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+      }
+
+      mat-icon {
+        margin: 0 !important;
+        font-size: 20px;
+        height: 20px;
+        width: 20px;
+      }
+    }
+
+    // Account Dropdown Menu Panel styling
+    ::ng-deep .account-menu-panel {
+      border-radius: 12px !important;
+      margin-top: 8px !important;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.12) !important;
+      border: 1px solid rgba(85, 107, 47, 0.08) !important;
+      overflow: hidden !important;
+    }
+
     .menu-header {
-      padding: 16px;
-      min-width: 200px;
+      padding: 16px 20px;
+      background-color: #fcfcfb;
+      min-width: 220px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
 
       .user-name {
         font-family: 'Outfit', sans-serif;
-        font-weight: 600;
-        font-size: 16px;
-        margin-bottom: 2px;
+        font-size: 15px;
+        font-weight: 700;
         color: #1e2610;
       }
 
       .user-email {
         font-size: 12px;
-        color: #666;
-        margin-bottom: 8px;
+        color: #555;
+        margin-bottom: 4px;
+        word-break: break-all;
+      }
+
+      .badge {
+        display: inline-block;
+        width: fit-content;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        
+        &.badge-admin {
+          background-color: #e8f5e9;
+          color: #2e7d32;
+        }
+        
+        &.badge-customer {
+          background-color: #e3f2fd;
+          color: #1565c0;
+        }
       }
     }
 
