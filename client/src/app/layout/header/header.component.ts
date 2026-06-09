@@ -92,7 +92,9 @@ import { CartService } from '../../core/services/cart.service';
         <button mat-icon-button class="mobile-menu-btn" (click)="toggleSidenav.emit()">
           <mat-icon>menu</mat-icon>
         </button>
-        <span class="spacer"></span>
+
+        <span class="left-spacer"></span>
+
         <!-- Center: Search -->
         <div class="search-bar">
           <input type="text" placeholder="Search..." [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" />
@@ -100,12 +102,62 @@ import { CartService } from '../../core/services/cart.service';
             <mat-icon>search</mat-icon>
           </button>
         </div>
-        <span class="spacer"></span>
-        <!-- Right side: language selector, orders, cart -->
+
+        <span class="right-spacer"></span>
+
+        <!-- Right side: language selector, orders, account centre, cart -->
         <mat-select [(value)]="selectedLang" class="lang-select" disableRipple>
           <mat-option *ngFor="let lang of languages" [value]="lang.value">{{ lang.viewValue }}</mat-option>
         </mat-select>
         <button mat-button routerLink="/orders" class="orders-btn">Orders</button>
+
+        <!-- Account Centre Dropdown Menu (Shifted to right) -->
+        <button mat-button [matMenuTriggerFor]="accountMenu" class="account-centre">
+          <mat-icon>account_circle</mat-icon>
+          <span>Account Centre</span>
+        </button>
+
+        <mat-menu #accountMenu="matMenu" class="account-menu-panel">
+          <!-- Logged in state -->
+          @if (authService.currentUser()) {
+            <div class="menu-header">
+              <div class="user-name">{{ authService.currentUser()?.displayName }}</div>
+              <div class="user-email">{{ authService.currentUser()?.email }}</div>
+              <span class="badge" [class.badge-admin]="authService.currentUser()?.role === 'admin'" [class.badge-customer]="authService.currentUser()?.role === 'customer'">
+                {{ authService.currentUser()?.role }}
+              </span>
+            </div>
+            <mat-divider></mat-divider>
+            <button mat-menu-item routerLink="/auth/profile">
+              <mat-icon>person</mat-icon>
+              <span>My Profile</span>
+            </button>
+            <button mat-menu-item (click)="useAnotherAccount()">
+              <mat-icon>switch_account</mat-icon>
+              <span>Use another account</span>
+            </button>
+            <button mat-menu-item (click)="logout()">
+              <mat-icon>logout</mat-icon>
+              <span>Logout</span>
+            </button>
+          } @else {
+            <!-- Not logged in state -->
+            <div class="menu-header">
+              <div class="user-name">Welcome, Guest</div>
+              <div class="user-email">Please sign in to access your account</div>
+            </div>
+            <mat-divider></mat-divider>
+            <button mat-menu-item routerLink="/auth/login">
+              <mat-icon>login</mat-icon>
+              <span>Sign In</span>
+            </button>
+            <button mat-menu-item routerLink="/auth/register">
+              <mat-icon>person_add</mat-icon>
+              <span>Create Account</span>
+            </button>
+          }
+        </mat-menu>
+
         <button mat-icon-button routerLink="/cart" aria-label="Shopping Cart">
           <mat-icon [matBadge]="cartService.cartCount()" matBadgeColor="accent" *ngIf="cartService.cartCount() > 0">shopping_cart</mat-icon>
           <mat-icon *ngIf="cartService.cartCount() === 0">shopping_cart</mat-icon>
@@ -144,17 +196,18 @@ import { CartService } from '../../core/services/cart.service';
       z-index: 100;
     }
 
-    .spacer { flex: 1 1 auto; }
+    .left-spacer { flex: 0.8 1 auto; }
+    .right-spacer { flex: 1.2 1 auto; }
 
     .search-bar {
       display: flex;
-      flex: 1;
-      max-width: 600px;
+      flex: 1.5;
+      max-width: 750px;
       height: 40px;
       background: #fff;
       border-radius: 4px;
       overflow: hidden;
-      margin: 0 auto;
+      margin-left: 10px;
     }
     .search-bar input {
       flex: 1;
