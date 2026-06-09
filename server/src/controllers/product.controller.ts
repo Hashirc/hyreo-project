@@ -6,6 +6,7 @@ export async function getAllProducts(req: Request, res: Response) {
   try {
     const category = req.query.category as string;
     const search = req.query.search as string;
+    const subCategory = req.query.subCategory as string;
 
     const snapshot = await db.collection('products').get();
     let products: Product[] = [];
@@ -19,6 +20,10 @@ export async function getAllProducts(req: Request, res: Response) {
 
     if (category) {
       products = products.filter(p => p.categoryId === category);
+    }
+
+    if (subCategory) {
+      products = products.filter(p => p.subCategory?.toLowerCase() === subCategory.toLowerCase());
     }
 
     if (search) {
@@ -57,7 +62,7 @@ export async function getProductById(req: Request, res: Response) {
 
 export async function createProduct(req: Request, res: Response) {
   try {
-    const { name, description, price, categoryId, stock, imageUrl } = req.body;
+    const { name, description, price, categoryId, subCategory, stock, imageUrl } = req.body;
 
     if (!name || !price || !categoryId) {
       return res.status(400).json({ error: 'Missing required fields' });
@@ -69,6 +74,7 @@ export async function createProduct(req: Request, res: Response) {
       description: description || '',
       price: parseFloat(price),
       categoryId,
+      subCategory: subCategory || '',
       stock: parseInt(stock) || 0,
       imageUrl,
       rating: 0,

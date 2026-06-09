@@ -194,7 +194,13 @@ export class ProductCardComponent {
       'gourmet-food': 'Gourmet Food',
       'body-care': 'Body Care',
       'home-kitchen': 'Home & Kitchen',
-      'wellness': 'Wellness & Teas'
+      'wellness': 'Wellness & Teas',
+      'mobile-computers': 'Mobile & Computers',
+      'household-appliances': 'Household Appliances',
+      'mens-fashion': "Men's Fashion",
+      'womens-fashion': "Women's Fashion",
+      'sports-fitness': 'Sports & Fitness',
+      'books': 'Books'
     };
     return maps[id] || 'Product';
   }

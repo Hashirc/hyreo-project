@@ -8,10 +8,21 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatChipsModule } from '@angular/material/chips';
 import { ProductService } from '../../../core/services/product.service';
 import { Product, Category } from '../../../core/models/types';
 import { ProductCardComponent } from '../../../shared/components/product-card/product-card.component';
 import { combineLatest } from 'rxjs';
+
+// Sub-category definitions per main category slug
+const SUB_CATEGORIES: { [slug: string]: string[] } = {
+  'mens-fashion': ['Shirts', 'Pants', 'Belts', 'Watches', 'Wallets', 'Shoes', 'Glasses'],
+  'womens-fashion': ['Dresses', 'Tops', 'Sarees', 'Handbags', 'Jewellery', 'Shoes', 'Cosmetics'],
+  'mobile-computers': ['Mobiles', 'Laptops', 'Tablets', 'Accessories', 'Headphones'],
+  'household-appliances': ['Kitchen', 'Laundry', 'Cooling', 'Cleaning', 'Lighting'],
+  'sports-fitness': ['Gym Equipment', 'Sportswear', 'Footwear', 'Accessories', 'Supplements'],
+  'books': ['Fiction', 'Non-Fiction', 'Academic', 'Comics', 'Self-Help'],
+};
 
 @Component({
   selector: 'app-product-list',
@@ -25,6 +36,7 @@ import { combineLatest } from 'rxjs';
     MatListModule,
     MatDividerModule,
     MatProgressSpinnerModule,
+    MatChipsModule,
     ProductCardComponent
   ],
   template: `
@@ -46,7 +58,7 @@ import { combineLatest } from 'rxjs';
 
       <!-- Main Shop Content -->
       <div class="shop-main">
-        <!-- Search and Category filters (Mobile) -->
+        <!-- Search Bar -->
         <div class="search-filter-bar">
           <mat-form-field appearance="outline" class="search-field">
             <mat-label>Search products...</mat-label>
@@ -60,6 +72,7 @@ import { combineLatest } from 'rxjs';
           </mat-form-field>
         </div>
 
+        <!-- Mobile category chips -->
         <div class="mobile-categories">
           <button mat-stroked-button [class.mobile-active]="!selectedCategory()" (click)="filterByCategory(undefined)">All</button>
           @for (cat of categories(); track cat.id) {
@@ -69,11 +82,32 @@ import { combineLatest } from 'rxjs';
           }
         </div>
 
-        <!-- Selected category summary -->
+        <!-- Category Header & Sub-category Filter Chips -->
         <div class="results-header">
           <h2 class="results-title">{{ currentCategoryName() }}</h2>
           <p class="results-count">{{ products().length }} products found</p>
         </div>
+
+        @if (availableSubCategories().length > 0) {
+          <div class="sub-category-bar">
+            <button
+              class="sub-chip"
+              [class.sub-chip-active]="!selectedSubCategory()"
+              (click)="filterBySubCategory(undefined)">
+              <mat-icon class="sub-chip-icon">apps</mat-icon>
+              All
+            </button>
+            @for (sub of availableSubCategories(); track sub) {
+              <button
+                class="sub-chip"
+                [class.sub-chip-active]="selectedSubCategory() === sub"
+                (click)="filterBySubCategory(sub)">
+                <mat-icon class="sub-chip-icon">{{ getSubCategoryIcon(sub) }}</mat-icon>
+                {{ sub }}
+              </button>
+            }
+          </div>
+        }
 
         <!-- Product Grid -->
         @if (isLoading()) {
@@ -157,7 +191,7 @@ import { combineLatest } from 'rxjs';
 
     .search-field {
       width: 100%;
-      --mdc-outlined-text-field-container-shape: 28px; // Rounded search bar
+      --mdc-outlined-text-field-container-shape: 28px;
       margin-bottom: 0;
     }
 
@@ -166,10 +200,10 @@ import { combineLatest } from 'rxjs';
       gap: 8px;
       overflow-x: auto;
       padding-bottom: 8px;
-      scrollbar-width: none; // hide scrollbar in firefox
+      scrollbar-width: none;
       
       &::-webkit-scrollbar {
-        display: none; // hide scrollbar in chrome/safari
+        display: none;
       }
 
       button {
@@ -208,11 +242,75 @@ import { combineLatest } from 'rxjs';
       }
     }
 
+    // Sub-category chip bar
+    .sub-category-bar {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding: 4px 0 12px;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+
+    .sub-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border-radius: 25px;
+      border: 1.5px solid rgba(85, 107, 47, 0.18);
+      background-color: #ffffff;
+      color: #4a5435;
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+
+      &:hover {
+        border-color: #556B2F;
+        background-color: rgba(85, 107, 47, 0.04);
+        box-shadow: 0 3px 8px rgba(85, 107, 47, 0.10);
+        transform: translateY(-1px);
+      }
+
+      .sub-chip-icon {
+        font-size: 16px;
+        height: 16px;
+        width: 16px;
+        color: #708623;
+      }
+    }
+
+    .sub-chip-active {
+      background: linear-gradient(135deg, #556B2F, #6B8E23) !important;
+      color: #ffffff !important;
+      border-color: transparent !important;
+      box-shadow: 0 4px 12px rgba(85, 107, 47, 0.25) !important;
+      font-weight: 600;
+
+      .sub-chip-icon {
+        color: #ffffff !important;
+      }
+    }
+
     .spinner-container {
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 300px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 24px;
     }
 
     .empty-shop {
@@ -268,6 +366,15 @@ import { combineLatest } from 'rxjs';
           font-size: 20px;
         }
       }
+
+      .sub-category-bar {
+        padding: 2px 0 8px;
+      }
+
+      .sub-chip {
+        padding: 6px 14px;
+        font-size: 12px;
+      }
     }
   `]
 })
@@ -280,6 +387,7 @@ export class ProductListComponent implements OnInit {
   readonly categories = signal<Category[]>([]);
   readonly products = signal<Product[]>([]);
   readonly selectedCategory = signal<string | undefined>(undefined);
+  readonly selectedSubCategory = signal<string | undefined>(undefined);
   readonly searchQuery = signal<string>('');
   readonly isLoading = signal(true);
 
@@ -290,13 +398,22 @@ export class ProductListComponent implements OnInit {
     return match ? match.name : 'All Products';
   });
 
+  // Get sub-categories for current main category
+  readonly availableSubCategories = computed(() => {
+    const catSlug = this.selectedCategory();
+    if (!catSlug) return [];
+    return SUB_CATEGORIES[catSlug] || [];
+  });
+
   constructor() {
     // Listen to route parameters AND query parameters
     combineLatest([this.route.params, this.route.queryParams]).subscribe(([params, queryParams]) => {
       const routeCat = params['cat'];
       const queryCat = queryParams['category'];
+      const subCat = queryParams['sub'];
       
       this.selectedCategory.set(routeCat || queryCat || undefined);
+      this.selectedSubCategory.set(subCat || undefined);
       this.searchQuery.set(queryParams['search'] || '');
       this.loadProducts();
     });
@@ -315,7 +432,7 @@ export class ProductListComponent implements OnInit {
 
   loadProducts() {
     this.isLoading.set(true);
-    this.productService.getProducts(this.selectedCategory(), this.searchQuery()).subscribe({
+    this.productService.getProducts(this.selectedCategory(), this.searchQuery(), this.selectedSubCategory()).subscribe({
       next: (prods) => {
         this.products.set(prods);
         this.isLoading.set(false);
@@ -328,17 +445,27 @@ export class ProductListComponent implements OnInit {
   }
 
   filterByCategory(catId?: string) {
+    // Reset sub-category when changing main category
+    this.selectedSubCategory.set(undefined);
     if (catId) {
       this.router.navigate(['/category', catId], {
-        queryParams: { search: this.searchQuery() || null },
+        queryParams: { search: this.searchQuery() || null, sub: null },
         queryParamsHandling: 'merge'
       });
     } else {
       this.router.navigate(['/products'], {
-        queryParams: { search: this.searchQuery() || null },
+        queryParams: { search: this.searchQuery() || null, sub: null },
         queryParamsHandling: 'merge'
       });
     }
+  }
+
+  filterBySubCategory(subCat?: string) {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { sub: subCat || null },
+      queryParamsHandling: 'merge'
+    });
   }
 
   onSearchChange() {
@@ -355,9 +482,54 @@ export class ProductListComponent implements OnInit {
   }
 
   resetFilters() {
+    this.selectedSubCategory.set(undefined);
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {}
     });
+  }
+
+  getSubCategoryIcon(sub: string): string {
+    const iconMap: { [key: string]: string } = {
+      // Men's Fashion
+      'Shirts': 'checkroom',
+      'Pants': 'straighten',
+      'Belts': 'toll',
+      'Watches': 'watch',
+      'Wallets': 'account_balance_wallet',
+      'Shoes': 'ice_skating',
+      'Glasses': 'visibility',
+      // Women's Fashion
+      'Dresses': 'checkroom',
+      'Tops': 'dry_cleaning',
+      'Sarees': 'style',
+      'Handbags': 'shopping_bag',
+      'Jewellery': 'diamond',
+      'Cosmetics': 'palette',
+      // Mobile & Computers
+      'Mobiles': 'smartphone',
+      'Laptops': 'laptop',
+      'Tablets': 'tablet',
+      'Accessories': 'cable',
+      'Headphones': 'headphones',
+      // Household
+      'Kitchen': 'kitchen',
+      'Laundry': 'local_laundry_service',
+      'Cooling': 'ac_unit',
+      'Cleaning': 'cleaning_services',
+      'Lighting': 'lightbulb',
+      // Sports
+      'Gym Equipment': 'fitness_center',
+      'Sportswear': 'sports_tennis',
+      'Footwear': 'ice_skating',
+      'Supplements': 'medication',
+      // Books
+      'Fiction': 'auto_stories',
+      'Non-Fiction': 'menu_book',
+      'Academic': 'school',
+      'Comics': 'image',
+      'Self-Help': 'psychology',
+    };
+    return iconMap[sub] || 'category';
   }
 }

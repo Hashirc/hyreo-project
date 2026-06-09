@@ -12,13 +12,16 @@ export class ProductService {
   private apiUrl = `${environment.apiUrl}/products`;
   private catUrl = `${environment.apiUrl}/categories`;
 
-  getProducts(categoryId?: string, search?: string): Observable<Product[]> {
+  getProducts(categoryId?: string, search?: string, subCategory?: string): Observable<Product[]> {
     let params = new HttpParams();
     if (categoryId) {
       params = params.set('category', categoryId);
     }
     if (search) {
       params = params.set('search', search);
+    }
+    if (subCategory) {
+      params = params.set('subCategory', subCategory);
     }
     return this.http.get<Product[]>(this.apiUrl, { params });
   }
