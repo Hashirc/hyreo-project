@@ -121,8 +121,26 @@ const SUB_CATEGORIES: { [slug: string]: string[] } = {
           <p class="results-count">{{ filteredProducts().length }} products found</p>
         </div>
 
-        <!-- Sub-category chip bar (visible on all screen sizes) -->
-        @if (availableSubCategories().length > 0) {
+        <!-- Sub-category chip bar OR Brand Filter bar for Mobiles (visible on all screen sizes) -->
+        @if (selectedSubCategory() === 'Mobiles') {
+          <div class="brand-filter-bar">
+            <span class="brand-bar-label">Top Brands:</span>
+            <button
+              class="brand-chip"
+              [class.brand-chip-active]="!selectedBrand()"
+              (click)="filterByBrand(undefined)">
+              All Brands
+            </button>
+            @for (brand of mobileBrands; track brand) {
+              <button
+                class="brand-chip"
+                [class.brand-chip-active]="selectedBrand() === brand"
+                (click)="filterByBrand(brand)">
+                {{ brand }}
+              </button>
+            }
+          </div>
+        } @else if (availableSubCategories().length > 0) {
           <div class="sub-category-bar">
             <button
               class="sub-chip"
@@ -401,6 +419,59 @@ const SUB_CATEGORIES: { [slug: string]: string[] } = {
       }
     }
 
+    // Brand Chips Styles
+    .brand-filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      overflow-x: auto;
+      padding: 6px 0 14px;
+      border-bottom: 1px dashed rgba(85, 107, 47, 0.15);
+      margin-bottom: 8px;
+      scrollbar-width: none;
+      
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+
+    .brand-bar-label {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #708623;
+      margin-right: 4px;
+    }
+
+    .brand-chip {
+      padding: 7px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(85, 107, 47, 0.22);
+      background-color: #ffffff;
+      color: #4a5435;
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+
+      &:hover {
+        border-color: #556B2F;
+        background-color: rgba(85, 107, 47, 0.05);
+        transform: translateY(-1px);
+      }
+    }
+
+    .brand-chip-active {
+      background: linear-gradient(135deg, #708623, #556B2F) !important;
+      color: #ffffff !important;
+      border-color: transparent !important;
+      box-shadow: 0 3px 8px rgba(85, 107, 47, 0.2) !important;
+    }
+
     .spinner-container {
       display: flex;
       justify-content: center;
@@ -489,8 +560,11 @@ export class ProductListComponent implements OnInit {
   readonly products = signal<Product[]>([]);
   readonly selectedCategory = signal<string | undefined>(undefined);
   readonly selectedSubCategory = signal<string | undefined>(undefined);
+  readonly selectedBrand = signal<string | undefined>(undefined);
   readonly searchQuery = signal<string>('');
   readonly isLoading = signal(true);
+
+  readonly mobileBrands = ['Apple', 'Samsung', 'Oppo', 'Vivo', 'Xiaomi'];
 
   readonly currentCategoryName = computed(() => {
     const activeId = this.selectedCategory();
@@ -506,15 +580,21 @@ export class ProductListComponent implements OnInit {
     return SUB_CATEGORIES[catSlug] || [];
   });
 
-  // Client-side sub-category filtering (fallback when products don't have subCategory field)
+  // Client-side sub-category and brand filtering
   readonly filteredProducts = computed(() => {
     const subCat = this.selectedSubCategory();
-    const allProds = this.products();
-    if (!subCat) return allProds;
-    // Filter by subCategory field; if product has no subCategory, include it only when "All" is selected
-    return allProds.filter(p =>
-      p.subCategory?.toLowerCase() === subCat.toLowerCase()
-    );
+    const brand = this.selectedBrand();
+    let prods = this.products();
+
+    if (subCat) {
+      prods = prods.filter(p => p.subCategory?.toLowerCase() === subCat.toLowerCase());
+    }
+
+    if (subCat === 'Mobiles' && brand) {
+      prods = prods.filter(p => p.name?.toLowerCase().includes(brand.toLowerCase()) || p.description?.toLowerCase().includes(brand.toLowerCase()));
+    }
+
+    return prods;
   });
 
   constructor() {
@@ -523,9 +603,11 @@ export class ProductListComponent implements OnInit {
       const routeCat = params['cat'];
       const queryCat = queryParams['category'];
       const subCat = queryParams['sub'];
+      const brand = queryParams['brand'];
       
       this.selectedCategory.set(routeCat || queryCat || undefined);
       this.selectedSubCategory.set(subCat || undefined);
+      this.selectedBrand.set(brand || undefined);
       this.searchQuery.set(queryParams['search'] || '');
       this.loadProducts();
     });
@@ -557,25 +639,35 @@ export class ProductListComponent implements OnInit {
   }
 
   filterByCategory(catId?: string) {
-    // Reset sub-category when changing main category
+    // Reset sub-category and brand when changing main category
     this.selectedSubCategory.set(undefined);
+    this.selectedBrand.set(undefined);
     if (catId) {
       this.router.navigate(['/category', catId], {
-        queryParams: { search: this.searchQuery() || null, sub: null },
+        queryParams: { search: this.searchQuery() || null, sub: null, brand: null },
         queryParamsHandling: 'merge'
       });
     } else {
       this.router.navigate(['/products'], {
-        queryParams: { search: this.searchQuery() || null, sub: null },
+        queryParams: { search: this.searchQuery() || null, sub: null, brand: null },
         queryParamsHandling: 'merge'
       });
     }
   }
 
   filterBySubCategory(subCat?: string) {
+    // Reset brand when sub-category changes
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: { sub: subCat || null },
+      queryParams: { sub: subCat || null, brand: null },
+      queryParamsHandling: 'merge'
+    });
+  }
+
+  filterByBrand(brand?: string) {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { brand: brand || null },
       queryParamsHandling: 'merge'
     });
   }
@@ -595,6 +687,7 @@ export class ProductListComponent implements OnInit {
 
   resetFilters() {
     this.selectedSubCategory.set(undefined);
+    this.selectedBrand.set(undefined);
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: {}
