@@ -93,7 +93,7 @@ import { Order } from '../../../core/models/types';
                     <div class="address-box">
                       <span class="section-title">Shipping Address:</span>
                       <p>{{ order.shippingAddress.fullName }}</p>
-                      <p>{{ order.shippingAddress.addressLine1 }}, {{ order.shippingAddress.city }}, {{ order.shippingAddress.state }} {{ order.shippingAddress.postalCode }}</p>
+                      <p>{{ order.shippingAddress.address }}, {{ order.shippingAddress.city }} {{ order.shippingAddress.postalCode }}</p>
                     </div>
                     
                     <div class="price-box">
