@@ -236,7 +236,11 @@ export class LoginComponent {
 
     this.authService.login(email, password)
       .then(() => {
-        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+        const user = this.authService.currentUser();
+        let returnUrl = this.route.snapshot.queryParams['returnUrl'];
+        if (!returnUrl) {
+          returnUrl = user?.role === 'admin' ? '/admin' : '/';
+        }
         this.router.navigateByUrl(returnUrl);
       })
       .catch((err) => {
@@ -256,7 +260,11 @@ export class LoginComponent {
 
     this.authService.login(email, password)
       .then(() => {
-        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+        const user = this.authService.currentUser();
+        let returnUrl = this.route.snapshot.queryParams['returnUrl'];
+        if (!returnUrl) {
+          returnUrl = user?.role === 'admin' ? '/admin' : '/';
+        }
         this.router.navigateByUrl(returnUrl);
       })
       .catch((err) => {

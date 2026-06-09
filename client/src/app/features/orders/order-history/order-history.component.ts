@@ -40,12 +40,37 @@ import { Order } from '../../../core/models/types';
                     <span class="order-id">Order #{{ order.id }}</span>
                     <span class="order-date">Placed on {{ order.createdAt | date:'mediumDate' }}</span>
                   </div>
-                  <div class="header-right">
-                    <span class="badge badge-status" [class]="order.status">
-                      {{ order.status }}
-                    </span>
-                  </div>
                 </mat-card-header>
+
+                <!-- Status Timeline -->
+                <div class="status-timeline">
+                  @if (order.status === 'cancelled') {
+                    <div class="timeline-step cancelled">
+                      <div class="step-icon"><mat-icon>cancel</mat-icon></div>
+                      <span class="step-label">Order Cancelled</span>
+                    </div>
+                  } @else {
+                    <div class="timeline-step" [class.active]="true" [class.completed]="order.status === 'processing' || order.status === 'shipped' || order.status === 'delivered'">
+                      <div class="step-icon"><mat-icon>receipt_long</mat-icon></div>
+                      <span class="step-label">Pending</span>
+                    </div>
+                    <div class="timeline-line" [class.completed]="order.status === 'processing' || order.status === 'shipped' || order.status === 'delivered'"></div>
+                    <div class="timeline-step" [class.active]="order.status === 'processing' || order.status === 'shipped' || order.status === 'delivered'" [class.completed]="order.status === 'shipped' || order.status === 'delivered'">
+                      <div class="step-icon"><mat-icon>autorenew</mat-icon></div>
+                      <span class="step-label">Processing</span>
+                    </div>
+                    <div class="timeline-line" [class.completed]="order.status === 'shipped' || order.status === 'delivered'"></div>
+                    <div class="timeline-step" [class.active]="order.status === 'shipped' || order.status === 'delivered'" [class.completed]="order.status === 'delivered'">
+                      <div class="step-icon"><mat-icon>local_shipping</mat-icon></div>
+                      <span class="step-label">Shipped</span>
+                    </div>
+                    <div class="timeline-line" [class.completed]="order.status === 'delivered'"></div>
+                    <div class="timeline-step" [class.active]="order.status === 'delivered'" [class.completed]="order.status === 'delivered'">
+                      <div class="step-icon"><mat-icon>done_all</mat-icon></div>
+                      <span class="step-label">Delivered</span>
+                    </div>
+                  }
+                </div>
 
                 <mat-card-content class="order-card-content">
                   <!-- Product items list in order -->
@@ -147,6 +172,100 @@ import { Order } from '../../../core/models/types';
       .order-date {
         font-size: 12px;
         color: #777;
+      }
+    }
+
+    .status-timeline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 48px;
+      background-color: #fafbf8;
+      border-bottom: 1px solid rgba(85, 107, 47, 0.08);
+
+      .timeline-step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        opacity: 0.4;
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 2;
+
+        &.active {
+          opacity: 1;
+          .step-icon {
+            background-color: #556B2F;
+            color: white;
+            border-color: #556B2F;
+          }
+          .step-label {
+            color: #1e2610;
+            font-weight: 600;
+          }
+        }
+
+        &.completed {
+          opacity: 1;
+          .step-icon {
+            background-color: #708623;
+            color: white;
+            border-color: #708623;
+          }
+        }
+
+        &.cancelled {
+          opacity: 1;
+          margin: 0 auto;
+          .step-icon {
+            background-color: #d32f2f;
+            color: white;
+            border-color: #d32f2f;
+          }
+          .step-label {
+            color: #d32f2f;
+            font-weight: 600;
+          }
+        }
+      }
+
+      .step-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background-color: white;
+        border: 2px solid #ccc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #888;
+        
+        mat-icon {
+          font-size: 18px;
+          height: 18px;
+          width: 18px;
+        }
+      }
+
+      .step-label {
+        font-size: 12px;
+        color: #888;
+        font-family: 'Outfit', sans-serif;
+      }
+
+      .timeline-line {
+        flex: 1;
+        height: 2px;
+        background-color: #e0e0e0;
+        margin: 0 16px;
+        margin-top: -24px; // Align with icons
+        position: relative;
+        z-index: 1;
+
+        &.completed {
+          background-color: #708623;
+        }
       }
     }
 

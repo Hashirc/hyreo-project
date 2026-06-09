@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { db } from '../server';
+import { db } from '../config/firebase';
 import { AuthRequest } from '../middleware/auth.middleware';
 import { Order } from '../models/index';
 

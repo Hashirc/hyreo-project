@@ -89,7 +89,7 @@ export class AuthService {
   }
 
   private async syncWithBackend(email: string, idToken: string) {
-    this.http.post<{ user: User }>(`${environment.apiUrl}/auth/login`, { email, token: idToken })
+    this.http.post<{ user: User, token: string }>(`${environment.apiUrl}/auth/login`, { email, token: idToken })
       .subscribe({
         next: (res) => {
           this.currentUser.set(res.user);
@@ -104,13 +104,11 @@ export class AuthService {
 
   async login(email: string, password: string): Promise<any> {
     if (this.isFirebaseMock) {
-      // Mock Client Login
+      // Mock Client Login — send email + password to server for validation
       return new Promise((resolve, reject) => {
-        // Send request to mock server login
-        const mockToken = email.includes('admin') ? 'mock-admin-token' : 'mock-customer-token-cust123';
         this.http.post<{ user: User, token: string }>(`${environment.apiUrl}/auth/login`, {
           email,
-          token: mockToken
+          password,
         }).subscribe({
           next: (res) => {
             this.currentUser.set(res.user);
@@ -130,7 +128,7 @@ export class AuthService {
     const idToken = await credentials.user.getIdToken();
     this.setToken(idToken);
     return new Promise((resolve, reject) => {
-      this.http.post<{ user: User }>(`${environment.apiUrl}/auth/login`, { email, token: idToken })
+      this.http.post<{ user: User, token: string }>(`${environment.apiUrl}/auth/login`, { email, token: idToken })
         .subscribe({
           next: (res) => {
             this.currentUser.set(res.user);
@@ -144,10 +142,11 @@ export class AuthService {
 
   async register(email: string, password: string, displayName: string, role: 'customer' | 'admin' = 'customer'): Promise<any> {
     if (this.isFirebaseMock) {
-      // Mock Client Register
+      // Mock Client Register — send everything to server
       return new Promise((resolve, reject) => {
         this.http.post<{ user: User, token: string }>(`${environment.apiUrl}/auth/register`, {
           email,
+          password,
           displayName,
           role
         }).subscribe({
@@ -169,11 +168,11 @@ export class AuthService {
     this.setToken(idToken);
     
     return new Promise((resolve, reject) => {
-      this.http.post<{ user: User }>(`${environment.apiUrl}/auth/register`, {
+      this.http.post<{ user: User, token: string }>(`${environment.apiUrl}/auth/register`, {
         email,
         displayName,
         role,
-        password // only sent if Firebase client config isn't doing it directly, but here we sync
+        password
       }).subscribe({
         next: (res) => {
           this.currentUser.set(res.user);

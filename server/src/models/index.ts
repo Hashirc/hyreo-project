@@ -44,7 +44,28 @@ export interface Cart {
   updatedAt: Date;
 }
 
-export type OrderStatus = 'pending' | 'paid' | 'shipped' | 'delivered' | 'cancelled';
+export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+
+export interface Coupon {
+  id?: string;
+  code: string;
+  discountType: 'percentage' | 'fixed';
+  discountValue: number;
+  expiryDate: Date;
+  isActive: boolean;
+  createdAt: Date;
+}
+
+export interface Review {
+  id?: string;
+  userId: string;
+  userDisplayName: string;
+  productId: string;
+  rating: number;
+  comment: string;
+  isHidden: boolean;
+  createdAt: Date;
+}
 
 export interface ShippingAddress {
   fullName: string;

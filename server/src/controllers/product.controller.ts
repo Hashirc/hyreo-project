@@ -1,15 +1,14 @@
 import { Request, Response } from 'express';
-import { db } from '../server';
+import { db } from '../config/firebase';
 import { Product, Category } from '../models/index';
 
 export async function getAllProducts(req: Request, res: Response) {
   try {
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 12;
-    const skip = (page - 1) * limit;
+    const category = req.query.category as string;
+    const search = req.query.search as string;
 
     const snapshot = await db.collection('products').get();
-    const products: Product[] = [];
+    let products: Product[] = [];
     
     snapshot.forEach((doc: any) => {
       products.push({
@@ -18,14 +17,19 @@ export async function getAllProducts(req: Request, res: Response) {
       } as Product);
     });
 
-    const totalSnapshot = await db.collection('products').get();
+    if (category) {
+      products = products.filter(p => p.categoryId === category);
+    }
 
-    res.json({
-      products,
-      total: totalSnapshot.size,
-      page,
-      limit
-    });
+    if (search) {
+      const queryStr = search.toLowerCase();
+      products = products.filter(p => 
+        (p.name && p.name.toLowerCase().includes(queryStr)) ||
+        (p.description && p.description.toLowerCase().includes(queryStr))
+      );
+    }
+
+    res.json(products);
   } catch (error) {
     console.error('Error fetching products:', error);
     res.status(500).json({ error: 'Failed to fetch products' });
@@ -132,5 +136,57 @@ export async function getCategories(req: Request, res: Response) {
   } catch (error) {
     console.error('Error fetching categories:', error);
     res.status(500).json({ error: 'Failed to fetch categories' });
+  }
+}
+
+export async function createCategory(req: Request, res: Response) {
+  try {
+    const categoryData: Category = req.body;
+    const docRef = await db.collection('categories').add(categoryData);
+    res.status(201).json({ ...categoryData, id: docRef.id });
+  } catch (error: any) {
+    res.status(500).json({ error: 'Failed to create category' });
+  }
+}
+
+export async function updateCategory(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const bodyWithoutId = { ...req.body };
+    delete bodyWithoutId.id;
+    await db.collection('categories').doc(id).update(bodyWithoutId);
+    res.json({ id, ...bodyWithoutId });
+  } catch (error: any) {
+    res.status(500).json({ error: 'Failed to update category' });
+  }
+}
+
+export async function deleteCategory(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    await db.collection('categories').doc(id).delete();
+    res.json({ message: 'Category deleted successfully' });
+  } catch (error: any) {
+    res.status(500).json({ error: 'Failed to delete category' });
+  }
+}
+
+export async function getReviews(req: Request, res: Response) {
+  try {
+    const snapshot = await db.collection('reviews').get();
+    const reviews = snapshot.docs.map((doc: any) => ({ id: doc.id, ...doc.data() }));
+    res.json(reviews);
+  } catch (error: any) {
+    res.status(500).json({ error: 'Failed to fetch reviews' });
+  }
+}
+
+export async function deleteReview(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    await db.collection('reviews').doc(id).delete();
+    res.json({ message: 'Review deleted successfully' });
+  } catch (error: any) {
+    res.status(500).json({ error: 'Failed to delete review' });
   }
 }

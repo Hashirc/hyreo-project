@@ -39,13 +39,35 @@ export interface Cart {
   updatedAt?: string | Date;
 }
 
-export type OrderStatus = 'pending' | 'paid' | 'shipped' | 'delivered' | 'cancelled';
+export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+
+export interface Coupon {
+  id?: string;
+  code: string;
+  discountType: 'percentage' | 'fixed';
+  discountValue: number;
+  expiryDate: string | Date;
+  isActive: boolean;
+  createdAt: string | Date;
+}
+
+export interface Review {
+  id?: string;
+  userId: string;
+  userDisplayName: string;
+  productId: string;
+  rating: number;
+  comment: string;
+  isHidden: boolean;
+  createdAt: string | Date;
+}
 
 export interface ShippingAddress {
   fullName: string;
-  addressLine1: string;
+  email: string;
+  phone: string;
+  address: string;
   city: string;
-  state: string;
   postalCode: string;
   country: string;
 }

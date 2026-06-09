@@ -1,5 +1,6 @@
 import * as admin from 'firebase-admin';
 import * as dotenv from 'dotenv';
+import { mockDb, mockAuth } from './mockdb';
 
 dotenv.config();
 
@@ -34,13 +35,17 @@ try {
     auth = admin.auth();
     console.log('Firebase Admin SDK initialized successfully via credentials env.');
   } else {
-    // If no Firebase credentials, set flag to use in-memory Mock DB for testing Day 3 features.
+    // No Firebase credentials → use in-memory Mock DB
     useMockDb = true;
+    db = mockDb;
+    auth = mockAuth;
     console.warn('No Firebase credentials found. Running in MOCK DB MODE.');
   }
 } catch (error) {
   console.error('Failed to initialize Firebase Admin SDK. Falling back to MOCK DB MODE.', error);
   useMockDb = true;
+  db = mockDb;
+  auth = mockAuth;
 }
 
 export { admin, db, auth, useMockDb };

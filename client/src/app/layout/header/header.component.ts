@@ -35,9 +35,12 @@ import { CartService } from '../../core/services/cart.service';
   template: `
       <mat-toolbar color="primary" class="header bg-olive mat-elevation-z4">
         <!-- Left side: logo and account centre -->
-        <a routerLink="/">
+        <a routerLink="/" class="logo-link">
           <img src="assets/logo.png" alt="Quick Kart" class="logo-img"/>
         </a>
+        @if (authService.currentUser()?.role === 'admin') {
+          <button mat-button routerLink="/admin" class="admin-panel-btn"><mat-icon>admin_panel_settings</mat-icon> Admin Panel</button>
+        }
         <button mat-button routerLink="/auth/profile" class="account-centre">Account Centre</button>
         <!-- Mobile menu button (visible on small screens) -->
         <button mat-icon-button class="mobile-menu-btn" (click)="toggleSidenav.emit()">
@@ -76,11 +79,23 @@ import { CartService } from '../../core/services/cart.service';
       height: 64px;
       background-color: #131921;
       color: #fff;
+      position: relative;
+    }
+
+    .logo-link {
+      display: flex;
+      align-items: center;
+      margin-right: 24px;
+      min-width: 160px; /* Reserves space for the floating logo */
+      text-decoration: none;
     }
 
     .logo-img {
-      height: 52px;
-      display: block;
+      height: 180px;
+      position: absolute;
+      top: -5px;
+      left: -60px;
+      z-index: 100;
     }
 
     .spacer { flex: 1 1 auto; }

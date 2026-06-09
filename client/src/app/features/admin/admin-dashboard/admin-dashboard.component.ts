@@ -200,7 +200,7 @@ import { Order, DashboardMetrics, OrderStatus, Category } from '../../../core/mo
                       @if (isFormSubmitting()) {
                         <mat-progress-spinner diameter="24"></mat-progress-spinner>
                       } @else {
-                        <mat-icon>add</mat-icon> Add Product
+                        <ng-container><mat-icon>add</mat-icon> Add Product</ng-container>
                       }
                     </button>
                     <button mat-button type="button" (click)="productForm.reset({categoryId: 'gourmet-food', rating: 4.5, imageUrl: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=500&auto=format&fit=crop&q=60'})">
@@ -208,6 +208,46 @@ import { Order, DashboardMetrics, OrderStatus, Category } from '../../../core/mo
                     </button>
                   </div>
                 </form>
+              </div>
+            </div>
+          </mat-tab>
+          
+          <!-- Manage Users Tab -->
+          <mat-tab label="Manage Users">
+            <div class="tab-content flex-center">
+              <div class="form-card mat-elevation-z1">
+                <h3 class="form-title">User Management</h3>
+                <p>User management table goes here. (Admin can block/delete users).</p>
+              </div>
+            </div>
+          </mat-tab>
+
+          <!-- Manage Categories Tab -->
+          <mat-tab label="Manage Categories">
+            <div class="tab-content flex-center">
+              <div class="form-card mat-elevation-z1">
+                <h3 class="form-title">Category Management</h3>
+                <p>Category list and creation form goes here.</p>
+              </div>
+            </div>
+          </mat-tab>
+
+          <!-- Manage Coupons Tab -->
+          <mat-tab label="Manage Coupons">
+            <div class="tab-content flex-center">
+              <div class="form-card mat-elevation-z1">
+                <h3 class="form-title">Coupon & Offer Management</h3>
+                <p>Discount code creation and management goes here.</p>
+              </div>
+            </div>
+          </mat-tab>
+
+          <!-- Manage Reviews Tab -->
+          <mat-tab label="Manage Reviews">
+            <div class="tab-content flex-center">
+              <div class="form-card mat-elevation-z1">
+                <h3 class="form-title">Review Management</h3>
+                <p>Customer review moderation list goes here.</p>
               </div>
             </div>
           </mat-tab>
@@ -420,7 +460,7 @@ export class AdminDashboardComponent implements OnInit {
   readonly isFormSubmitting = signal(false);
 
   readonly displayedColumns = ['id', 'date', 'items', 'total', 'status'];
-  readonly statuses: OrderStatus[] = ['pending', 'paid', 'shipped', 'delivered', 'cancelled'];
+  readonly statuses: OrderStatus[] = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
 
   productForm: FormGroup = this.fb.group({
     name: ['', Validators.required],

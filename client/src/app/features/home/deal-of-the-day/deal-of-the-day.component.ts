@@ -55,7 +55,7 @@ import { RouterLink } from '@angular/router';
                   <span class="ends-in">Offers end soon!</span>
                 </div>
                 
-                <button class="claim-btn" [routerLink]="['/products']">
+                <button class="claim-btn" [routerLink]="['/products', deal.id]">
                   Claim This Deal <span class="arrow">→</span>
                 </button>
               </div>
@@ -397,30 +397,35 @@ import { RouterLink } from '@angular/router';
 export class DealOfTheDayComponent implements OnInit, OnDestroy {
   deals = [
     {
+      id: 'deal_1',
       name: 'Dynamic Sports Running Shoes',
       originalPrice: 1999,
       offerPrice: 1599,
       image: '/assets/deal-of-the-day/shoe_deal.jpg'
     },
     {
+      id: 'deal_2',
       name: 'Precision Waterproof Beard Trimmer',
       originalPrice: 2599,
       offerPrice: 2199,
       image: '/assets/deal-of-the-day/trimmer_deal.jpg'
     },
     {
+      id: 'deal_3',
       name: '4K Ultra HD Smart LED Android TV',
       originalPrice: 53599,
       offerPrice: 50099,
       image: '/assets/deal-of-the-day/tv_deal.jpg'
     },
     {
+      id: 'deal_4',
       name: 'Premium Ultra Whey Protein Isolate',
       originalPrice: 6599,
       offerPrice: 6099,
       image: '/assets/deal-of-the-day/whey_deal.jpg'
     },
     {
+      id: 'deal_5',
       name: 'Noise Cancelling Wireless Earpods',
       originalPrice: 2099,
       offerPrice: 1799,

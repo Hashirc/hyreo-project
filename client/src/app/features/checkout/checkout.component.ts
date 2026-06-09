@@ -49,95 +49,65 @@ import { ShippingAddress } from '../../core/models/types';
                 <mat-card-header>
                   <h2 class="card-title"><mat-icon class="text-olive">local_shipping</mat-icon> Shipping Address</h2>
                 </mat-card-header>
-                <mat-card-content class="card-content-grid">
-                  <mat-form-field appearance="outline" class="col-span-2">
+                <mat-card-content class="shipping-form-content">
+                  <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Full Name</mat-label>
-                    <input matInput type="text" formControlName="fullName" placeholder="John Doe">
+                    <input matInput type="text" formControlName="fullName" placeholder="Enter your full name">
                     @if (checkoutForm.get('fullName')?.hasError('required') && checkoutForm.get('fullName')?.touched) {
                       <mat-error>Full name is required</mat-error>
                     }
                   </mat-form-field>
 
-                  <mat-form-field appearance="outline" class="col-span-2">
-                    <mat-label>Address Line 1</mat-label>
-                    <input matInput type="text" formControlName="addressLine1" placeholder="123 Olive Grove Way">
-                    @if (checkoutForm.get('addressLine1')?.hasError('required') && checkoutForm.get('addressLine1')?.touched) {
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Email Address</mat-label>
+                    <input matInput type="email" formControlName="email" placeholder="Enter your email">
+                    @if (checkoutForm.get('email')?.hasError('required') && checkoutForm.get('email')?.touched) {
+                      <mat-error>Email is required</mat-error>
+                    }
+                    @if (checkoutForm.get('email')?.hasError('email') && checkoutForm.get('email')?.touched) {
+                      <mat-error>Please enter a valid email address</mat-error>
+                    }
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Phone Number</mat-label>
+                    <input matInput type="text" formControlName="phone" placeholder="Enter your phone number">
+                    @if (checkoutForm.get('phone')?.hasError('required') && checkoutForm.get('phone')?.touched) {
+                      <mat-error>Phone number is required</mat-error>
+                    }
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Address</mat-label>
+                    <input matInput type="text" formControlName="address" placeholder="Enter your address">
+                    @if (checkoutForm.get('address')?.hasError('required') && checkoutForm.get('address')?.touched) {
                       <mat-error>Address is required</mat-error>
                     }
                   </mat-form-field>
 
-                  <mat-form-field appearance="outline">
-                    <mat-label>City</mat-label>
-                    <input matInput type="text" formControlName="city" placeholder="Ojai">
-                    @if (checkoutForm.get('city')?.hasError('required') && checkoutForm.get('city')?.touched) {
-                      <mat-error>City is required</mat-error>
-                    }
-                  </mat-form-field>
+                  <div class="form-row-grid">
+                    <mat-form-field appearance="outline">
+                      <mat-label>City</mat-label>
+                      <input matInput type="text" formControlName="city" placeholder="Enter city">
+                      @if (checkoutForm.get('city')?.hasError('required') && checkoutForm.get('city')?.touched) {
+                        <mat-error>City is required</mat-error>
+                      }
+                    </mat-form-field>
 
-                  <mat-form-field appearance="outline">
-                    <mat-label>State / Region</mat-label>
-                    <input matInput type="text" formControlName="state" placeholder="CA">
-                    @if (checkoutForm.get('state')?.hasError('required') && checkoutForm.get('state')?.touched) {
-                      <mat-error>State is required</mat-error>
-                    }
-                  </mat-form-field>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Postal Code</mat-label>
+                      <input matInput type="text" formControlName="postalCode" placeholder="Enter postal code">
+                      @if (checkoutForm.get('postalCode')?.hasError('required') && checkoutForm.get('postalCode')?.touched) {
+                        <mat-error>Postal code is required</mat-error>
+                      }
+                    </mat-form-field>
+                  </div>
 
-                  <mat-form-field appearance="outline">
-                    <mat-label>Postal / ZIP Code</mat-label>
-                    <input matInput type="text" formControlName="postalCode" placeholder="93023">
-                    @if (checkoutForm.get('postalCode')?.hasError('required') && checkoutForm.get('postalCode')?.touched) {
-                      <mat-error>Postal code is required</mat-error>
-                    }
-                  </mat-form-field>
-
-                  <mat-form-field appearance="outline">
+                  <mat-form-field appearance="outline" class="full-width">
                     <mat-label>Country</mat-label>
-                    <input matInput type="text" formControlName="country" placeholder="United States">
+                    <input matInput type="text" formControlName="country" placeholder="Enter country">
                     @if (checkoutForm.get('country')?.hasError('required') && checkoutForm.get('country')?.touched) {
                       <mat-error>Country is required</mat-error>
-                    }
-                  </mat-form-field>
-                </mat-card-content>
-              </mat-card>
-
-              <!-- Payment Method (Mock) -->
-              <mat-card class="checkout-card">
-                <mat-card-header>
-                  <h2 class="card-title"><mat-icon class="text-olive">payment</mat-icon> Payment Information</h2>
-                </mat-card-header>
-                <mat-card-content class="card-content-grid">
-                  <mat-form-field appearance="outline" class="col-span-2">
-                    <mat-label>Cardholder Name</mat-label>
-                    <input matInput type="text" formControlName="cardName" placeholder="JOHN DOE">
-                    @if (checkoutForm.get('cardName')?.hasError('required') && checkoutForm.get('cardName')?.touched) {
-                      <mat-error>Cardholder name is required</mat-error>
-                    }
-                  </mat-form-field>
-
-                  <mat-form-field appearance="outline" class="col-span-2">
-                    <mat-label>Card Number</mat-label>
-                    <input matInput type="text" formControlName="cardNumber" placeholder="4111 2222 3333 4444">
-                    @if (checkoutForm.get('cardNumber')?.hasError('required') && checkoutForm.get('cardNumber')?.touched) {
-                      <mat-error>Card number is required</mat-error>
-                    }
-                    @if (checkoutForm.get('cardNumber')?.hasError('pattern') && checkoutForm.get('cardNumber')?.touched) {
-                      <mat-error>Enter valid 16-digit card number</mat-error>
-                    }
-                  </mat-form-field>
-
-                  <mat-form-field appearance="outline">
-                    <mat-label>Expiration Date</mat-label>
-                    <input matInput type="text" formControlName="cardExpiry" placeholder="MM/YY">
-                    @if (checkoutForm.get('cardExpiry')?.hasError('required') && checkoutForm.get('cardExpiry')?.touched) {
-                      <mat-error>Required</mat-error>
-                    }
-                  </mat-form-field>
-
-                  <mat-form-field appearance="outline">
-                    <mat-label>Security Code (CVV)</mat-label>
-                    <input matInput type="text" formControlName="cardCvv" placeholder="123">
-                    @if (checkoutForm.get('cardCvv')?.hasError('required') && checkoutForm.get('cardCvv')?.touched) {
-                      <mat-error>Required</mat-error>
                     }
                   </mat-form-field>
                 </mat-card-content>
@@ -164,12 +134,43 @@ import { ShippingAddress } from '../../core/models/types';
 
                 <mat-divider></mat-divider>
 
+                <!-- Coupon Section -->
+                <div class="coupon-section" style="margin-top: 16px;">
+                  <form [formGroup]="checkoutForm" style="display: block; width: 100%;">
+                    <mat-form-field appearance="outline" style="width: 100%; margin-bottom: -16px;">
+                      <mat-label>Discount Coupon</mat-label>
+                      <input matInput type="text" formControlName="couponCode" placeholder="Enter code">
+                      <button mat-icon-button matSuffix type="button" (click)="applyCoupon()" [disabled]="!checkoutForm.get('couponCode')?.value || isApplyingCoupon()">
+                        @if (isApplyingCoupon()) {
+                          <mat-spinner diameter="20"></mat-spinner>
+                        } @else {
+                          <mat-icon>local_offer</mat-icon>
+                        }
+                      </button>
+                    </mat-form-field>
+                  </form>
+                  @if (appliedCoupon()) {
+                    <p class="coupon-success" style="color: #2e7d32; font-size: 12px; font-weight: 500; margin-top: 4px;">
+                      <mat-icon style="font-size: 14px; width: 14px; height: 14px; vertical-align: middle;">check_circle</mat-icon>
+                      Code '{{ appliedCoupon()?.code }}' applied (-\${{ appliedCoupon()?.discountValue | number:'1.2-2' }})
+                    </p>
+                  }
+                </div>
+
+                <mat-divider style="margin-top: 8px;"></mat-divider>
+
                 <!-- Subtotals -->
                 <div class="summary-totals">
                   <div class="summary-row">
                     <span>Items Subtotal</span>
                     <span>\${{ cartService.cartTotal() | number:'1.2-2' }}</span>
                   </div>
+                  @if (appliedCoupon()) {
+                    <div class="summary-row" style="color: #2e7d32;">
+                      <span>Discount</span>
+                      <span>-\${{ appliedCoupon()?.discountValue | number:'1.2-2' }}</span>
+                    </div>
+                  }
                   <div class="summary-row">
                     <span>Shipping</span>
                     <span class="shipping-free">FREE</span>
@@ -177,7 +178,7 @@ import { ShippingAddress } from '../../core/models/types';
                   <mat-divider class="inner-divider"></mat-divider>
                   <div class="summary-row total-row">
                     <span>Total Amount</span>
-                    <span>\${{ cartService.cartTotal() | number:'1.2-2' }}</span>
+                    <span>\${{ finalTotal() | number:'1.2-2' }}</span>
                   </div>
                 </div>
 
@@ -188,7 +189,7 @@ import { ShippingAddress } from '../../core/models/types';
                   @if (isLoading()) {
                     <mat-spinner diameter="24"></mat-spinner>
                   } @else {
-                    <mat-icon>done_all</mat-icon> Place Order (\${{ cartService.cartTotal() | number:'1.2-2' }})
+                    <ng-container><mat-icon>done_all</mat-icon> Place Order (\${{ finalTotal() | number:'1.2-2' }})</ng-container>
                   }
                 </button>
                 
@@ -242,14 +243,21 @@ import { ShippingAddress } from '../../core/models/types';
       margin-bottom: 12px;
     }
 
-    .card-content-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
+    .shipping-form-content {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding-top: 12px;
     }
 
-    .col-span-2 {
-      grid-column: span 2;
+    .full-width {
+      width: 100%;
+    }
+
+    .form-row-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
     }
 
     // Summary panel
@@ -397,21 +405,43 @@ export class CheckoutComponent {
 
   readonly isLoading = signal(false);
   readonly orderSuccess = signal(false);
+  readonly isApplyingCoupon = signal(false);
+  readonly appliedCoupon = signal<any | null>(null);
+
+  finalTotal() {
+    const sub = this.cartService.cartTotal();
+    const discount = this.appliedCoupon()?.discountValue || 0;
+    return Math.max(0, sub - discount);
+  }
 
   checkoutForm: FormGroup = this.fb.group({
     // Address
     fullName: ['', Validators.required],
-    addressLine1: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    phone: ['', Validators.required],
+    address: ['', Validators.required],
     city: ['', Validators.required],
-    state: ['', Validators.required],
     postalCode: ['', Validators.required],
-    country: ['United States', Validators.required],
-    // Payment
-    cardName: ['', Validators.required],
-    cardNumber: ['', [Validators.required, Validators.pattern('^[0-9]{16}$')]],
-    cardExpiry: ['', [Validators.required]],
-    cardCvv: ['', [Validators.required, Validators.pattern('^[0-9]{3}$')]]
+    country: ['', Validators.required],
+    couponCode: ['']
   });
+
+  applyCoupon() {
+    const code = this.checkoutForm.get('couponCode')?.value;
+    if (!code) return;
+    
+    this.isApplyingCoupon.set(true);
+    // Mock Validation for now
+    setTimeout(() => {
+      if (code.toUpperCase() === 'WELCOME10') {
+        this.appliedCoupon.set({ code: 'WELCOME10', discountValue: 10 });
+      } else {
+        alert('Invalid or expired coupon code');
+        this.appliedCoupon.set(null);
+      }
+      this.isApplyingCoupon.set(false);
+    }, 800);
+  }
 
   onPlaceOrder() {
     if (this.checkoutForm.invalid) {
@@ -424,18 +454,20 @@ export class CheckoutComponent {
 
     const shippingAddress: ShippingAddress = {
       fullName: this.checkoutForm.value.fullName,
-      addressLine1: this.checkoutForm.value.addressLine1,
+      email: this.checkoutForm.value.email,
+      phone: this.checkoutForm.value.phone,
+      address: this.checkoutForm.value.address,
       city: this.checkoutForm.value.city,
-      state: this.checkoutForm.value.state,
       postalCode: this.checkoutForm.value.postalCode,
       country: this.checkoutForm.value.country
     };
 
     const orderData = {
       items: this.cartService.cartItems(),
-      total: this.cartService.cartTotal(),
+      total: this.finalTotal(),
       shippingAddress,
-      paymentRef: 'pay_mock_' + Math.random().toString(36).substr(2, 9)
+      paymentRef: 'pay_mock_' + Math.random().toString(36).substr(2, 9),
+      couponCode: this.appliedCoupon()?.code || null
     };
 
     this.orderService.createOrder(orderData).subscribe({
