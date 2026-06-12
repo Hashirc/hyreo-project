@@ -8,6 +8,7 @@ import { MatRippleModule } from '@angular/material/core';
 import { Product } from '../../core/models/product.model';
 import { CartService } from '../../core/services/cart.service';
 import { CartItem } from '../../core/models/cart.model';
+import { handleImageFallback } from '../../core/utils/image-fallback';
 
 @Component({
   selector: 'app-product-card',
@@ -16,7 +17,8 @@ import { CartItem } from '../../core/models/cart.model';
   template: `
     <mat-card class="product-card" matRipple>
       <div class="product-image-container">
-        <img [src]="product().imageUrl" [alt]="product().name" class="product-image">
+        <img [src]="product().imageUrl" [alt]="product().name" class="product-image"
+             (error)="handleImageError($event)">
         <div class="rating-badge">
           <mat-icon>star</mat-icon>
           <span>{{ product().rating }}</span>
@@ -237,6 +239,11 @@ export class ProductCardComponent {
   product = input.required<Product>();
 
   constructor(private cartService: CartService) {}
+
+  handleImageError(event: any): void {
+    // Cast type to Product if models differ slightly
+    handleImageFallback(event, this.product() as any);
+  }
 
   addToCart(): void {
     const product = this.product();

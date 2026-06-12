@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Product } from '../../../core/models/types';
 import { CartService } from '../../../core/services/cart.service';
+import { handleImageFallback } from '../../../core/utils/image-fallback';
 
 @Component({
   selector: 'app-product-card',
@@ -14,7 +15,8 @@ import { CartService } from '../../../core/services/cart.service';
   template: `
     <mat-card class="product-card hover-lift">
       <div class="image-container" [routerLink]="['/products', product().id]">
-        <img mat-card-image [src]="product().imageUrl" [alt]="product().name" class="product-img">
+        <img mat-card-image [src]="product().imageUrl" [alt]="product().name" class="product-img"
+             (error)="handleImageError($event)">
         @if (product().stock <= 0) {
           <div class="out-of-stock-overlay">Out of Stock</div>
         }
@@ -187,6 +189,10 @@ export class ProductCardComponent {
   addToCart(event: Event) {
     event.stopPropagation();
     this.cartService.addToCart(this.product());
+  }
+
+  handleImageError(event: any) {
+    handleImageFallback(event, this.product());
   }
 
   getCategoryName(id: string): string {

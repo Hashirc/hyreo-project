@@ -39,13 +39,16 @@ export interface Cart {
   updatedAt: Date;
 }
 
-export type OrderStatus = 'pending' | 'paid' | 'shipped' | 'delivered' | 'cancelled';
+export type OrderStatus = 'pending' | 'processing' | 'paid' | 'shipped' | 'delivered' | 'cancelled';
 
 export interface ShippingAddress {
   fullName: string;
-  addressLine1: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  addressLine1?: string;
   city: string;
-  state: string;
+  state?: string;
   postalCode: string;
   country: string;
 }

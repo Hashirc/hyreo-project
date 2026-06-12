@@ -38,7 +38,8 @@ export class CartService {
   private loadCartFromServer() {
     this.http.get<Cart>(this.apiUrl).subscribe({
       next: (cart) => {
-        this.cartItems.set(cart.items || []);
+        const filtered = (cart.items || []).filter(item => item.productId !== 'deal_1' && item.productId !== 'flat50_6');
+        this.cartItems.set(filtered);
       },
       error: (err) => {
         console.error('Failed to load cart from server:', err);
@@ -51,7 +52,9 @@ export class CartService {
     const saved = localStorage.getItem('local_cart');
     if (saved) {
       try {
-        this.cartItems.set(JSON.parse(saved));
+        const items = JSON.parse(saved);
+        const filtered = (items || []).filter((item: any) => item.productId !== 'deal_1' && item.productId !== 'flat50_6');
+        this.cartItems.set(filtered);
       } catch {
         this.cartItems.set([]);
       }

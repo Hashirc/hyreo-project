@@ -1,13 +1,13 @@
 import express from 'express';
 import * as orderController from '../controllers/order.controller';
-import { authMiddleware } from '../middleware/auth.middleware';
 
 const router = express.Router();
 
-router.post('/', authMiddleware, orderController.createOrder);
-router.get('/', authMiddleware, orderController.getOrders);
-router.get('/all', orderController.getAllOrders);
-router.get('/:id', orderController.getOrderById);
-router.patch('/:id/status', orderController.updateOrderStatus);
+// Auth middleware is already applied at the app level in server.ts
+router.post('/', orderController.createOrder as any);
+router.get('/', orderController.getOrders as any);
+router.get('/all', orderController.getAllOrders as any);
+router.get('/:id', orderController.getOrderById as any);
+router.patch('/:id/status', orderController.updateOrderStatus as any);
 
 export default router;

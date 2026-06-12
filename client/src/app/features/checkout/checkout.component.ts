@@ -475,8 +475,11 @@ export class CheckoutComponent {
         this.orderSuccess.set(true);
         this.cartService.clearCart();
         this.isLoading.set(false);
-        alert('Order Placed Successfully! Thank you for shopping with us.');
-        this.router.navigate(['/orders']);
+        // Navigate to order success page with the order data
+        const createdOrder = res.order;
+        this.router.navigate(['/orders/success', createdOrder?.id || 'latest'], {
+          state: { order: createdOrder }
+        });
       },
       error: (err) => {
         console.error('Checkout failed:', err);

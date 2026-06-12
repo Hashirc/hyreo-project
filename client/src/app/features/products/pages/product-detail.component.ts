@@ -9,6 +9,7 @@ import { ProductService } from '../../../core/services/product.service';
 import { CartService } from '../../../core/services/cart.service';
 import { Product } from '../../../core/models/product.model';
 import { CartItem } from '../../../core/models/cart.model';
+import { handleImageFallback } from '../../../core/utils/image-fallback';
 
 @Component({
   selector: 'app-product-detail',
@@ -31,10 +32,12 @@ import { CartItem } from '../../../core/models/cart.model';
 
         <div class="product-detail">
           <div class="product-image-section">
-            <img [src]="product()!.imageUrl" [alt]="product()!.name" class="main-image">
+            <img [src]="product()!.imageUrl" [alt]="product()!.name" class="main-image"
+                 (error)="handleImageError($event)">
             <div class="image-gallery">
               @for (image of getProductImages(); track image) {
-                <img [src]="image" [alt]="product()!.name" class="thumbnail">
+                <img [src]="image" [alt]="product()!.name" class="thumbnail"
+                     (error)="handleImageError($event)">
               }
             </div>
           </div>
@@ -450,6 +453,13 @@ export class ProductDetailComponent implements OnInit {
   decreaseQuantity(): void {
     if (this.quantity > 1) {
       this.quantity--;
+    }
+  }
+
+  handleImageError(event: any): void {
+    const prod = this.product();
+    if (prod) {
+      handleImageFallback(event, prod as any);
     }
   }
 

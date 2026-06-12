@@ -8,8 +8,10 @@ import productRoutes from './routes/product.routes';
 import orderRoutes from './routes/order.routes';
 import userRoutes from './routes/user.routes';
 import couponRoutes from './routes/coupon.routes';
+import cartRoutes from './routes/cart.routes';
 import { authMiddleware } from './middleware/auth.middleware';
 import { db } from './config/firebase';
+import { seedDb } from './services/dbService';
 
 dotenv.config();
 
@@ -80,6 +82,7 @@ app.use('/api/products', productRoutes);
 app.use('/api/orders', authMiddleware, orderRoutes);
 app.use('/api/users', authMiddleware, userRoutes);
 app.use('/api/coupons', authMiddleware, couponRoutes);
+app.use('/api/cart', authMiddleware, cartRoutes);
 
 // Error handling middleware
 app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -95,4 +98,5 @@ app.listen(PORT, async () => {
   console.log(`✓ Server running on port ${PORT}`);
   console.log(`✓ Health check: http://localhost:${PORT}/api/health`);
   await seedDefaultUsers();
+  await seedDb();
 });

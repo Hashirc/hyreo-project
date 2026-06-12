@@ -1,6 +1,6 @@
 import { Component, inject, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -35,7 +35,7 @@ import { CartService } from '../../core/services/cart.service';
       <mat-toolbar color="primary" class="header bg-olive mat-elevation-z4">
         <!-- Left side: logo -->
         <a routerLink="/" class="logo-link">
-          <img src="assets/logo.png" alt="Quick Kart" class="logo-img"/>
+          <img src="assets/logo.webp" alt="Quick Kart" class="logo-img"/>
         </a>
         @if (authService.currentUser()?.role === 'admin') {
           <button mat-button routerLink="/admin" class="admin-panel-btn"><mat-icon>admin_panel_settings</mat-icon> Admin Panel</button>
@@ -359,6 +359,7 @@ import { CartService } from '../../core/services/cart.service';
 export class HeaderComponent {
   authService = inject(AuthService);
   cartService = inject(CartService);
+  private router = inject(Router);
 
   toggleSidenav = output<void>();
 
@@ -384,7 +385,9 @@ export class HeaderComponent {
   searchTerm = '';
   onSearch() {
     console.log('Search:', this.searchTerm);
-    // TODO: Implement actual search navigation
+    if (this.searchTerm.trim()) {
+      this.router.navigate(['/products'], { queryParams: { search: this.searchTerm.trim() } });
+    }
   }
 
   useAnotherAccount() {

@@ -1,6 +1,8 @@
 import { Component, OnInit, OnDestroy, PLATFORM_ID, inject } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
+import { CartService } from '../../../core/services/cart.service';
+import { Product } from '../../../core/models/types';
 
 @Component({
   selector: 'app-deal-of-the-day',
@@ -32,7 +34,7 @@ import { RouterLink } from '@angular/router';
               class="deal-slide" 
               [class.active]="i === activeSlide"
             >
-              <div class="image-area">
+              <div class="image-area" [routerLink]="['/products', deal.id]" style="cursor: pointer;">
                 <img [src]="deal.image" [alt]="deal.name" class="deal-img" />
               </div>
               
@@ -42,7 +44,8 @@ import { RouterLink } from '@angular/router';
                   <span class="discount-badge">Save {{ getDiscountPercentage(deal.originalPrice, deal.offerPrice) }}%</span>
                 </div>
                 
-                <h3 class="product-title">{{ deal.name }}</h3>
+                <h3 class="product-title" [routerLink]="['/products', deal.id]" style="cursor: pointer;">{{ deal.name }}</h3>
+                <p class="product-description" [routerLink]="['/products', deal.id]" style="cursor: pointer;">{{ deal.description }}</p>
                 
                 <div class="price-box">
                   <div class="original-price-label">Regular Price</div>
@@ -55,9 +58,14 @@ import { RouterLink } from '@angular/router';
                   <span class="ends-in">Offers end soon!</span>
                 </div>
                 
-                <button class="claim-btn" [routerLink]="['/products', deal.id]">
-                  Claim This Deal <span class="arrow">→</span>
-                </button>
+                <div class="deal-actions">
+                  <button class="add-to-cart-btn" (click)="addToCart($event, deal)">
+                    Add to Cart
+                  </button>
+                  <button class="buy-now-btn" (click)="buyNow($event, deal)">
+                    Buy Now
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -243,9 +251,16 @@ import { RouterLink } from '@angular/router';
       font-size: 32px;
       font-weight: 700;
       color: #1e2610;
-      margin-bottom: 24px;
+      margin-bottom: 12px;
       line-height: 1.2;
       font-family: 'Outfit', sans-serif;
+    }
+
+    .product-description {
+      margin-bottom: 20px;
+      color: #4a5435;
+      font-size: 15px;
+      line-height: 1.5;
     }
 
     .price-box {
@@ -291,37 +306,45 @@ import { RouterLink } from '@angular/router';
       gap: 6px;
     }
 
-    .claim-btn {
-      background-color: #708623;
-      color: #ffffff;
-      border: none;
-      padding: 16px 32px;
-      border-radius: 30px;
-      font-size: 16px;
+    .deal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .add-to-cart-btn, .buy-now-btn {
+      padding: 12px 28px;
+      border-radius: 20px;
+      font-size: 14px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      width: fit-content;
       font-family: 'Outfit', sans-serif;
+    }
+
+    .add-to-cart-btn {
+      background-color: #ffffff;
+      color: #708623;
+      border: 1.5px solid #708623;
+    }
+
+    .add-to-cart-btn:hover {
+      background-color: rgba(112, 134, 35, 0.05);
+      border-color: #556b2f;
+      color: #556b2f;
+    }
+
+    .buy-now-btn {
+      background-color: #708623;
+      color: #ffffff;
+      border: none;
       box-shadow: 0 4px 12px rgba(112, 134, 35, 0.2);
     }
 
-    .claim-btn:hover {
+    .buy-now-btn:hover {
       background-color: #556b2f;
-      transform: translateY(-2px);
+      transform: translateY(-1px);
       box-shadow: 0 6px 18px rgba(112, 134, 35, 0.3);
-    }
-
-    .arrow {
-      transition: transform 0.2s ease;
-    }
-
-    .claim-btn:hover .arrow {
-      transform: translateX(4px);
     }
 
     /* Dots Navigation */
@@ -395,41 +418,54 @@ import { RouterLink } from '@angular/router';
   `]
 })
 export class DealOfTheDayComponent implements OnInit, OnDestroy {
+  private cartService = inject(CartService);
+  private router = inject(Router);
+
   deals = [
     {
       id: 'deal_1',
       name: 'Dynamic Sports Running Shoes',
+      description: 'Premium quality running shoes with dynamic support and comfortable cushioning.',
       originalPrice: 1999,
       offerPrice: 1599,
-      image: '/assets/deal-of-the-day/shoe_deal.jpg'
+      stock: 50,
+      image: '/assets/deal-of-the-day/shoe_deal.webp'
     },
     {
       id: 'deal_2',
       name: 'Precision Waterproof Beard Trimmer',
+      description: 'Precision beard trimmer with multiple length settings and self-sharpening blades.',
       originalPrice: 2599,
       offerPrice: 2199,
-      image: '/assets/deal-of-the-day/trimmer_deal.jpg'
+      stock: 35,
+      image: '/assets/deal-of-the-day/trimmer_deal.webp'
     },
     {
       id: 'deal_3',
       name: '4K Ultra HD Smart LED Android TV',
+      description: 'Stunning 4K Ultra HD smart TV with dynamic range and android smart interface.',
       originalPrice: 53599,
       offerPrice: 50099,
-      image: '/assets/deal-of-the-day/tv_deal.jpg'
+      stock: 15,
+      image: '/assets/deal-of-the-day/tv_deal.webp'
     },
     {
       id: 'deal_4',
       name: 'Premium Ultra Whey Protein Isolate',
+      description: 'High-quality whey protein isolate for efficient muscle recovery and building.',
       originalPrice: 6599,
       offerPrice: 6099,
-      image: '/assets/deal-of-the-day/whey_deal.jpg'
+      stock: 40,
+      image: '/assets/deal-of-the-day/whey_deal.webp'
     },
     {
       id: 'deal_5',
       name: 'Noise Cancelling Wireless Earpods',
+      description: 'Wireless earpods with active noise cancellation and long-lasting battery life.',
       originalPrice: 2099,
       offerPrice: 1799,
-      image: '/assets/deal-of-the-day/earpod_deal.jpg'
+      stock: 60,
+      image: '/assets/deal-of-the-day/earpod_deal.webp'
     }
   ];
 
@@ -477,5 +513,37 @@ export class DealOfTheDayComponent implements OnInit, OnDestroy {
 
   getDiscountPercentage(original: number, offer: number): number {
     return Math.round(((original - offer) / original) * 100);
+  }
+
+  addToCart(event: Event, deal: any) {
+    event.stopPropagation();
+    const product: Product = {
+      id: deal.id,
+      name: deal.name,
+      description: deal.description || '',
+      price: deal.offerPrice,
+      categoryId: 'sports-fitness',
+      stock: deal.stock || 10,
+      imageUrl: deal.image,
+      rating: 4.5
+    };
+    this.cartService.addToCart(product, 1);
+    alert(`${deal.name} added to cart!`);
+  }
+
+  buyNow(event: Event, deal: any) {
+    event.stopPropagation();
+    const product: Product = {
+      id: deal.id,
+      name: deal.name,
+      description: deal.description || '',
+      price: deal.offerPrice,
+      categoryId: 'sports-fitness',
+      stock: deal.stock || 10,
+      imageUrl: deal.image,
+      rating: 4.5
+    };
+    this.cartService.addToCart(product, 1);
+    this.router.navigate(['/checkout']);
   }
 }

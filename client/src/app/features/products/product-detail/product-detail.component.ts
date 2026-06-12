@@ -8,6 +8,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ProductService } from '../../../core/services/product.service';
 import { CartService } from '../../../core/services/cart.service';
 import { Product } from '../../../core/models/types';
+import { handleImageFallback } from '../../../core/utils/image-fallback';
 
 @Component({
   selector: 'app-product-detail',
@@ -31,7 +32,8 @@ import { Product } from '../../../core/models/types';
             <!-- Product Image -->
             <div class="image-gallery">
               <div class="main-image-wrapper">
-                <img [src]="prod.imageUrl" [alt]="prod.name" class="detail-img">
+                <img [src]="prod.imageUrl" [alt]="prod.name" class="detail-img"
+                     (error)="handleImageError($event, prod)">
               </div>
             </div>
 
@@ -90,6 +92,9 @@ import { Product } from '../../../core/models/types';
                   </div>
                   <button mat-raised-button color="primary" class="add-to-cart-btn" (click)="addToCart(prod)">
                     <mat-icon>shopping_cart</mat-icon> Add To Cart
+                  </button>
+                  <button mat-raised-button color="accent" class="buy-now-btn" (click)="buyNow(prod)">
+                    <mat-icon>bolt</mat-icon> Buy Now
                   </button>
                 </div>
               }
@@ -282,7 +287,7 @@ import { Product } from '../../../core/models/types';
       }
     }
 
-    .add-to-cart-btn {
+    .add-to-cart-btn, .buy-now-btn {
       flex: 1;
       height: 48px !important;
       border-radius: 25px !important;
@@ -332,6 +337,7 @@ export class ProductDetailComponent implements OnInit {
   private productService = inject(ProductService);
   private cartService = inject(CartService);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   readonly product = signal<Product | null>(null);
   readonly quantity = signal<number>(1);
@@ -369,10 +375,19 @@ export class ProductDetailComponent implements OnInit {
     }
   }
 
+  handleImageError(event: any, prod: Product): void {
+    handleImageFallback(event, prod);
+  }
+
   addToCart(prod: Product) {
     this.cartService.addToCart(prod, this.quantity());
     alert(`${this.quantity()} x ${prod.name} added to cart!`);
     this.quantity.set(1);
+  }
+
+  buyNow(prod: Product) {
+    this.cartService.addToCart(prod, this.quantity());
+    this.router.navigate(['/checkout']);
   }
 
   getCategoryName(id: string): string {

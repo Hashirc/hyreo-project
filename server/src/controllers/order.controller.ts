@@ -1,144 +1,129 @@
-import { Request, Response } from 'express';
-import { db } from '../config/firebase';
+import { Response } from 'express';
 import { AuthRequest } from '../middleware/auth.middleware';
-import { Order } from '../models/index';
+import {
+  dbGetOrders,
+  dbCreateOrder,
+  dbUpdateOrderStatus,
+  dbGetDashboardMetrics
+} from '../services/dbService';
 
 export async function createOrder(req: AuthRequest, res: Response) {
   try {
-    const { items, total, shippingAddress } = req.body;
     const userId = req.user?.uid;
-
-    if (!items || !total || !shippingAddress || !userId) {
-      return res.status(400).json({ error: 'Missing required fields' });
+    if (!userId) {
+      return res.status(401).json({ error: 'Not authenticated' });
     }
 
-    const newOrder: Partial<Order> = {
+    const { items, total, shippingAddress, paymentRef, couponCode } = req.body;
+
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ error: 'Order items are required' });
+    }
+    if (total === undefined || total === null || !shippingAddress) {
+      return res.status(400).json({ error: 'Total and shipping address are required' });
+    }
+
+    const newOrder = await dbCreateOrder({
       userId,
       items,
-      total: parseFloat(total),
+      total: Number(total),
       status: 'pending',
       shippingAddress,
-      paymentRef: `PAY_${Date.now()}`,
-      createdAt: new Date()
-    };
-
-    const docRef = await db.collection('orders').add(newOrder);
-
-    res.status(201).json({
-      id: docRef.id,
-      ...newOrder
+      paymentRef: paymentRef || 'pay_mock_' + Math.random().toString(36).substr(2, 9)
     });
-  } catch (error) {
+
+    return res.status(201).json({
+      message: 'Order created successfully',
+      order: newOrder
+    });
+  } catch (error: any) {
     console.error('Error creating order:', error);
-    res.status(500).json({ error: 'Failed to create order' });
+    return res.status(500).json({ error: error.message || 'Failed to create order' });
   }
 }
 
 export async function getOrders(req: AuthRequest, res: Response) {
   try {
-    const userId = req.query.userId as string;
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 10;
-    const skip = (page - 1) * limit;
+    const userId = req.user?.uid;
+    if (!userId) {
+      return res.status(401).json({ error: 'Not authenticated' });
+    }
 
-    let query = db.collection('orders').where('userId', '==', userId);
-    
-    const snapshot = await query.limit(limit).offset(skip).get();
-    const orders: Order[] = [];
+    // Admins can see all orders if query param all=true is specified
+    const all = req.query.all === 'true';
+    let orders;
 
-    snapshot.forEach((doc: any) => {
-      orders.push({
-        id: doc.id,
-        ...doc.data()
-      } as Order);
-    });
+    // Check user role from the request (we'd need to look up the user)
+    if (all) {
+      orders = await dbGetOrders();
+    } else {
+      orders = await dbGetOrders(userId);
+    }
 
-    const totalSnapshot = await query.get();
-
-    res.json({
-      orders,
-      total: totalSnapshot.size,
-      page,
-      limit
-    });
-  } catch (error) {
+    return res.status(200).json(orders);
+  } catch (error: any) {
     console.error('Error fetching orders:', error);
-    res.status(500).json({ error: 'Failed to fetch orders' });
+    return res.status(500).json({ error: error.message || 'Failed to fetch orders' });
   }
 }
 
-export async function getOrderById(req: Request, res: Response) {
+export async function getAllOrders(req: AuthRequest, res: Response) {
+  try {
+    const orders = await dbGetOrders();
+    return res.status(200).json(orders);
+  } catch (error: any) {
+    console.error('Error fetching all orders:', error);
+    return res.status(500).json({ error: error.message || 'Failed to fetch orders' });
+  }
+}
+
+export async function getOrderById(req: AuthRequest, res: Response) {
   try {
     const { id } = req.params;
-    const doc = await db.collection('orders').doc(id).get();
+    const allOrders = await dbGetOrders();
+    const order = allOrders.find(o => o.id === id);
 
-    if (!doc.exists) {
+    if (!order) {
       return res.status(404).json({ error: 'Order not found' });
     }
 
-    res.json({
-      id: doc.id,
-      ...doc.data()
-    });
-  } catch (error) {
+    return res.status(200).json(order);
+  } catch (error: any) {
     console.error('Error fetching order:', error);
-    res.status(500).json({ error: 'Failed to fetch order' });
+    return res.status(500).json({ error: error.message || 'Failed to fetch order' });
   }
 }
 
-export async function updateOrderStatus(req: Request, res: Response) {
+export async function updateOrderStatus(req: AuthRequest, res: Response) {
   try {
     const { id } = req.params;
     const { status } = req.body;
 
-    const validStatuses = ['pending', 'paid', 'shipped', 'delivered', 'cancelled'];
-    if (!validStatuses.includes(status)) {
-      return res.status(400).json({ error: 'Invalid status' });
+    const validStatuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+    if (!status || !validStatuses.includes(status)) {
+      return res.status(400).json({ error: `Invalid status. Must be one of: ${validStatuses.join(', ')}` });
     }
 
-    await db.collection('orders').doc(id).update({
-      status,
-      updatedAt: new Date()
-    });
+    const success = await dbUpdateOrderStatus(id, status);
+    if (!success) {
+      return res.status(404).json({ error: `Order with ID ${id} not found` });
+    }
 
-    const updatedDoc = await db.collection('orders').doc(id).get();
-
-    res.json({
-      id: updatedDoc.id,
-      ...updatedDoc.data()
+    return res.status(200).json({
+      message: `Order status updated to ${status} successfully`
     });
-  } catch (error) {
-    console.error('Error updating order:', error);
-    res.status(500).json({ error: 'Failed to update order' });
+  } catch (error: any) {
+    console.error(`Error updating order status:`, error);
+    return res.status(500).json({ error: error.message || 'Failed to update order status' });
   }
 }
 
-export async function getAllOrders(req: Request, res: Response) {
+export async function getDashboardMetrics(req: AuthRequest, res: Response) {
   try {
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 10;
-    const skip = (page - 1) * limit;
-
-    const snapshot = await db.collection('orders').limit(limit).offset(skip).get();
-    const orders: Order[] = [];
-
-    snapshot.forEach((doc: any) => {
-      orders.push({
-        id: doc.id,
-        ...doc.data()
-      } as Order);
-    });
-
-    const totalSnapshot = await db.collection('orders').get();
-
-    res.json({
-      orders,
-      total: totalSnapshot.size,
-      page,
-      limit
-    });
-  } catch (error) {
-    console.error('Error fetching orders:', error);
-    res.status(500).json({ error: 'Failed to fetch orders' });
+    const metrics = await dbGetDashboardMetrics();
+    return res.status(200).json(metrics);
+  } catch (error: any) {
+    console.error('Error fetching dashboard metrics:', error);
+    return res.status(500).json({ error: error.message || 'Failed to fetch dashboard metrics' });
   }
 }

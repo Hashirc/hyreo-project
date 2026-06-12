@@ -25,6 +25,11 @@ export const routes: Routes = [
     loadComponent: () => import('./features/checkout/checkout.component').then(c => c.CheckoutComponent)
   },
   {
+    path: 'orders/success/:orderId',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/orders/order-success/order-success.component').then(c => c.OrderSuccessComponent)
+  },
+  {
     path: 'orders',
     canActivate: [authGuard],
     loadComponent: () => import('./features/orders/order-history/order-history.component').then(c => c.OrderHistoryComponent)

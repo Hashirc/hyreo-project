@@ -8,37 +8,37 @@ let mockCategories: Category[] = [
     "id": "mobile-computers",
     "name": "Mobile & Computers",
     "slug": "mobile-computers",
-    "imageUrl": "/assets/mobiles and laptops/17pro.jpg"
+    "imageUrl": "/assets/mobiles and laptops/17pro.webp"
   },
   {
     "id": "household-appliances",
     "name": "Household Appliances",
     "slug": "household-appliances",
-    "imageUrl": "/assets/household/AC.jpg"
+    "imageUrl": "/assets/household/AC.webp"
   },
   {
     "id": "mens-fashion",
     "name": "Men's Fashion",
     "slug": "mens-fashion",
-    "imageUrl": "/assets/mens fashion/adidas_shoe.jpg"
+    "imageUrl": "/assets/mens fashion/adidas_shoe.webp"
   },
   {
     "id": "womens-fashion",
     "name": "Women's Fashion",
     "slug": "womens-fashion",
-    "imageUrl": "/assets/womens fashion/bag1.jpg"
+    "imageUrl": "/assets/womens fashion/bag1.webp"
   },
   {
     "id": "sports-fitness",
     "name": "Sports & Fitness",
     "slug": "sports-fitness",
-    "imageUrl": "/assets/sports and fitness/arm holder.jpg"
+    "imageUrl": "/assets/sports and fitness/arm holder.webp"
   },
   {
     "id": "books",
     "name": "Books",
     "slug": "books",
-    "imageUrl": "/assets/books/book1.jpg"
+    "imageUrl": "/assets/books/book1.webp"
   }
 ];
 
@@ -50,7 +50,7 @@ let mockProducts: Product[] = [
     price: 14675,
     categoryId: 'mobile-computers',
     stock: 55,
-    imageUrl: '/assets/mobiles and laptops/17pro.jpg',
+    imageUrl: '/assets/mobiles and laptops/17pro.webp',
     rating: 4.4,
     createdAt: new Date()
   },
@@ -61,7 +61,7 @@ let mockProducts: Product[] = [
     price: 58916,
     categoryId: 'mobile-computers',
     stock: 47,
-    imageUrl: '/assets/mobiles and laptops/acer1lap.jpg',
+    imageUrl: '/assets/mobiles and laptops/acer1lap.webp',
     rating: 4.5,
     createdAt: new Date()
   },
@@ -72,7 +72,7 @@ let mockProducts: Product[] = [
     price: 55271,
     categoryId: 'mobile-computers',
     stock: 37,
-    imageUrl: '/assets/mobiles and laptops/acer3lap.jpg',
+    imageUrl: '/assets/mobiles and laptops/acer3lap.webp',
     rating: 4.7,
     createdAt: new Date()
   },
@@ -83,7 +83,7 @@ let mockProducts: Product[] = [
     price: 43595,
     categoryId: 'mobile-computers',
     stock: 37,
-    imageUrl: '/assets/mobiles and laptops/acerlap.jpg',
+    imageUrl: '/assets/mobiles and laptops/acerlap.webp',
     rating: 4.1,
     createdAt: new Date()
   },
@@ -94,7 +94,7 @@ let mockProducts: Product[] = [
     price: 20739,
     categoryId: 'mobile-computers',
     stock: 11,
-    imageUrl: '/assets/mobiles and laptops/apple_ipad.jpg',
+    imageUrl: '/assets/mobiles and laptops/apple_ipad.webp',
     rating: 4.8,
     createdAt: new Date()
   },
@@ -105,7 +105,7 @@ let mockProducts: Product[] = [
     price: 25763,
     categoryId: 'mobile-computers',
     stock: 16,
-    imageUrl: '/assets/mobiles and laptops/asuslap.jpg',
+    imageUrl: '/assets/mobiles and laptops/asuslap.webp',
     rating: 4.6,
     createdAt: new Date()
   },
@@ -116,7 +116,7 @@ let mockProducts: Product[] = [
     price: 39935,
     categoryId: 'mobile-computers',
     stock: 41,
-    imageUrl: '/assets/mobiles and laptops/delllap.jpg',
+    imageUrl: '/assets/mobiles and laptops/delllap.webp',
     rating: 3.9,
     createdAt: new Date()
   },
@@ -127,7 +127,7 @@ let mockProducts: Product[] = [
     price: 26234,
     categoryId: 'mobile-computers',
     stock: 46,
-    imageUrl: '/assets/mobiles and laptops/ideapadlap.jpg',
+    imageUrl: '/assets/mobiles and laptops/ideapadlap.webp',
     rating: 4.6,
     createdAt: new Date()
   },
@@ -138,7 +138,7 @@ let mockProducts: Product[] = [
     price: 35997,
     categoryId: 'mobile-computers',
     stock: 42,
-    imageUrl: '/assets/mobiles and laptops/iqoo15gr.jpg',
+    imageUrl: '/assets/mobiles and laptops/iqoo15gr.webp',
     rating: 4.3,
     createdAt: new Date()
   },
@@ -149,7 +149,7 @@ let mockProducts: Product[] = [
     price: 29035,
     categoryId: 'mobile-computers',
     stock: 36,
-    imageUrl: '/assets/mobiles and laptops/lenova_pad.jpg',
+    imageUrl: '/assets/mobiles and laptops/lenova_pad.webp',
     rating: 4.0,
     createdAt: new Date()
   },
@@ -160,7 +160,7 @@ let mockProducts: Product[] = [
     price: 59803,
     categoryId: 'mobile-computers',
     stock: 47,
-    imageUrl: '/assets/mobiles and laptops/lenovolap.jpg',
+    imageUrl: '/assets/mobiles and laptops/lenovolap.webp',
     rating: 4.3,
     createdAt: new Date()
   },
@@ -171,7 +171,7 @@ let mockProducts: Product[] = [
     price: 10328,
     categoryId: 'mobile-computers',
     stock: 46,
-    imageUrl: '/assets/mobiles and laptops/mac1lap.jpg',
+    imageUrl: '/assets/mobiles and laptops/mac1lap.webp',
     rating: 4.1,
     createdAt: new Date()
   },
@@ -182,7 +182,7 @@ let mockProducts: Product[] = [
     price: 26858,
     categoryId: 'mobile-computers',
     stock: 44,
-    imageUrl: '/assets/mobiles and laptops/motrolaedge70.jpg',
+    imageUrl: '/assets/mobiles and laptops/motrolaedge70.webp',
     rating: 3.8,
     createdAt: new Date()
   },
@@ -193,7 +193,7 @@ let mockProducts: Product[] = [
     price: 39509,
     categoryId: 'mobile-computers',
     stock: 22,
-    imageUrl: '/assets/mobiles and laptops/nothing3.jpg',
+    imageUrl: '/assets/mobiles and laptops/nothing3.webp',
     rating: 4.3,
     createdAt: new Date()
   },
@@ -204,7 +204,7 @@ let mockProducts: Product[] = [
     price: 56097,
     categoryId: 'mobile-computers',
     stock: 58,
-    imageUrl: '/assets/mobiles and laptops/oneplus.jpg',
+    imageUrl: '/assets/mobiles and laptops/oneplus.webp',
     rating: 4.2,
     createdAt: new Date()
   },
@@ -215,7 +215,7 @@ let mockProducts: Product[] = [
     price: 43635,
     categoryId: 'mobile-computers',
     stock: 34,
-    imageUrl: '/assets/mobiles and laptops/phone.jpg',
+    imageUrl: '/assets/mobiles and laptops/phone.webp',
     rating: 3.8,
     createdAt: new Date()
   },
@@ -226,7 +226,7 @@ let mockProducts: Product[] = [
     price: 26899,
     categoryId: 'mobile-computers',
     stock: 58,
-    imageUrl: '/assets/mobiles and laptops/s26ultra.jpg',
+    imageUrl: '/assets/mobiles and laptops/s26ultra.webp',
     rating: 4.7,
     createdAt: new Date()
   },
@@ -237,7 +237,7 @@ let mockProducts: Product[] = [
     price: 43575,
     categoryId: 'mobile-computers',
     stock: 53,
-    imageUrl: '/assets/mobiles and laptops/xiomipad.jpg',
+    imageUrl: '/assets/mobiles and laptops/xiomipad.webp',
     rating: 4.8,
     createdAt: new Date()
   },
@@ -248,7 +248,7 @@ let mockProducts: Product[] = [
     price: 15378,
     categoryId: 'household-appliances',
     stock: 59,
-    imageUrl: '/assets/household/AC.jpg',
+    imageUrl: '/assets/household/AC.webp',
     rating: 4.4,
     createdAt: new Date()
   },
@@ -259,7 +259,7 @@ let mockProducts: Product[] = [
     price: 9322,
     categoryId: 'household-appliances',
     stock: 29,
-    imageUrl: '/assets/household/bathroomshelfrack.jpg',
+    imageUrl: '/assets/household/bathroomshelfrack.webp',
     rating: 4.1,
     createdAt: new Date()
   },
@@ -270,7 +270,7 @@ let mockProducts: Product[] = [
     price: 14363,
     categoryId: 'household-appliances',
     stock: 19,
-    imageUrl: '/assets/household/bean_bag.jpg',
+    imageUrl: '/assets/household/bean_bag.webp',
     rating: 4.4,
     createdAt: new Date()
   },
@@ -281,7 +281,7 @@ let mockProducts: Product[] = [
     price: 12716,
     categoryId: 'household-appliances',
     stock: 41,
-    imageUrl: '/assets/household/drying_stand.jpg',
+    imageUrl: '/assets/household/drying_stand.webp',
     rating: 3.7,
     createdAt: new Date()
   },
@@ -292,7 +292,7 @@ let mockProducts: Product[] = [
     price: 5856,
     categoryId: 'household-appliances',
     stock: 45,
-    imageUrl: '/assets/household/fan.jpg',
+    imageUrl: '/assets/household/fan.webp',
     rating: 4.6,
     createdAt: new Date()
   },
@@ -303,7 +303,7 @@ let mockProducts: Product[] = [
     price: 2152,
     categoryId: 'household-appliances',
     stock: 50,
-    imageUrl: '/assets/household/fridge.jpg',
+    imageUrl: '/assets/household/fridge.webp',
     rating: 4.4,
     createdAt: new Date()
   },
@@ -314,7 +314,7 @@ let mockProducts: Product[] = [
     price: 9638,
     categoryId: 'household-appliances',
     stock: 32,
-    imageUrl: '/assets/household/mixer.jpg',
+    imageUrl: '/assets/household/mixer.webp',
     rating: 3.6,
     createdAt: new Date()
   },
@@ -325,7 +325,7 @@ let mockProducts: Product[] = [
     price: 4143,
     categoryId: 'household-appliances',
     stock: 23,
-    imageUrl: '/assets/household/mixie.jpg',
+    imageUrl: '/assets/household/mixie.webp',
     rating: 4.5,
     createdAt: new Date()
   },
@@ -336,7 +336,7 @@ let mockProducts: Product[] = [
     price: 12651,
     categoryId: 'household-appliances',
     stock: 12,
-    imageUrl: '/assets/household/mop.jpg',
+    imageUrl: '/assets/household/mop.webp',
     rating: 4.0,
     createdAt: new Date()
   },
@@ -347,7 +347,7 @@ let mockProducts: Product[] = [
     price: 14440,
     categoryId: 'household-appliances',
     stock: 55,
-    imageUrl: '/assets/household/oven.jpg',
+    imageUrl: '/assets/household/oven.webp',
     rating: 4.7,
     createdAt: new Date()
   },
@@ -358,7 +358,7 @@ let mockProducts: Product[] = [
     price: 13043,
     categoryId: 'household-appliances',
     stock: 32,
-    imageUrl: '/assets/household/sandwichmaker.jpg',
+    imageUrl: '/assets/household/sandwichmaker.webp',
     rating: 5.0,
     createdAt: new Date()
   },
@@ -369,7 +369,7 @@ let mockProducts: Product[] = [
     price: 4100,
     categoryId: 'household-appliances',
     stock: 58,
-    imageUrl: '/assets/household/sofa.jpg',
+    imageUrl: '/assets/household/sofa.webp',
     rating: 4.7,
     createdAt: new Date()
   },
@@ -380,7 +380,7 @@ let mockProducts: Product[] = [
     price: 2191,
     categoryId: 'household-appliances',
     stock: 29,
-    imageUrl: '/assets/household/table_with_chair.jpg',
+    imageUrl: '/assets/household/table_with_chair.webp',
     rating: 3.6,
     createdAt: new Date()
   },
@@ -391,7 +391,7 @@ let mockProducts: Product[] = [
     price: 3136,
     categoryId: 'mens-fashion',
     stock: 13,
-    imageUrl: '/assets/mens fashion/adidas_shoe.jpg',
+    imageUrl: '/assets/mens fashion/adidas_shoe.webp',
     rating: 4.0,
     createdAt: new Date()
   },
@@ -402,7 +402,7 @@ let mockProducts: Product[] = [
     price: 1047,
     categoryId: 'mens-fashion',
     stock: 34,
-    imageUrl: '/assets/mens fashion/belt.jpg',
+    imageUrl: '/assets/mens fashion/belt.webp',
     rating: 4.6,
     createdAt: new Date()
   },
@@ -413,7 +413,7 @@ let mockProducts: Product[] = [
     price: 804,
     categoryId: 'mens-fashion',
     stock: 45,
-    imageUrl: '/assets/mens fashion/dress.jpg',
+    imageUrl: '/assets/mens fashion/dress.webp',
     rating: 4.7,
     createdAt: new Date()
   },
@@ -424,7 +424,7 @@ let mockProducts: Product[] = [
     price: 3363,
     categoryId: 'mens-fashion',
     stock: 31,
-    imageUrl: '/assets/mens fashion/pant.jpg',
+    imageUrl: '/assets/mens fashion/pant.webp',
     rating: 4.3,
     createdAt: new Date()
   },
@@ -435,7 +435,7 @@ let mockProducts: Product[] = [
     price: 707,
     categoryId: 'mens-fashion',
     stock: 13,
-    imageUrl: '/assets/mens fashion/shirt1.jpg',
+    imageUrl: '/assets/mens fashion/shirt1.webp',
     rating: 4.5,
     createdAt: new Date()
   },
@@ -446,7 +446,7 @@ let mockProducts: Product[] = [
     price: 1747,
     categoryId: 'mens-fashion',
     stock: 31,
-    imageUrl: '/assets/mens fashion/shirt2.jpg',
+    imageUrl: '/assets/mens fashion/shirt2.webp',
     rating: 3.6,
     createdAt: new Date()
   },
@@ -457,7 +457,7 @@ let mockProducts: Product[] = [
     price: 1697,
     categoryId: 'mens-fashion',
     stock: 21,
-    imageUrl: '/assets/mens fashion/shoe.jpg',
+    imageUrl: '/assets/mens fashion/shoe.webp',
     rating: 3.9,
     createdAt: new Date()
   },
@@ -468,7 +468,7 @@ let mockProducts: Product[] = [
     price: 1025,
     categoryId: 'mens-fashion',
     stock: 43,
-    imageUrl: '/assets/mens fashion/shoe1.jpg',
+    imageUrl: '/assets/mens fashion/shoe1.webp',
     rating: 4.3,
     createdAt: new Date()
   },
@@ -479,7 +479,7 @@ let mockProducts: Product[] = [
     price: 1684,
     categoryId: 'mens-fashion',
     stock: 16,
-    imageUrl: '/assets/mens fashion/shoe4.jpg',
+    imageUrl: '/assets/mens fashion/shoe4.webp',
     rating: 4.4,
     createdAt: new Date()
   },
@@ -490,7 +490,7 @@ let mockProducts: Product[] = [
     price: 1728,
     categoryId: 'mens-fashion',
     stock: 45,
-    imageUrl: '/assets/mens fashion/sunglass.jpg',
+    imageUrl: '/assets/mens fashion/sunglass.webp',
     rating: 4.3,
     createdAt: new Date()
   },
@@ -501,7 +501,7 @@ let mockProducts: Product[] = [
     price: 701,
     categoryId: 'mens-fashion',
     stock: 47,
-    imageUrl: '/assets/mens fashion/sunglass2.jpg',
+    imageUrl: '/assets/mens fashion/sunglass2.webp',
     rating: 4.9,
     createdAt: new Date()
   },
@@ -512,7 +512,7 @@ let mockProducts: Product[] = [
     price: 2092,
     categoryId: 'mens-fashion',
     stock: 25,
-    imageUrl: '/assets/mens fashion/wallet.jpg',
+    imageUrl: '/assets/mens fashion/wallet.webp',
     rating: 4.0,
     createdAt: new Date()
   },
@@ -523,7 +523,7 @@ let mockProducts: Product[] = [
     price: 1271,
     categoryId: 'mens-fashion',
     stock: 27,
-    imageUrl: '/assets/mens fashion/wallet2.jpg',
+    imageUrl: '/assets/mens fashion/wallet2.webp',
     rating: 3.8,
     createdAt: new Date()
   },
@@ -534,7 +534,7 @@ let mockProducts: Product[] = [
     price: 1975,
     categoryId: 'mens-fashion',
     stock: 33,
-    imageUrl: '/assets/mens fashion/watch.jpg',
+    imageUrl: '/assets/mens fashion/watch.webp',
     rating: 4.8,
     createdAt: new Date()
   },
@@ -545,7 +545,7 @@ let mockProducts: Product[] = [
     price: 2753,
     categoryId: 'mens-fashion',
     stock: 46,
-    imageUrl: '/assets/mens fashion/watch1.jpg',
+    imageUrl: '/assets/mens fashion/watch1.webp',
     rating: 4.3,
     createdAt: new Date()
   },
@@ -556,7 +556,7 @@ let mockProducts: Product[] = [
     price: 519,
     categoryId: 'mens-fashion',
     stock: 55,
-    imageUrl: '/assets/mens fashion/watch2.jpg',
+    imageUrl: '/assets/mens fashion/watch2.webp',
     rating: 4.1,
     createdAt: new Date()
   },
@@ -567,7 +567,7 @@ let mockProducts: Product[] = [
     price: 1511,
     categoryId: 'womens-fashion',
     stock: 21,
-    imageUrl: '/assets/womens fashion/bag1.jpg',
+    imageUrl: '/assets/womens fashion/bag1.webp',
     rating: 3.5,
     createdAt: new Date()
   },
@@ -578,7 +578,7 @@ let mockProducts: Product[] = [
     price: 1200,
     categoryId: 'womens-fashion',
     stock: 18,
-    imageUrl: '/assets/womens fashion/bag2.jpg',
+    imageUrl: '/assets/womens fashion/bag2.webp',
     rating: 4.9,
     createdAt: new Date()
   },
@@ -589,7 +589,7 @@ let mockProducts: Product[] = [
     price: 3473,
     categoryId: 'womens-fashion',
     stock: 41,
-    imageUrl: '/assets/womens fashion/bag3.jpg',
+    imageUrl: '/assets/womens fashion/bag3.webp',
     rating: 4.9,
     createdAt: new Date()
   },
@@ -600,7 +600,7 @@ let mockProducts: Product[] = [
     price: 3191,
     categoryId: 'womens-fashion',
     stock: 12,
-    imageUrl: '/assets/womens fashion/bracelet.jpg',
+    imageUrl: '/assets/womens fashion/bracelet.webp',
     rating: 4.9,
     createdAt: new Date()
   },
@@ -611,7 +611,7 @@ let mockProducts: Product[] = [
     price: 2675,
     categoryId: 'womens-fashion',
     stock: 47,
-    imageUrl: '/assets/womens fashion/dress.jpg',
+    imageUrl: '/assets/womens fashion/dress.webp',
     rating: 4.9,
     createdAt: new Date()
   },
@@ -622,7 +622,7 @@ let mockProducts: Product[] = [
     price: 2439,
     categoryId: 'womens-fashion',
     stock: 38,
-    imageUrl: '/assets/womens fashion/dress2.jpg',
+    imageUrl: '/assets/womens fashion/dress2.webp',
     rating: 3.8,
     createdAt: new Date()
   },
@@ -633,7 +633,7 @@ let mockProducts: Product[] = [
     price: 3329,
     categoryId: 'womens-fashion',
     stock: 53,
-    imageUrl: '/assets/womens fashion/dress3.jpg',
+    imageUrl: '/assets/womens fashion/dress3.webp',
     rating: 3.8,
     createdAt: new Date()
   },
@@ -644,7 +644,7 @@ let mockProducts: Product[] = [
     price: 1355,
     categoryId: 'womens-fashion',
     stock: 40,
-    imageUrl: '/assets/womens fashion/foundatio3.jpg',
+    imageUrl: '/assets/womens fashion/foundatio3.webp',
     rating: 4.9,
     createdAt: new Date()
   },
@@ -655,7 +655,7 @@ let mockProducts: Product[] = [
     price: 2602,
     categoryId: 'womens-fashion',
     stock: 40,
-    imageUrl: '/assets/womens fashion/foundation1.jpg',
+    imageUrl: '/assets/womens fashion/foundation1.webp',
     rating: 4.2,
     createdAt: new Date()
   },
@@ -666,7 +666,7 @@ let mockProducts: Product[] = [
     price: 2374,
     categoryId: 'womens-fashion',
     stock: 18,
-    imageUrl: '/assets/womens fashion/foundation2.jpg',
+    imageUrl: '/assets/womens fashion/foundation2.webp',
     rating: 4.9,
     createdAt: new Date()
   },
@@ -677,7 +677,7 @@ let mockProducts: Product[] = [
     price: 799,
     categoryId: 'womens-fashion',
     stock: 16,
-    imageUrl: '/assets/womens fashion/foundation4.jpg',
+    imageUrl: '/assets/womens fashion/foundation4.webp',
     rating: 4.6,
     createdAt: new Date()
   },
@@ -688,7 +688,7 @@ let mockProducts: Product[] = [
     price: 1203,
     categoryId: 'womens-fashion',
     stock: 22,
-    imageUrl: '/assets/womens fashion/goldring1.jpg',
+    imageUrl: '/assets/womens fashion/goldring1.webp',
     rating: 3.9,
     createdAt: new Date()
   },
@@ -699,7 +699,7 @@ let mockProducts: Product[] = [
     price: 2370,
     categoryId: 'womens-fashion',
     stock: 24,
-    imageUrl: '/assets/womens fashion/goldring2.jpg',
+    imageUrl: '/assets/womens fashion/goldring2.webp',
     rating: 4.5,
     createdAt: new Date()
   },
@@ -710,7 +710,7 @@ let mockProducts: Product[] = [
     price: 3107,
     categoryId: 'womens-fashion',
     stock: 12,
-    imageUrl: '/assets/womens fashion/shoe4.jpg',
+    imageUrl: '/assets/womens fashion/shoe4.webp',
     rating: 3.8,
     createdAt: new Date()
   },
@@ -721,7 +721,7 @@ let mockProducts: Product[] = [
     price: 3315,
     categoryId: 'womens-fashion',
     stock: 39,
-    imageUrl: '/assets/womens fashion/sunglass1.jpg',
+    imageUrl: '/assets/womens fashion/sunglass1.webp',
     rating: 3.5,
     createdAt: new Date()
   },
@@ -732,7 +732,7 @@ let mockProducts: Product[] = [
     price: 2720,
     categoryId: 'womens-fashion',
     stock: 28,
-    imageUrl: '/assets/womens fashion/sunglass2.jpg',
+    imageUrl: '/assets/womens fashion/sunglass2.webp',
     rating: 3.7,
     createdAt: new Date()
   },
@@ -743,7 +743,7 @@ let mockProducts: Product[] = [
     price: 1565,
     categoryId: 'womens-fashion',
     stock: 42,
-    imageUrl: '/assets/womens fashion/watch1.jpg',
+    imageUrl: '/assets/womens fashion/watch1.webp',
     rating: 3.6,
     createdAt: new Date()
   },
@@ -754,7 +754,7 @@ let mockProducts: Product[] = [
     price: 517,
     categoryId: 'womens-fashion',
     stock: 13,
-    imageUrl: '/assets/womens fashion/watch2.jpg',
+    imageUrl: '/assets/womens fashion/watch2.webp',
     rating: 4.2,
     createdAt: new Date()
   },
@@ -765,7 +765,7 @@ let mockProducts: Product[] = [
     price: 3317,
     categoryId: 'womens-fashion',
     stock: 56,
-    imageUrl: '/assets/womens fashion/watch3.jpg',
+    imageUrl: '/assets/womens fashion/watch3.webp',
     rating: 4.6,
     createdAt: new Date()
   },
@@ -776,7 +776,7 @@ let mockProducts: Product[] = [
     price: 2662,
     categoryId: 'sports-fitness',
     stock: 34,
-    imageUrl: '/assets/sports and fitness/arm holder.jpg',
+    imageUrl: '/assets/sports and fitness/arm holder.webp',
     rating: 3.5,
     createdAt: new Date()
   },
@@ -787,7 +787,7 @@ let mockProducts: Product[] = [
     price: 4218,
     categoryId: 'sports-fitness',
     stock: 43,
-    imageUrl: '/assets/sports and fitness/boot.jpg',
+    imageUrl: '/assets/sports and fitness/boot.webp',
     rating: 3.8,
     createdAt: new Date()
   },
@@ -798,7 +798,7 @@ let mockProducts: Product[] = [
     price: 1911,
     categoryId: 'sports-fitness',
     stock: 47,
-    imageUrl: '/assets/sports and fitness/cylcling machine.jpg',
+    imageUrl: '/assets/sports and fitness/cylcling machine.webp',
     rating: 4.8,
     createdAt: new Date()
   },
@@ -809,7 +809,7 @@ let mockProducts: Product[] = [
     price: 4709,
     categoryId: 'sports-fitness',
     stock: 33,
-    imageUrl: '/assets/sports and fitness/dembell.jpg',
+    imageUrl: '/assets/sports and fitness/dembell.webp',
     rating: 4.6,
     createdAt: new Date()
   },
@@ -820,7 +820,7 @@ let mockProducts: Product[] = [
     price: 2741,
     categoryId: 'sports-fitness',
     stock: 35,
-    imageUrl: '/assets/sports and fitness/football.jpg',
+    imageUrl: '/assets/sports and fitness/football.webp',
     rating: 4.2,
     createdAt: new Date()
   },
@@ -831,7 +831,7 @@ let mockProducts: Product[] = [
     price: 4814,
     categoryId: 'sports-fitness',
     stock: 17,
-    imageUrl: '/assets/sports and fitness/kettlebell.jpg',
+    imageUrl: '/assets/sports and fitness/kettlebell.webp',
     rating: 4.4,
     createdAt: new Date()
   },
@@ -842,7 +842,7 @@ let mockProducts: Product[] = [
     price: 1736,
     categoryId: 'sports-fitness',
     stock: 33,
-    imageUrl: '/assets/sports and fitness/machine.jpg',
+    imageUrl: '/assets/sports and fitness/machine.webp',
     rating: 4.6,
     createdAt: new Date()
   },
@@ -853,7 +853,7 @@ let mockProducts: Product[] = [
     price: 4945,
     categoryId: 'sports-fitness',
     stock: 53,
-    imageUrl: '/assets/sports and fitness/machine2.jpg',
+    imageUrl: '/assets/sports and fitness/machine2.webp',
     rating: 4.7,
     createdAt: new Date()
   },
@@ -864,7 +864,7 @@ let mockProducts: Product[] = [
     price: 947,
     categoryId: 'sports-fitness',
     stock: 55,
-    imageUrl: '/assets/sports and fitness/racket.jpg',
+    imageUrl: '/assets/sports and fitness/racket.webp',
     rating: 4.0,
     createdAt: new Date()
   },
@@ -875,7 +875,7 @@ let mockProducts: Product[] = [
     price: 1521,
     categoryId: 'sports-fitness',
     stock: 48,
-    imageUrl: '/assets/sports and fitness/shuttle.jpg',
+    imageUrl: '/assets/sports and fitness/shuttle.webp',
     rating: 4.0,
     createdAt: new Date()
   },
@@ -886,7 +886,7 @@ let mockProducts: Product[] = [
     price: 765,
     categoryId: 'books',
     stock: 48,
-    imageUrl: '/assets/books/book1.jpg',
+    imageUrl: '/assets/books/book1.webp',
     rating: 3.6,
     createdAt: new Date()
   },
@@ -897,7 +897,7 @@ let mockProducts: Product[] = [
     price: 459,
     categoryId: 'books',
     stock: 23,
-    imageUrl: '/assets/books/book10.jpg',
+    imageUrl: '/assets/books/book10.webp',
     rating: 3.8,
     createdAt: new Date()
   },
@@ -908,7 +908,7 @@ let mockProducts: Product[] = [
     price: 766,
     categoryId: 'books',
     stock: 23,
-    imageUrl: '/assets/books/book2.jpg',
+    imageUrl: '/assets/books/book2.webp',
     rating: 3.8,
     createdAt: new Date()
   },
@@ -919,7 +919,7 @@ let mockProducts: Product[] = [
     price: 505,
     categoryId: 'books',
     stock: 27,
-    imageUrl: '/assets/books/book3.jpg',
+    imageUrl: '/assets/books/book3.webp',
     rating: 4.7,
     createdAt: new Date()
   },
@@ -930,7 +930,7 @@ let mockProducts: Product[] = [
     price: 323,
     categoryId: 'books',
     stock: 43,
-    imageUrl: '/assets/books/book4.jpg',
+    imageUrl: '/assets/books/book4.webp',
     rating: 4.3,
     createdAt: new Date()
   },
@@ -941,7 +941,7 @@ let mockProducts: Product[] = [
     price: 935,
     categoryId: 'books',
     stock: 33,
-    imageUrl: '/assets/books/book5.jpg',
+    imageUrl: '/assets/books/book5.webp',
     rating: 4.3,
     createdAt: new Date()
   },
@@ -952,7 +952,7 @@ let mockProducts: Product[] = [
     price: 607,
     categoryId: 'books',
     stock: 53,
-    imageUrl: '/assets/books/book6.jpg',
+    imageUrl: '/assets/books/book6.webp',
     rating: 4.6,
     createdAt: new Date()
   },
@@ -963,7 +963,7 @@ let mockProducts: Product[] = [
     price: 401,
     categoryId: 'books',
     stock: 19,
-    imageUrl: '/assets/books/book7.jpg',
+    imageUrl: '/assets/books/book7.webp',
     rating: 4.3,
     createdAt: new Date()
   },
@@ -974,7 +974,7 @@ let mockProducts: Product[] = [
     price: 275,
     categoryId: 'books',
     stock: 20,
-    imageUrl: '/assets/books/book8.jpg',
+    imageUrl: '/assets/books/book8.webp',
     rating: 3.7,
     createdAt: new Date()
   },
@@ -985,10 +985,246 @@ let mockProducts: Product[] = [
     price: 940,
     categoryId: 'books',
     stock: 21,
-    imageUrl: '/assets/books/book9.jpg',
+    imageUrl: '/assets/books/book9.webp',
     rating: 4.7,
     createdAt: new Date()
   },
+  // Deal of the Day products
+  {
+    id: 'deal_1',
+    name: 'Dynamic Sports Running Shoes',
+    description: 'Lightweight and breathable running shoes designed for ultimate speed and comfort. Perfect for track, trail, and gym.',
+    price: 1599,
+    categoryId: 'mens-fashion',
+    stock: 25,
+    imageUrl: '/assets/deal-of-the-day/shoe_deal.webp',
+    rating: 4.8,
+    createdAt: new Date()
+  },
+  {
+    id: 'deal_2',
+    name: 'Precision Waterproof Beard Trimmer',
+    description: 'Professional-grade beard trimmer with self-sharpening blades and waterproof design for easy cleaning.',
+    price: 2199,
+    categoryId: 'mens-fashion',
+    stock: 32,
+    imageUrl: '/assets/deal-of-the-day/trimmer_deal.webp',
+    rating: 4.5,
+    createdAt: new Date()
+  },
+  {
+    id: 'deal_3',
+    name: '4K Ultra HD Smart LED Android TV',
+    description: 'Immersive cinematic experience with Dolby Vision, built-in Google Assistant, and smooth streaming capabilities.',
+    price: 50099,
+    categoryId: 'household-appliances',
+    stock: 12,
+    imageUrl: '/assets/deal-of-the-day/tv_deal.webp',
+    rating: 4.7,
+    createdAt: new Date()
+  },
+  {
+    id: 'deal_4',
+    name: 'Premium Ultra Whey Protein Isolate',
+    description: 'High-purity whey protein isolate for rapid muscle recovery and lean muscle growth. Rich in BCAAs and glutamine.',
+    price: 6099,
+    categoryId: 'sports-fitness',
+    stock: 45,
+    imageUrl: '/assets/deal-of-the-day/whey_deal.webp',
+    rating: 4.6,
+    createdAt: new Date()
+  },
+  {
+    id: 'deal_5',
+    name: 'Noise Cancelling Wireless Earpods',
+    description: 'Active noise cancellation, long-lasting battery life, crystal-clear call quality, and IPX7 sweat resistance.',
+    price: 1799,
+    categoryId: 'mobile-computers',
+    stock: 50,
+    imageUrl: '/assets/deal-of-the-day/earpod_deal.webp',
+    rating: 4.4,
+    createdAt: new Date()
+  },
+
+  // Flat 50% Off products
+  {
+    id: 'flat50_1',
+    name: 'Adidas Running Shoe',
+    description: 'Comfortable Adidas running shoes with responsive cushioning for everyday miles.',
+    price: 2999,
+    categoryId: 'mens-fashion',
+    stock: 20,
+    imageUrl: '/assets/flat_50/adidas_shoe.webp',
+    rating: 4.5,
+    createdAt: new Date()
+  },
+  {
+    id: 'flat50_2',
+    name: 'Comfort Bean Bag',
+    description: 'Ultra-comfortable bean bag chair perfect for lounge rooms, gaming, or study spaces.',
+    price: 1499,
+    categoryId: 'household-appliances',
+    stock: 15,
+    imageUrl: '/assets/flat_50/bean_bag.webp',
+    rating: 4.3,
+    createdAt: new Date()
+  },
+  {
+    id: 'flat50_3',
+    name: 'Wireless Headphone',
+    description: 'High-fidelity audio with deep bass, Bluetooth connectivity, and over-ear comfort.',
+    price: 1999,
+    categoryId: 'mobile-computers',
+    stock: 28,
+    imageUrl: '/assets/flat_50/headphone.webp',
+    rating: 4.4,
+    createdAt: new Date()
+  },
+  {
+    id: 'flat50_4',
+    name: 'Kitchen Mixie',
+    description: 'Heavy-duty mixer grinder for seamless grinding and blending in the kitchen.',
+    price: 2499,
+    categoryId: 'household-appliances',
+    stock: 18,
+    imageUrl: '/assets/flat_50/mixie.webp',
+    rating: 4.2,
+    createdAt: new Date()
+  },
+  {
+    id: 'flat50_5',
+    name: 'Smartphone',
+    description: 'Modern smartphone with high-refresh-rate screen, powerful processor, and dual camera system.',
+    price: 12999,
+    categoryId: 'mobile-computers',
+    stock: 14,
+    imageUrl: '/assets/flat_50/phone.webp',
+    rating: 4.1,
+    createdAt: new Date()
+  },
+  {
+    id: 'flat50_6',
+    name: 'Power Bank',
+    description: 'High-capacity 20000mAh fast-charging power bank to keep your devices powered all day.',
+    price: 999,
+    categoryId: 'mobile-computers',
+    stock: 40,
+    imageUrl: '/assets/flat_50/power_bank.webp',
+    rating: 4.3,
+    createdAt: new Date()
+  },
+  {
+    id: 'flat50_7',
+    name: 'Table with Chair',
+    description: 'Ergonomic study table and chair set, perfect for home office work and children study.',
+    price: 4999,
+    categoryId: 'household-appliances',
+    stock: 8,
+    imageUrl: '/assets/flat_50/table_with_chair.webp',
+    rating: 4.6,
+    createdAt: new Date()
+  },
+  {
+    id: 'flat50_8',
+    name: 'Smart TV',
+    description: 'Vibrant LED display, smart app support, and cinematic stereo sound output.',
+    price: 19999,
+    categoryId: 'household-appliances',
+    stock: 11,
+    imageUrl: '/assets/flat_50/tv.webp',
+    rating: 4.4,
+    createdAt: new Date()
+  },
+
+  // Flat 25% Off products
+  {
+    id: 'flat25_1',
+    name: 'Split AC',
+    description: 'Energy-efficient split air conditioner with smart temperature control and fast cooling mode.',
+    price: 24999,
+    categoryId: 'household-appliances',
+    stock: 9,
+    imageUrl: '/assets/flat_25/AC.webp',
+    rating: 4.5,
+    createdAt: new Date()
+  },
+  {
+    id: 'flat25_2',
+    name: 'Books Collection',
+    description: 'Curated collection of bestselling novels, self-help, and academic books.',
+    price: 999,
+    categoryId: 'books',
+    stock: 30,
+    imageUrl: '/assets/flat_25/book.webp',
+    rating: 4.7,
+    createdAt: new Date()
+  },
+  {
+    id: 'flat25_3',
+    name: 'Elegant Dress',
+    description: 'Premium fabric designer dress, perfect for festive celebrations and special occasions.',
+    price: 1499,
+    categoryId: 'womens-fashion',
+    stock: 22,
+    imageUrl: '/assets/flat_25/dress.webp',
+    rating: 4.6,
+    createdAt: new Date()
+  },
+  {
+    id: 'flat25_4',
+    name: 'Drying Stand',
+    description: 'Heavy-duty rustproof folding cloth drying stand with ample drying space.',
+    price: 799,
+    categoryId: 'household-appliances',
+    stock: 35,
+    imageUrl: '/assets/flat_25/drying_stand.webp',
+    rating: 4.1,
+    createdAt: new Date()
+  },
+  {
+    id: 'flat25_5',
+    name: 'Ceiling Fan',
+    description: 'High-speed decorative ceiling fan with wider blades for maximum air delivery.',
+    price: 1799,
+    categoryId: 'household-appliances',
+    stock: 24,
+    imageUrl: '/assets/flat_25/fan.webp',
+    rating: 4.3,
+    createdAt: new Date()
+  },
+  {
+    id: 'flat25_6',
+    name: 'Premium Mixer',
+    description: 'Advanced food processor and mixer grinder with multiple premium jars.',
+    price: 2999,
+    categoryId: 'household-appliances',
+    stock: 16,
+    imageUrl: '/assets/flat_25/mixer.webp',
+    rating: 4.4,
+    createdAt: new Date()
+  },
+  {
+    id: 'flat25_7',
+    name: 'Living Room Sofa',
+    description: 'Elegant L-shaped modular sofa set for home comfort and high durability.',
+    price: 14999,
+    categoryId: 'household-appliances',
+    stock: 5,
+    imageUrl: '/assets/flat_25/sofa.webp',
+    rating: 4.8,
+    createdAt: new Date()
+  },
+  {
+    id: 'flat25_8',
+    name: 'Bluetooth Speaker',
+    description: 'Portable wireless Bluetooth speaker with robust bass and long-lasting playtime.',
+    price: 1999,
+    categoryId: 'mobile-computers',
+    stock: 27,
+    imageUrl: '/assets/flat_25/speaker.webp',
+    rating: 4.5,
+    createdAt: new Date()
+  }
 ];
 
 let mockCarts: { [userId: string]: Cart } = {};
@@ -1103,7 +1339,20 @@ export async function seedDb() {
     // Check if seeded already
     const catSnapshot = await catsRef.limit(1).get();
     if (!catSnapshot.empty) {
-      console.log('Database already seeded.');
+      console.log('Database already seeded. Checking for missing deal & discount products...');
+      for (const prod of mockProducts) {
+        if (prod.id.startsWith('deal_') || prod.id.startsWith('flat50_') || prod.id.startsWith('flat25_')) {
+          const docRef = prodsRef.doc(prod.id);
+          const docSnap = await docRef.get();
+          if (!docSnap.exists) {
+            console.log(`Seeding missing product: ${prod.id}`);
+            await docRef.set({
+              ...prod,
+              createdAt: admin.firestore.FieldValue.serverTimestamp()
+            });
+          }
+        }
+      }
       return;
     }
 
@@ -1263,31 +1512,57 @@ export async function dbGetCategories(): Promise<Category[]> {
 
 // Cart Services
 export async function dbGetCart(userId: string): Promise<Cart> {
+  const dummyItems: CartItem[] = [];
+
   if (useMockDb) {
-    if (!mockCarts[userId]) {
+    if (!mockCarts[userId] || !mockCarts[userId].items || mockCarts[userId].items.length === 0) {
       mockCarts[userId] = {
         userId,
-        items: [],
+        items: [...dummyItems],
         updatedAt: new Date()
       };
     }
-    return { ...mockCarts[userId] };
+    const cart = { ...mockCarts[userId] };
+    if (cart.items) {
+      cart.items = cart.items.filter(item => item.productId !== 'deal_1' && item.productId !== 'flat50_6');
+    }
+    return cart;
   }
   const doc = await db.collection('carts').doc(userId).get();
   if (!doc.exists) {
-    const emptyCart: Cart = {
+    const seededCart: Cart = {
       userId,
-      items: [],
+      items: [...dummyItems],
       updatedAt: new Date()
     };
-    return emptyCart;
+    await db.collection('carts').doc(userId).set({
+      ...seededCart,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+    return seededCart;
   }
   const data = doc.data();
-  return {
+  const cart = {
     ...data,
     updatedAt: data.updatedAt?.toDate() || new Date()
   } as Cart;
+
+  if (!cart.items || cart.items.length === 0) {
+    cart.items = [...dummyItems];
+    await db.collection('carts').doc(userId).set({
+      ...cart,
+      updatedAt: admin.firestore.FieldValue.serverTimestamp()
+    });
+  }
+
+  // Filter out the two dummy products shown in screenshot (deal_1, flat50_6)
+  if (cart.items) {
+    cart.items = cart.items.filter(item => item.productId !== 'deal_1' && item.productId !== 'flat50_6');
+  }
+
+  return cart;
 }
+
 
 export async function dbUpdateCart(userId: string, items: CartItem[]): Promise<Cart> {
   const updatedCart: Cart = {
@@ -1321,7 +1596,7 @@ export async function dbGetOrders(userId?: string): Promise<Order[]> {
   if (userId) {
     query = query.where('userId', '==', userId);
   }
-  const snapshot = await query.orderBy('createdAt', 'desc').get();
+  const snapshot = await query.get();
   const orders: Order[] = [];
   snapshot.forEach((doc: any) => {
     const data = doc.data();
@@ -1331,6 +1606,8 @@ export async function dbGetOrders(userId?: string): Promise<Order[]> {
       createdAt: data.createdAt?.toDate() || new Date()
     } as Order);
   });
+  // Sort in memory by createdAt descending to avoid requiring a composite index in Firestore
+  orders.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   return orders;
 }
 
@@ -1365,22 +1642,33 @@ export async function dbCreateOrder(orderData: Omit<Order, 'id' | 'createdAt'>):
   const cartRef = db.collection('carts').doc(newOrder.userId);
 
   await db.runTransaction(async (transaction: any) => {
-    // 1. Deduct stock for each product
+    // 1. Fetch all product documents (reads)
+    const productsToUpdate: { ref: any; newStock: number }[] = [];
     for (const item of newOrder.items) {
       const prodRef = db.collection('products').doc(item.productId);
       const prodDoc = await transaction.get(prodRef);
       if (prodDoc.exists) {
         const currentStock = prodDoc.data().stock || 0;
-        transaction.update(prodRef, { stock: Math.max(0, currentStock - item.quantity) });
+        productsToUpdate.push({
+          ref: prodRef,
+          newStock: Math.max(0, currentStock - item.quantity)
+        });
       }
     }
-    // 2. Clear cart
+
+    // 2. Perform all updates and writes (writes)
+    for (const item of productsToUpdate) {
+      transaction.update(item.ref, { stock: item.newStock });
+    }
+
+    // Clear cart
     transaction.set(cartRef, {
       userId: newOrder.userId,
       items: [],
       updatedAt: admin.firestore.FieldValue.serverTimestamp()
     });
-    // 3. Write order
+
+    // Write order
     transaction.set(orderRef, {
       ...newOrder,
       createdAt: admin.firestore.FieldValue.serverTimestamp()

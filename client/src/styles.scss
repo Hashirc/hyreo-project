@@ -154,3 +154,26 @@ a {
     gap: 16px;
   }
 }
+
+// Prevent cursor text selection (I-beam caret cursor) on clicking non-text containers/buttons/interactive zones
+body, button, a, mat-icon, .promo-card, .deal-slide, .sub-chip, .brand-chip, .qty-btn, .logo-link, .nav-btn, .category-link, .mat-mdc-button, .mat-mdc-raised-button {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+// Allow text selection in specific inputs and reading/details content
+input, textarea, [contenteditable="true"] {
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+}
+
+.description-section, .product-description, .item-details, .summary-content, p, h1, h2, h3, h4, h5, h6 {
+  user-select: text;
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+}
