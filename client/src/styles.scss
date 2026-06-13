@@ -177,3 +177,19 @@ input, textarea, [contenteditable="true"] {
   -moz-user-select: text;
   -ms-user-select: text;
 }
+
+// Global default cursor override
+*, *::before, *::after {
+  cursor: default !important;
+  caret-color: transparent !important;
+}
+
+input, textarea, [contenteditable="true"], [contenteditable="true"] * {
+  cursor: text !important;
+  caret-color: auto !important;
+}
+
+*:not(input):not(textarea):not([contenteditable="true"]) {
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}

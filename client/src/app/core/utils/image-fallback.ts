@@ -49,7 +49,7 @@ export function getProductFallbackUrl(product: Product): string {
   }
 
   if (subCategory === 'Tablets') {
-    if (brand.includes('apple') || name.includes('ipad')) return '/assets/mobiles%20and%20laptops/apple_ipad.webp';
+    if (brand.includes('apple') || (name.includes('ipad') && !name.includes('xiomipad') && !name.includes('xiaomi') && !name.includes('redmi'))) return '/assets/mobiles%20and%20laptops/apple_ipad.webp';
     if (brand.includes('xiaomi') || name.includes('pad')) return '/assets/mobiles%20and%20laptops/xiomipad.webp';
     if (brand.includes('lenovo')) return '/assets/mobiles%20and%20laptops/lenova_pad.webp';
     return '/assets/mobiles%20and%20laptops/xiomipad.webp';

@@ -478,7 +478,7 @@ export class CheckoutComponent {
         // Navigate to order success page with the order data
         const createdOrder = res.order;
         this.router.navigate(['/orders/success', createdOrder?.id || 'latest'], {
-          state: { order: createdOrder }
+          state: { order: createdOrder, isNewOrder: true }
         });
       },
       error: (err) => {

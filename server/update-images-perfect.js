@@ -24,6 +24,9 @@ function getProductImage(product) {
   // Category specific logic
   if (subCategory === 'Mobiles') {
     if (brand.includes('apple') || name.includes('iphone')) return '/assets/mobiles%20and%20laptops/17pro.webp';
+    if (name.includes('fold 6')) return '/assets/mobiles%20and%20laptops/samsung_galaxy_z_fold_6.webp';
+    if (name.includes('s23 fe')) return '/assets/mobiles%20and%20laptops/samsung_galaxy_s23_fe.webp';
+    if (name.includes('m35 5g')) return '/assets/mobiles%20and%20laptops/samsung_galaxy_m35_5g.webp';
     if (brand.includes('samsung') || name.includes('galaxy')) return '/assets/mobiles%20and%20laptops/s26ultra.webp';
     if (brand.includes('oneplus')) return '/assets/mobiles%20and%20laptops/oneplus.webp';
     if (brand.includes('nothing')) return '/assets/mobiles%20and%20laptops/nothing3.webp';
@@ -52,7 +55,7 @@ function getProductImage(product) {
   }
 
   if (subCategory === 'Tablets') {
-    if (brand.includes('apple') || name.includes('ipad')) return '/assets/mobiles%20and%20laptops/apple_ipad.webp';
+    if (brand.includes('apple') || (name.includes('ipad') && !name.includes('xiomipad') && !name.includes('xiaomi') && !name.includes('redmi'))) return '/assets/mobiles%20and%20laptops/apple_ipad.webp';
     if (brand.includes('xiaomi') || name.includes('pad')) return '/assets/mobiles%20and%20laptops/xiomipad.webp';
     if (brand.includes('lenovo')) return '/assets/mobiles%20and%20laptops/lenova_pad.webp';
     return '/assets/mobiles%20and%20laptops/xiomipad.webp';

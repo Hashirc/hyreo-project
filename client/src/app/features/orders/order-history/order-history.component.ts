@@ -96,9 +96,16 @@ import { Order } from '../../../core/models/types';
                       <p>{{ order.shippingAddress.address }}, {{ order.shippingAddress.city }} {{ order.shippingAddress.postalCode }}</p>
                     </div>
                     
-                    <div class="price-box">
-                      <span class="section-title">Order Total:</span>
-                      <span class="total-price">\${{ order.total | number:'1.2-2' }}</span>
+                    <div class="footer-right">
+                      <div class="price-box">
+                        <span class="section-title">Order Total:</span>
+                        <span class="total-price">\${{ order.total | number:'1.2-2' }}</span>
+                      </div>
+                      <div class="action-box">
+                        <button mat-raised-button color="primary" [routerLink]="['/orders/track', order.id]" class="view-details-btn">
+                          <mat-icon>local_shipping</mat-icon> Track & Details
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </mat-card-content>
@@ -353,12 +360,33 @@ import { Order } from '../../../core/models/types';
 
     .price-box {
       text-align: right;
+      margin-bottom: 8px;
       
       .total-price {
         font-family: 'Outfit', sans-serif;
         font-size: 22px;
         font-weight: 700;
         color: #556B2F;
+      }
+    }
+
+    .footer-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+    
+    .view-details-btn {
+      border-radius: 20px !important;
+      height: 36px !important;
+      font-size: 13px !important;
+      padding: 0 16px !important;
+      
+      mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+        margin-right: 4px;
       }
     }
 
