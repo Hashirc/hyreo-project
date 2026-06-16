@@ -4,93 +4,110 @@ import { Component } from '@angular/core';
   selector: 'app-footer',
   standalone: true,
   template: `
-    <footer class="footer bg-olive text-white">
-      <div class="footer-container">
-        <div class="footer-section">
-          <h3>Olive & Co.</h3>
-          <p>Premium, organic products crafted from sustainable olive groves. Bringing nature's best to your kitchen, body, and home.</p>
+    <footer class="footer-container">
+      <div class="footer-grid">
+        <div class="footer-column">
+          <h3 class="footer-brand">QUICK KART</h3>
+          <p class="footer-text">Elevating your shopping experience with curated, high-quality products. Dedicated to offering precision-engineered electronics, custom fashion styles, and premium home goods.</p>
         </div>
-        <div class="footer-section">
-          <h3>Customer Service</h3>
-          <ul>
-            <li><a>Contact Us</a></li>
-            <li><a>Shipping & Returns</a></li>
-            <li><a>FAQs</a></li>
-            <li><a>Privacy Policy</a></li>
+        <div class="footer-column">
+          <h3 class="column-title">Customer Service</h3>
+          <ul class="footer-links">
+            <li><a href="javascript:void(0)">Contact Us</a></li>
+            <li><a href="javascript:void(0)">Shipping & Returns</a></li>
+            <li><a href="javascript:void(0)">FAQs</a></li>
+            <li><a href="javascript:void(0)">Privacy Policy</a></li>
           </ul>
         </div>
-        <div class="footer-section">
-          <h3>Store Roles</h3>
-          <p>Log in as <strong>customer&#64;olive.com</strong> to buy products, or <strong>admin&#64;olive.com</strong> to view dashboard analytics and manage orders.</p>
+        <div class="footer-column">
+          <h3 class="column-title">Account Roles</h3>
+          <p class="footer-text">Sign in as <strong>customer&#64;olive.com</strong> to checkout products, or <strong>admin&#64;olive.com</strong> to view dashboard metrics and fulfill orders.</p>
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; {{ currentYear }} Olive & Co. All rights reserved.</p>
+        <p>&copy; {{ currentYear }} QUICK KART. All rights reserved.</p>
       </div>
     </footer>
   `,
   styles: [`
-    .footer {
-      padding: 40px 24px 20px;
+    .footer-container {
+      background-color: #F4F6EC;
+      color: #2D3A1B;
+      padding: 56px 24px 24px;
       margin-top: auto;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      border-top: 1px solid rgba(45, 58, 27, 0.06);
     }
 
-    .footer-container {
+    .footer-grid {
       max-width: 1200px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 32px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 40px;
     }
 
-    .footer-section {
-      h3 {
-        color: #ffffff;
-        font-family: 'Outfit', sans-serif;
-        font-size: 18px;
-        font-weight: 600;
-        margin-bottom: 16px;
-      }
+    .footer-column {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
 
-      p {
+    .footer-brand {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      color: #2D3A1B;
+      letter-spacing: 0.5px;
+      margin: 0;
+    }
+
+    .column-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: #2D3A1B;
+      margin: 0;
+    }
+
+    .footer-text {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #5A664A;
+      margin: 0;
+    }
+
+    .footer-links {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      li a {
         font-size: 14px;
-        line-height: 1.6;
-        color: rgba(255, 255, 255, 0.8);
-      }
+        color: #5A664A;
+        text-decoration: none;
+        transition: color 0.2s ease;
 
-      ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-
-        li {
-          margin-bottom: 8px;
-          
-          a {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.8);
-            cursor: pointer;
-            
-            &:hover {
-              color: #ffffff;
-              text-decoration: underline;
-            }
-          }
+        &:hover {
+          color: #2D3A1B;
+          text-decoration: underline;
         }
       }
     }
 
     .footer-bottom {
       max-width: 1200px;
-      margin: 32px auto 0;
-      padding-top: 20px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      margin: 40px auto 0;
+      padding-top: 24px;
+      border-top: 1px solid rgba(45, 58, 27, 0.06);
       text-align: center;
       
       p {
         font-size: 12px;
-        color: rgba(255, 255, 255, 0.6);
+        color: #5A664A;
+        margin: 0;
       }
     }
   `]

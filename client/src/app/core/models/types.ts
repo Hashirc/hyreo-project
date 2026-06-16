@@ -88,4 +88,5 @@ export interface DashboardMetrics {
   totalProducts: number;
   totalOrders: number;
   totalUsers: number;
+  totalRevenue: number;
 }

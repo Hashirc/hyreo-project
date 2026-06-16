@@ -125,7 +125,7 @@ import { CartItem } from '../../core/models/types';
       display: flex;
       align-items: center;
       padding: 16px;
-      background-color: #ffffff;
+      background-color: var(--bg-card);
       border-radius: 12px;
       border: 1px solid rgba(85, 107, 47, 0.08);
       gap: 16px;
@@ -137,7 +137,7 @@ import { CartItem } from '../../core/models/types';
       object-fit: cover;
       border-radius: 8px;
       cursor: pointer;
-      background-color: #f7f9f3;
+      background-color: #F2F5EA;
     }
 
     .item-info {
@@ -163,7 +163,7 @@ import { CartItem } from '../../core/models/types';
       align-items: center;
       border: 1px solid rgba(85, 107, 47, 0.15);
       border-radius: 20px;
-      background-color: #ffffff;
+      background-color: #F2F5EA;
       padding: 2px;
 
       .qty-btn {
@@ -262,7 +262,7 @@ import { CartItem } from '../../core/models/types';
       align-items: center;
       text-align: center;
       padding: 64px 24px;
-      background-color: #ffffff;
+      background-color: var(--bg-card);
       border-radius: 12px;
       border: 1px solid rgba(85, 107, 47, 0.08);
       gap: 16px;

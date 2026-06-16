@@ -1,8 +1,6 @@
 import { Component, input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
-import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Product } from '../../../core/models/types';
 import { CartService } from '../../../core/services/cart.service';
@@ -11,174 +9,202 @@ import { handleImageFallback } from '../../../core/utils/image-fallback';
 @Component({
   selector: 'app-product-card',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatCardModule, MatButtonModule, MatIconModule],
+  imports: [CommonModule, RouterLink, MatIconModule],
   template: `
-    <mat-card class="product-card hover-lift">
-      <div class="image-container" [routerLink]="['/products', product().id]">
-        <img mat-card-image [src]="product().imageUrl" [alt]="product().name" class="product-img"
+    <div class="product-card">
+      <!-- Image Upper Half -->
+      <div class="image-wrapper" [routerLink]="['/products', product().id]">
+        <img [src]="product().imageUrl" [alt]="product().name" class="product-img"
              (error)="handleImageError($event)">
+        
         @if (product().stock <= 0) {
-          <div class="out-of-stock-overlay">Out of Stock</div>
+          <div class="out-of-stock-badge">OUT OF STOCK</div>
         }
+
+        <!-- Floating Cart Action -->
+        <button class="cart-floating-btn" 
+                [disabled]="product().stock <= 0" 
+                (click)="addToCart($event)" 
+                aria-label="Add to cart">
+          <mat-icon>shopping_bag</mat-icon>
+        </button>
       </div>
       
-      <mat-card-content class="card-content" [routerLink]="['/products', product().id]">
-        <p class="category-name">{{ getCategoryName(product().categoryId) }}</p>
+      <!-- Info Lower Half -->
+      <div class="info-area" [routerLink]="['/products', product().id]">
+        <span class="category-lbl">{{ getCategoryName(product().categoryId) }}</span>
         <h3 class="product-title">{{ product().name }}</h3>
+        <p class="product-sub">{{ getTruncatedDescription(product().description) }}</p>
         
-        <div class="rating-price-row">
-          <span class="rating">
-            <mat-icon>star</mat-icon> {{ product().rating | number:'1.1-1' }}
-          </span>
-          <span class="price">\${{ product().price | number:'1.2-2' }}</span>
+        <div class="price-row">
+          <span class="current-price">\${{ product().price | number:'1.2-2' }}</span>
+          <span class="original-price">\${{ getOriginalPrice(product().price) | number:'1.2-2' }}</span>
         </div>
-      </mat-card-content>
-      
-      <mat-card-actions class="card-actions">
-        <button mat-button class="view-details-btn" [routerLink]="['/products', product().id]">
-          View Details
-        </button>
-        <button mat-raised-button color="primary" class="add-to-cart-btn" 
-                [disabled]="product().stock <= 0"
-                (click)="addToCart($event)">
-          <mat-icon>shopping_cart</mat-icon> Add
-        </button>
-      </mat-card-actions>
-    </mat-card>
+      </div>
+    </div>
   `,
   styles: [`
     .product-card {
       display: flex;
       flex-direction: column;
-      height: 100%;
-      background: #ffffff;
-      border-radius: 12px;
-      border: 1px solid rgba(85, 107, 47, 0.08);
+      background-color: var(--bg-card);
+      border-radius: 20px;
       overflow: hidden;
+      border: 1px solid rgba(45, 58, 27, 0.05);
+      transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
+      box-shadow: 0 4px 12px rgba(45, 58, 27, 0.02);
+      cursor: pointer;
+      height: 100%;
+
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 24px rgba(45, 58, 27, 0.06);
+      }
     }
 
-    .image-container {
+    .image-wrapper {
       position: relative;
-      width: 100%;
-      height: 200px;
+      height: 240px;
+      background-color: #F2F5EA;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
       overflow: hidden;
-      cursor: pointer;
-      background-color: #f7f9f3;
     }
 
     .product-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.5s ease;
+      max-width: 90%;
+      max-height: 90%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      transition: transform 0.4s ease;
+    }
+
+    .product-card:hover .product-img {
+      transform: scale(1.03);
+    }
+
+    .cart-floating-btn {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: #F2F5EA;
+      border: none;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #2D3A1B;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      z-index: 10;
 
       &:hover {
+        background-color: #2D3A1B;
+        color: #ffffff;
         transform: scale(1.05);
       }
-    }
 
-    .out-of-stock-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      color: #ffffff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: 'Outfit', sans-serif;
-      font-weight: 700;
-      font-size: 16px;
-    }
-
-    .card-content {
-      padding: 16px;
-      flex-grow: 1;
-      cursor: pointer;
-    }
-
-    .category-name {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: #708623;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .product-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: #1e2610;
-      margin-bottom: 12px;
-      line-height: 1.3;
-      height: 42px; // limit to 2 lines
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-    }
-
-    .rating-price-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-      .rating {
-        display: inline-flex;
-        align-items: center;
-        gap: 2px;
-        font-size: 12px;
-        font-weight: 600;
-        color: #708623;
-
-        mat-icon {
-          font-size: 16px;
-          height: 16px;
-          width: 16px;
-          color: #ffb300;
+      &[disabled] {
+        opacity: 0.5;
+        cursor: not-allowed;
+        
+        &:hover {
+          background-color: #ffffff;
+          color: #2D3A1B;
+          transform: none;
         }
       }
 
-      .price {
-        font-family: 'Outfit', sans-serif;
-        font-size: 18px;
-        font-weight: 700;
-        color: #556B2F;
-      }
-    }
-
-    .card-actions {
-      padding: 8px 16px 16px;
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .view-details-btn {
-      flex: 1;
-      font-size: 12px !important;
-      color: #556B2F !important;
-      border-radius: 8px !important;
-      
-      &:hover {
-        background-color: rgba(85, 107, 47, 0.05);
-      }
-    }
-
-    .add-to-cart-btn {
-      flex: 1;
-      font-size: 12px !important;
-      border-radius: 8px !important;
-      
       mat-icon {
-        font-size: 16px;
-        height: 16px;
-        width: 16px;
-        margin-right: 4px;
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
       }
+    }
+
+    .out-of-stock-badge {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background-color: #c62828;
+      color: #ffffff;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      z-index: 10;
+    }
+
+    .info-area {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex-grow: 1;
+      justify-content: flex-start;
+    }
+
+    .category-lbl {
+      font-size: 11px;
+      font-weight: 700;
+      color: #5A664A;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .product-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: #2D3A1B;
+      margin: 0;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      height: 42px;
+    }
+
+    .product-sub {
+      font-size: 13px;
+      color: #5A664A;
+      line-height: 1.4;
+      margin: 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      height: 36px;
+    }
+
+    .price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-top: auto;
+      padding-top: 8px;
+    }
+
+    .current-price {
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: #2D3A1B;
+    }
+
+    .original-price {
+      font-size: 13px;
+      font-weight: 500;
+      color: #a0a0a0;
+      text-decoration: line-through;
     }
   `]
 })
@@ -189,10 +215,20 @@ export class ProductCardComponent {
   addToCart(event: Event) {
     event.stopPropagation();
     this.cartService.addToCart(this.product());
+    alert(`${this.product().name} added to cart!`);
   }
 
   handleImageError(event: any) {
     handleImageFallback(event, this.product());
+  }
+
+  getOriginalPrice(price: number): number {
+    return parseFloat((price * 1.33).toFixed(2));
+  }
+
+  getTruncatedDescription(desc?: string): string {
+    if (!desc) return '';
+    return desc.length > 55 ? desc.substring(0, 52) + '...' : desc;
   }
 
   getCategoryName(id: string): string {

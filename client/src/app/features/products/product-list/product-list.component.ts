@@ -196,7 +196,7 @@ const SUB_CATEGORIES: { [slug: string]: string[] } = {
     .shop-sidebar {
       width: 250px;
       flex-shrink: 0;
-      background-color: #ffffff;
+      background-color: var(--bg-card);
       border: 1px solid rgba(85, 107, 47, 0.08);
       border-radius: 12px;
       padding: 16px;

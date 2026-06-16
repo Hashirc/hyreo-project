@@ -153,7 +153,7 @@ import { handleImageFallback } from '../../../core/utils/image-fallback';
       border-radius: 16px;
       overflow: hidden;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-      background-color: #f7f9f3;
+      background-color: var(--bg-card);
       border: 1px solid rgba(85, 107, 47, 0.08);
     }
 

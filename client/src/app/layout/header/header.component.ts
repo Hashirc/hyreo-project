@@ -32,273 +32,286 @@ import { CartService } from '../../core/services/cart.service';
     FormsModule
   ],
   template: `
-      <mat-toolbar color="primary" class="header bg-olive mat-elevation-z4">
-        <!-- Left side: logo -->
-        <a routerLink="/" class="logo-link">
-          <img src="assets/logo.webp" alt="Quick Kart" class="logo-img"/>
-        </a>
-        @if (authService.currentUser()?.role === 'admin') {
-          <button mat-button routerLink="/admin" class="admin-panel-btn"><mat-icon>admin_panel_settings</mat-icon> Admin Panel</button>
-        }
-
-        <!-- Mobile menu button (visible on small screens) -->
-        <button mat-icon-button class="mobile-menu-btn" (click)="toggleSidenav.emit()">
-          <mat-icon>menu</mat-icon>
-        </button>
-
-        <span class="left-spacer"></span>
-
-        <!-- Center: Search -->
-        <div class="search-bar">
-          <input type="text" placeholder="Search..." [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" />
-          <button mat-icon-button aria-label="Search" (click)="onSearch()">
-            <mat-icon>search</mat-icon>
+    <header class="header-container">
+      <div class="header-content">
+        <!-- Left brand logo -->
+        <div class="brand-side">
+          <button mat-icon-button class="mobile-menu-btn" (click)="toggleSidenav.emit()">
+            <mat-icon>menu</mat-icon>
           </button>
+          <a routerLink="/" class="logo-link">
+            <span class="logo-text">QUICK KART</span>
+          </a>
         </div>
 
-        <span class="right-spacer"></span>
+        <!-- Center: Nav links -->
+        <nav class="desktop-nav">
+          <a routerLink="/products" class="nav-link">Shop</a>
+          <button class="nav-link-btn" [matMenuTriggerFor]="categoriesMenu">
+            Categories <mat-icon>keyboard_arrow_down</mat-icon>
+          </button>
+          <a routerLink="/" class="nav-link">Deals</a>
+          <a routerLink="/orders" class="nav-link">Orders</a>
+        </nav>
 
-        <!-- Right side: language selector, orders, account centre, cart -->
-        <mat-select [(value)]="selectedLang" class="lang-select" disableRipple>
-          <mat-option *ngFor="let lang of languages" [value]="lang.value">{{ lang.viewValue }}</mat-option>
-        </mat-select>
-        <button mat-button routerLink="/orders" class="orders-btn">Orders</button>
-
-        <!-- Account Centre Dropdown Menu (Shifted to right) -->
-        <button mat-button [matMenuTriggerFor]="accountMenu" class="account-centre">
-          <mat-icon>account_circle</mat-icon>
-          <span>Account Centre</span>
-        </button>
-
-        <mat-menu #accountMenu="matMenu" class="account-menu-panel">
-          <!-- Logged in state -->
-          @if (authService.currentUser()) {
-            <div class="menu-header">
-              <div class="user-name">{{ authService.currentUser()?.displayName }}</div>
-              <div class="user-email">{{ authService.currentUser()?.email }}</div>
-              <span class="badge" [class.badge-admin]="authService.currentUser()?.role === 'admin'" [class.badge-customer]="authService.currentUser()?.role === 'customer'">
-                {{ authService.currentUser()?.role }}
-              </span>
-            </div>
-            <mat-divider></mat-divider>
-            <button mat-menu-item routerLink="/auth/profile">
-              <mat-icon>person</mat-icon>
-              <span>My Profile</span>
-            </button>
-            <button mat-menu-item (click)="useAnotherAccount()">
-              <mat-icon>switch_account</mat-icon>
-              <span>Use another account</span>
-            </button>
-            <button mat-menu-item (click)="logout()">
-              <mat-icon>logout</mat-icon>
-              <span>Logout</span>
-            </button>
-          } @else {
-            <!-- Not logged in state -->
-            <div class="menu-header">
-              <div class="user-name">Welcome, Guest</div>
-              <div class="user-email">Please sign in to access your account</div>
-            </div>
-            <mat-divider></mat-divider>
-            <button mat-menu-item routerLink="/auth/login">
-              <mat-icon>login</mat-icon>
-              <span>Sign In</span>
-            </button>
-            <button mat-menu-item routerLink="/auth/register">
-              <mat-icon>person_add</mat-icon>
-              <span>Create Account</span>
-            </button>
+        <mat-menu #categoriesMenu="matMenu" class="categories-menu-panel">
+          @for (cat of categories; track cat.slug) {
+            <a mat-menu-item [routerLink]="['/category', cat.slug]">{{ cat.name }}</a>
           }
         </mat-menu>
 
-        <button mat-icon-button routerLink="/cart" aria-label="Shopping Cart">
-          <mat-icon [matBadge]="cartService.cartCount()" matBadgeColor="accent" *ngIf="cartService.cartCount() > 0">shopping_cart</mat-icon>
-          <mat-icon *ngIf="cartService.cartCount() === 0">shopping_cart</mat-icon>
-        </button>
-      </mat-toolbar>
+        <!-- Search Bar -->
+        <div class="search-bar">
+          <mat-icon class="search-icon">search</mat-icon>
+          <input type="text" placeholder="Search products..." [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" />
+        </div>
 
-      <!-- Category navigation below the main toolbar -->
-      <mat-toolbar color="primary" class="categories-toolbar bg-olive">
-        <a *ngFor="let cat of categories" routerLink="/category/{{cat.slug}}" class="category-link">{{ cat.name }}</a>
-      </mat-toolbar>
+        <!-- Right side actions -->
+        <div class="header-actions">
+          <button mat-icon-button routerLink="/cart" aria-label="Shopping Cart" class="icon-btn">
+            <mat-icon [matBadge]="cartService.cartCount()" matBadgeColor="warn" *ngIf="cartService.cartCount() > 0">shopping_cart</mat-icon>
+            <mat-icon *ngIf="cartService.cartCount() === 0">shopping_cart</mat-icon>
+          </button>
+
+          <button mat-icon-button [matMenuTriggerFor]="accountMenu" aria-label="User Account" class="icon-btn">
+            <mat-icon>person_outline</mat-icon>
+          </button>
+
+          <mat-menu #accountMenu="matMenu" class="account-menu-panel">
+            @if (authService.currentUser()) {
+              <div class="menu-header">
+                <div class="user-name">{{ authService.currentUser()?.displayName }}</div>
+                <div class="user-email">{{ authService.currentUser()?.email }}</div>
+                <span class="badge" [class.badge-admin]="authService.currentUser()?.role === 'admin'" [class.badge-customer]="authService.currentUser()?.role === 'customer'">
+                  {{ authService.currentUser()?.role }}
+                </span>
+              </div>
+              <mat-divider></mat-divider>
+              <a mat-menu-item routerLink="/auth/profile">
+                <mat-icon>person</mat-icon>
+                <span>My Profile</span>
+              </a>
+              <button mat-menu-item (click)="logout()">
+                <mat-icon>logout</mat-icon>
+                <span>Logout</span>
+              </button>
+            } @else {
+              <div class="menu-header">
+                <div class="user-name">Welcome, Guest</div>
+                <p class="menu-sub">Please sign in to manage orders.</p>
+              </div>
+              <mat-divider></mat-divider>
+              <a mat-menu-item routerLink="/auth/login">
+                <mat-icon>login</mat-icon>
+                <span>Sign In</span>
+              </a>
+              <a mat-menu-item routerLink="/auth/register">
+                <mat-icon>person_add</mat-icon>
+                <span>Register</span>
+              </a>
+            }
+          </mat-menu>
+
+          <!-- Action Capsule Button -->
+          @if (authService.currentUser()?.role === 'admin') {
+            <button mat-flat-button routerLink="/admin" class="auth-pill-btn admin-color">Admin</button>
+          } @else if (authService.currentUser()) {
+            <button mat-flat-button (click)="logout()" class="auth-pill-btn">Sign Out</button>
+          } @else {
+            <button mat-flat-button routerLink="/auth/login" class="auth-pill-btn">Sign In</button>
+          }
+        </div>
+      </div>
+    </header>
   `,
   styles: [`
-    .header {
+    .header-container {
+      background-color: #FAFBF7;
+      color: #2D3A1B;
+      border-bottom: 1px solid rgba(45, 58, 27, 0.06);
+      padding: 0 24px;
+      display: flex;
+      justify-content: center;
+      height: 72px;
+      align-items: center;
+      width: 100%;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 10px rgba(45, 58, 27, 0.02);
+    }
+
+    .header-content {
       display: flex;
       align-items: center;
-      padding: 0 24px;
-      height: 64px;
-      background-color: #131921;
-      color: #fff;
-      position: relative;
+      width: 100%;
+      max-width: 1200px;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand-side {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .logo-link {
       display: flex;
       align-items: center;
-      margin-right: 24px;
-      min-width: 160px; /* Reserves space for the floating logo */
       text-decoration: none;
     }
 
-    .logo-img {
-      height: 180px;
-      position: absolute;
-      top: -5px;
-      left: -60px;
-      z-index: 100;
-    }
-
-    .left-spacer { flex: 0.8 1 auto; }
-    .right-spacer { flex: 1.2 1 auto; }
-
-    .search-bar {
-      display: flex;
-      flex: 1.5;
-      max-width: 750px;
-      height: 40px;
-      background: #fff;
-      border-radius: 4px;
-      overflow: hidden;
-      margin-left: 10px;
-    }
-    .search-bar input {
-      flex: 1;
-      border: none;
-      padding: 0 8px;
-      font-size: 14px;
-    }
-    .search-bar button {
-      width: 48px;
-      background-color: #febd69;
-      color: #111;
-      border-left: 1px solid #ddd;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 0 4px 4px 0;
-    }
-
-    .lang-select { display:none; }
-    .orders-btn, .cart-btn {
-      color: #fff;
-      margin-left: 12px;
-      font-size: 16px;
-    }
-    .cart-btn mat-icon {
-      font-size: 24px;
-    }
-
-    .categories-toolbar {
-      background: #232F3E;
-      padding: 0 12px;
-      display: flex;
-      justify-content: center;
-    }
-
-    .category-link {
-      color: #fff;
+    .logo-text {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      color: #2D3A1B;
+      letter-spacing: 0.5px;
       text-transform: uppercase;
-      margin: 0 12px;
-      font-size: 16px;
+    }
+
+    .desktop-nav {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .nav-link {
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
       font-weight: 600;
-      transition: background-color .2s;
-    }
-    .category-link:hover { text-decoration: underline; }
+      color: #5A664A;
+      transition: color 0.2s ease;
+      cursor: pointer;
+      text-decoration: none;
 
-    .mobile-menu-btn { display: none; color: #fff; margin-right: 12px; }
-    @media (max-width: 800px) {
-      .desktop-nav { display: none; }
-      .mobile-menu-btn { display: inline-flex; }
-      .logo-text { font-size: 22px; margin-right: 0; }
-    }
-
-    .admin-link {
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      
-      &:hover, &.active-link {
-        border-color: #ffffff;
-        background-color: rgba(255, 255, 255, 0.2) !important;
+      &:hover {
+        color: #2D3A1B;
       }
     }
 
-    .actions {
+    .nav-link-btn {
+      background: none;
+      border: none;
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #5A664A;
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      transition: color 0.2s ease;
+      cursor: pointer;
+      padding: 0;
+
+      &:hover {
+        color: #2D3A1B;
+      }
+
+      mat-icon {
+        font-size: 16px;
+        height: 16px;
+        width: 16px;
+        margin-top: 2px;
+      }
+    }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      background-color: #EBF0D8;
+      border-radius: 20px;
+      padding: 4px 14px;
+      height: 38px;
+      width: 260px;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+      &:focus-within {
+        box-shadow: 0 0 0 2px rgba(45, 58, 27, 0.15);
+        background-color: #ffffff;
+        border: 1px solid #2D3A1B;
+        width: 300px;
+      }
+
+      input {
+        border: none;
+        background: none;
+        font-size: 13px;
+        outline: none;
+        padding-left: 6px;
+        color: #2D3A1B;
+        width: 100%;
+        font-family: 'Inter', sans-serif;
+      }
+
+      .search-icon {
+        color: #5A664A;
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
+    }
+
+    .header-actions {
       display: flex;
       align-items: center;
       gap: 12px;
     }
 
-    .cart-btn, .user-btn {
-      color: #ffffff;
-      
+    .icon-btn {
+      color: #2D3A1B;
+      transition: transform 0.2s ease;
+
       &:hover {
-        background-color: rgba(255, 255, 255, 0.08);
+        transform: scale(1.05);
+        background-color: rgba(45, 58, 27, 0.04);
       }
     }
 
-    .login-btn {
-      background-color: #ffffff !important;
-      color: #556B2F !important;
+    .auth-pill-btn {
+      background-color: #2D3A1B !important;
+      color: #ffffff !important;
+      border-radius: 20px !important;
       font-family: 'Outfit', sans-serif;
-      font-weight: 600;
-      border-radius: 20px;
-      padding: 0 16px;
-      height: 36px;
-      line-height: 36px;
+      font-weight: 700;
+      font-size: 12px !important;
+      height: 38px !important;
+      line-height: 38px !important;
+      padding: 0 22px !important;
+      letter-spacing: 0.5px;
+      transition: all 0.2s ease;
 
       &:hover {
-        background-color: #f2f5eb !important;
+        background-color: #43542B !important;
+        transform: scale(1.02);
+      }
+
+      &.admin-color {
+        background-color: #708623 !important;
+        &:hover {
+          background-color: #5B6F1C !important;
+        }
       }
     }
 
     .mobile-menu-btn {
       display: none;
-      color: #ffffff;
-      margin-right: 12px;
-    }
-
-    // Account Centre Pill Button
-    .account-centre {
-      margin-left: 16px;
-      display: inline-flex !important;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 16px !important;
-      border-radius: 20px !important;
-      background-color: rgba(255, 255, 255, 0.12) !important;
-      color: #ffffff !important;
-      font-weight: 500;
-      transition: all 0.2s ease;
-      cursor: pointer;
-      border: 1px solid rgba(255, 255, 255, 0.2) !important;
-      height: 38px;
-
-      &:hover {
-        background-color: rgba(255, 255, 255, 0.22) !important;
-        border-color: #ffffff !important;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
-      }
-
-      mat-icon {
-        margin: 0 !important;
-        font-size: 20px;
-        height: 20px;
-        width: 20px;
-      }
+      color: #2D3A1B;
     }
 
     // Account Dropdown Menu Panel styling
-    ::ng-deep .account-menu-panel {
+    ::ng-deep .account-menu-panel, ::ng-deep .categories-menu-panel {
       border-radius: 12px !important;
       margin-top: 8px !important;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.12) !important;
-      border: 1px solid rgba(85, 107, 47, 0.08) !important;
+      box-shadow: 0 10px 30px rgba(45, 58, 27, 0.08) !important;
+      border: 1px solid rgba(45, 58, 27, 0.06) !important;
       overflow: hidden !important;
     }
 
     .menu-header {
       padding: 16px 20px;
-      background-color: #fcfcfb;
+      background-color: #FAFBF7;
       min-width: 220px;
       display: flex;
       flex-direction: column;
@@ -308,14 +321,20 @@ import { CartService } from '../../core/services/cart.service';
         font-family: 'Outfit', sans-serif;
         font-size: 15px;
         font-weight: 700;
-        color: #1e2610;
+        color: #2D3A1B;
       }
 
       .user-email {
         font-size: 12px;
-        color: #555;
+        color: #5A664A;
         margin-bottom: 4px;
         word-break: break-all;
+      }
+
+      .menu-sub {
+        font-size: 12px;
+        color: #5A664A;
+        margin: 0;
       }
 
       .badge {
@@ -329,19 +348,23 @@ import { CartService } from '../../core/services/cart.service';
         letter-spacing: 0.5px;
         
         &.badge-admin {
-          background-color: #e8f5e9;
-          color: #2e7d32;
+          background-color: #EBF0D8;
+          color: #2D3A1B;
         }
         
         &.badge-customer {
-          background-color: #e3f2fd;
-          color: #1565c0;
+          background-color: #E3F2FD;
+          color: #1565C0;
         }
       }
     }
 
-    @media (max-width: 800px) {
+    @media (max-width: 850px) {
       .desktop-nav {
+        display: none;
+      }
+
+      .search-bar {
         display: none;
       }
 
@@ -350,8 +373,7 @@ import { CartService } from '../../core/services/cart.service';
       }
 
       .logo-text {
-        font-size: 20px;
-        margin-right: 0;
+        font-size: 18px;
       }
     }
   `]

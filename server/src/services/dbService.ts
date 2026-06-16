@@ -1703,16 +1703,24 @@ export async function dbGetDashboardMetrics() {
     const totalOrders = mockOrders.length;
     // unique users from mockUsers
     const totalUsers = mockUsers.length;
-    return { totalProducts, totalOrders, totalUsers };
+    const totalRevenue = mockOrders.reduce((acc, order) => acc + (order.total || 0), 0);
+    return { totalProducts, totalOrders, totalUsers, totalRevenue };
   }
 
   const prodsCount = (await db.collection('products').count().get()).data().count;
   const ordersCount = (await db.collection('orders').count().get()).data().count;
   const usersCount = (await db.collection('users').count().get()).data().count;
 
+  const ordersSnapshot = await db.collection('orders').get();
+  let totalRevenue = 0;
+  ordersSnapshot.forEach(doc => {
+    totalRevenue += (doc.data()['total'] || 0);
+  });
+
   return {
     totalProducts: prodsCount,
     totalOrders: ordersCount,
-    totalUsers: usersCount
+    totalUsers: usersCount,
+    totalRevenue
   };
 }

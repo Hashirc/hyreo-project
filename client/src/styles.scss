@@ -5,13 +5,15 @@
 
 // Define CSS custom properties for theming
 :root {
-  --primary-color: #556B2F;
-  --primary-light: #8A9A5B;
-  --primary-dark: #3d4e1f;
-  --accent-color: #D0DCA0;
-  --text-primary: #2c351c;
-  --text-secondary: #666666;
-  --bg-light: #fcfcf9;
+  --primary-color: #2D3A1B;
+  --primary-light: #5A703F;
+  --primary-dark: #1E2712;
+  --accent-color: #D8E5BE;
+  --text-primary: #1E2712;
+  --text-secondary: #5A664A;
+  --text-secondary: #5A664A;
+  --bg-light: #E0E5D3;
+  --bg-card: #EBF0E1;
   --bg-white: #ffffff;
 }
 
@@ -23,18 +25,45 @@
 }
 
 body {
-  background-color: #fcfcf9;
-  color: #2c351c;
+  background-color: #E0E5D3;
+  color: #1E2712;
   font-family: 'Inter', sans-serif;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
+// Enforce olive-green theme background on ALL page-level components
+app-root {
+  background-color: #E0E5D3;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+// Ensure every routed page component inherits the themed background
+app-login,
+app-register,
+app-home,
+app-product-list,
+app-product-detail,
+app-cart,
+app-checkout,
+app-order-history,
+app-order-tracking,
+app-order-success,
+app-admin-dashboard,
+app-profile,
+app-deal-of-the-day,
+router-outlet + * {
+  background-color: #E0E5D3 !important;
+  display: block;
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Outfit', sans-serif;
   font-weight: 600;
-  color: #1e2610;
+  color: #1E2712;
 }
 
 a {
@@ -45,15 +74,15 @@ a {
 
 // Custom theme utilities
 .bg-olive {
-  background-color: #556B2F !important;
+  background-color: #2D3A1B !important;
 }
 
 .text-olive {
-  color: #556B2F !important;
+  color: #2D3A1B !important;
 }
 
 .bg-light-olive {
-  background-color: #f0f3e6 !important;
+  background-color: #F4F6EC !important;
 }
 
 .text-white {
@@ -182,6 +211,10 @@ input, textarea, [contenteditable="true"] {
 *, *::before, *::after {
   cursor: default !important;
   caret-color: transparent !important;
+}
+
+a, button, [role="button"], .qty-btn, .mat-mdc-button, .mat-mdc-raised-button, .mat-mdc-outlined-button, .mat-menu-item, .brand-chip, .sub-chip, .promo-card, .deal-slide, .nav-btn, .category-link, .dot-btn {
+  cursor: pointer !important;
 }
 
 input, textarea, [contenteditable="true"], [contenteditable="true"] * {

@@ -67,6 +67,16 @@ import { Order, DashboardMetrics, OrderStatus, Category } from '../../../core/mo
             <h2 class="kpi-value">{{ metrics()?.totalUsers || 0 }}</h2>
           </div>
         </div>
+
+        <div class="kpi-card bg-light-olive mat-elevation-z1">
+          <div class="kpi-icon-wrapper">
+            <mat-icon class="text-olive">attach_money</mat-icon>
+          </div>
+          <div class="kpi-info">
+            <span class="kpi-label">Total Revenue</span>
+            <h2 class="kpi-value">\${{ (metrics()?.totalRevenue || 0) | number:'1.2-2' }}</h2>
+          </div>
+        </div>
       </div>
 
       <!-- Tabbed admin layout -->
@@ -288,7 +298,7 @@ import { Order, DashboardMetrics, OrderStatus, Category } from '../../../core/mo
       width: 56px;
       height: 56px;
       border-radius: 12px;
-      background-color: #ffffff;
+      background-color: var(--bg-card);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -344,7 +354,7 @@ import { Order, DashboardMetrics, OrderStatus, Category } from '../../../core/mo
 
     .orders-table {
       width: 100%;
-      background-color: #ffffff;
+      background-color: var(--bg-card);
       border-radius: 12px;
       border: 1px solid rgba(85, 107, 47, 0.08);
       
@@ -394,7 +404,7 @@ import { Order, DashboardMetrics, OrderStatus, Category } from '../../../core/mo
     .form-card {
       width: 100%;
       max-width: 600px;
-      background-color: #ffffff;
+      background-color: var(--bg-card);
       border-radius: 16px;
       border: 1px solid rgba(85, 107, 47, 0.08);
       padding: 24px;

@@ -3,18 +3,71 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink, Router } from '@angular/router';
 import { CartService } from '../../../core/services/cart.service';
 import { Product } from '../../../core/models/types';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-deal-of-the-day',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, MatIconModule, MatButtonModule],
   template: `
-    <section class="deal-of-the-day-section">
+    <section class="deal-of-the-day-section" id="deals">
       <div class="container">
-        <h2 class="section-title">Deal of the Day</h2>
-        <p class="section-subtitle">Grab these exclusive discounts before time runs out!</p>
-        
         <div class="deal-card-container">
+          <div class="deal-slides-frame">
+            @for (deal of deals; let i = $index; track deal.id) {
+              <div 
+                class="deal-slide" 
+                [class.active]="i === activeSlide"
+              >
+                <!-- Left Details Area -->
+                <div class="details-area">
+                  <div class="deal-badge">
+                    <mat-icon class="badge-icon">local_offer</mat-icon>
+                    <span>DEAL OF THE DAY</span>
+                  </div>
+                  
+                  <h2 class="product-title" [routerLink]="['/products', deal.id]">{{ deal.name }}</h2>
+                  <p class="product-description" [routerLink]="['/products', deal.id]">{{ deal.description }}</p>
+                  
+                  <!-- Countdown Timer -->
+                  <div class="countdown-timer">
+                    <div class="time-block">
+                      <span class="time-num">{{ pad(countdownHours) }}</span>
+                      <span class="time-label">HOURS</span>
+                    </div>
+                    <span class="time-divider">:</span>
+                    <div class="time-block">
+                      <span class="time-num">{{ pad(countdownMinutes) }}</span>
+                      <span class="time-label">MINS</span>
+                    </div>
+                    <span class="time-divider">:</span>
+                    <div class="time-block">
+                      <span class="time-num">{{ pad(countdownSeconds) }}</span>
+                      <span class="time-label">SECS</span>
+                    </div>
+                  </div>
+
+                  <div class="deal-actions">
+                    <button class="buy-now-btn" (click)="buyNow($event, deal)">
+                      Shop Now for \${{ deal.offerPrice | number:'1.2-2' }}
+                    </button>
+                    <button class="add-to-cart-btn" [routerLink]="['/products', deal.id]">
+                      Details
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Right Image Area -->
+                <div class="image-area">
+                  <div class="image-gradient-card" [routerLink]="['/products', deal.id]">
+                    <img [src]="deal.image" [alt]="deal.name" class="deal-img" />
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+
           <!-- Navigation Arrows -->
           <button class="nav-btn prev-btn" (click)="prevSlide()" aria-label="Previous Deal">
             <svg viewBox="0 0 24 24" width="24" height="24">
@@ -28,57 +81,16 @@ import { Product } from '../../../core/models/types';
             </svg>
           </button>
 
-          <div class="deal-slides-frame">
-            <div 
-              *ngFor="let deal of deals; let i = index" 
-              class="deal-slide" 
-              [class.active]="i === activeSlide"
-            >
-              <div class="image-area" [routerLink]="['/products', deal.id]" style="cursor: pointer;">
-                <img [src]="deal.image" [alt]="deal.name" class="deal-img" />
-              </div>
-              
-              <div class="details-area">
-                <div class="deal-badge-row">
-                  <span class="limited-tag">Limited Time Deal</span>
-                  <span class="discount-badge">Save {{ getDiscountPercentage(deal.originalPrice, deal.offerPrice) }}%</span>
-                </div>
-                
-                <h3 class="product-title" [routerLink]="['/products', deal.id]" style="cursor: pointer;">{{ deal.name }}</h3>
-                <p class="product-description" [routerLink]="['/products', deal.id]" style="cursor: pointer;">{{ deal.description }}</p>
-                
-                <div class="price-box">
-                  <div class="original-price-label">Regular Price</div>
-                  <span class="original-price">₹{{ deal.originalPrice }}</span>
-                  <div class="offer-price-label">Deal Price</div>
-                  <span class="offer-price">₹{{ deal.offerPrice }}</span>
-                </div>
-
-                <div class="deal-countdown">
-                  <span class="ends-in">Offers end soon!</span>
-                </div>
-                
-                <div class="deal-actions">
-                  <button class="add-to-cart-btn" (click)="addToCart($event, deal)">
-                    Add to Cart
-                  </button>
-                  <button class="buy-now-btn" (click)="buyNow($event, deal)">
-                    Buy Now
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
           <!-- Bottom navigation dots -->
           <div class="dots-container">
-            <button 
-              *ngFor="let deal of deals; let i = index" 
-              class="dot-btn" 
-              [class.active]="i === activeSlide"
-              (click)="goToSlide(i)"
-              [attr.aria-label]="'Go to slide ' + (i + 1)"
-            ></button>
+            @for (deal of deals; let i = $index; track deal.id) {
+              <button 
+                class="dot-btn" 
+                [class.active]="i === activeSlide"
+                (click)="goToSlide(i)"
+                [attr.aria-label]="'Go to slide ' + (i + 1)"
+              ></button>
+            }
           </div>
         </div>
       </div>
@@ -86,48 +98,26 @@ import { Product } from '../../../core/models/types';
   `,
   styles: [`
     .deal-of-the-day-section {
-      padding: 30px 0 40px 0;
-      background: linear-gradient(to bottom, #fafbfa 0%, #f4f6f1 100%);
-      border-radius: 24px;
-      margin: -16px 0 20px 0;
-      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.02);
+      padding: 24px 0;
+      background-color: #F7F9ED;
     }
 
     .container {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 0 24px;
-    }
-
-    .section-title {
-      font-size: 36px;
-      font-weight: 700;
-      color: #1e2610;
-      text-align: center;
-      margin-bottom: 8px;
-      font-family: 'Outfit', sans-serif;
-    }
-
-    .section-subtitle {
-      font-size: 16px;
-      color: #63791d;
-      text-align: center;
-      margin-bottom: 30px;
-      font-weight: 500;
+      padding: 0 16px;
     }
 
     .deal-card-container {
-      background: #ffffff;
-      border-radius: 20px;
-      box-shadow: 0 15px 35px rgba(85, 107, 47, 0.08), 0 5px 15px rgba(0, 0, 0, 0.02);
-      border: 1px solid rgba(112, 134, 35, 0.1);
+      background-color: #E2ECB8;
+      border-radius: 32px;
       overflow: hidden;
       position: relative;
     }
 
     .deal-slides-frame {
       position: relative;
-      height: 480px; /* Takes up middle half of screen nicely */
+      min-height: 480px;
     }
 
     .deal-slide {
@@ -147,35 +137,213 @@ import { Product } from '../../../core/models/types';
       opacity: 1;
       visibility: visible;
       transform: scale(1);
-      position: relative; /* Keep height dynamic/fixed */
+      position: relative;
     }
 
-    /* Arrows navigation styles */
+    .details-area {
+      flex: 1.1;
+      padding: 48px 48px 48px 64px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .deal-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background-color: #FAF9F5;
+      color: #2D3A1B;
+      font-weight: 700;
+      font-size: 11px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      width: fit-content;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 4px rgba(45, 58, 27, 0.03);
+
+      .badge-icon {
+        font-size: 14px;
+        height: 14px;
+        width: 14px;
+      }
+    }
+
+    .product-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 36px;
+      color: #2D3A1B;
+      line-height: 1.2;
+      margin: 0;
+      cursor: pointer;
+      text-decoration: none;
+
+      &:hover {
+        opacity: 0.95;
+      }
+    }
+
+    .product-description {
+      font-size: 15px;
+      color: #5A664A;
+      line-height: 1.5;
+      margin: 0;
+      max-width: 450px;
+      cursor: pointer;
+    }
+
+    .countdown-timer {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 8px 0;
+    }
+
+    .time-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #FAF9F5;
+      border-radius: 12px;
+      min-width: 64px;
+      padding: 8px;
+      box-shadow: 0 4px 10px rgba(45, 58, 27, 0.04);
+    }
+
+    .time-num {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      color: #2D3A1B;
+      line-height: 1;
+    }
+
+    .time-label {
+      font-size: 9px;
+      font-weight: 700;
+      color: #5A664A;
+      margin-top: 4px;
+    }
+
+    .time-divider {
+      font-size: 20px;
+      font-weight: 800;
+      color: #2D3A1B;
+      margin-top: -12px;
+    }
+
+    .deal-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .buy-now-btn {
+      background-color: #2D3A1B !important;
+      color: #ffffff !important;
+      border-radius: 20px !important;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 12px 28px !important;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(45, 58, 27, 0.15);
+      transition: all 0.2s ease;
+
+      &:hover {
+        background-color: #43542B !important;
+        transform: scale(1.02);
+        box-shadow: 0 6px 16px rgba(45, 58, 27, 0.2);
+      }
+    }
+
+    .add-to-cart-btn {
+      background-color: #ffffff !important;
+      color: #2D3A1B !important;
+      border-radius: 20px !important;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 12px 28px !important;
+      border: 1px solid #FAF9F5;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.85) !important;
+        transform: scale(1.02);
+      }
+    }
+
+    .image-area {
+      flex: 0.9;
+      padding: 48px 48px 48px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .image-gradient-card {
+      width: 100%;
+      height: 350px;
+      background: linear-gradient(135deg, #1E2712 0%, #2D3A1B 100%);
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(30, 39, 18, 0.15);
+      transition: transform 0.4s ease;
+
+      &:hover {
+        transform: scale(1.01);
+      }
+    }
+
+    .deal-img {
+      max-width: 90%;
+      max-height: 90%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      transition: transform 0.4s ease;
+    }
+
+    .deal-slide.active .deal-img {
+      transform: scale(1.02);
+    }
+
+    /* Arrow navigation */
     .nav-btn {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
       z-index: 10;
-      width: 48px;
-      height: 48px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
-      background: #ffffff;
-      border: 1px solid rgba(112, 134, 35, 0.15);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+      background: #FAF9F5;
+      border: 1px solid rgba(45, 58, 27, 0.1);
+      box-shadow: 0 4px 10px rgba(45, 58, 27, 0.08);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #708623;
+      color: #2D3A1B;
       transition: all 0.25s ease;
       outline: none;
-    }
 
-    .nav-btn:hover {
-      background: #708623;
-      color: #ffffff;
-      border-color: #708623;
-      box-shadow: 0 6px 18px rgba(112, 134, 35, 0.35);
+      &:hover {
+        background: #2D3A1B;
+        color: #FAF9F5;
+        box-shadow: 0 6px 14px rgba(45, 58, 27, 0.25);
+      }
     }
 
     .prev-btn {
@@ -186,196 +354,39 @@ import { Product } from '../../../core/models/types';
       right: 16px;
     }
 
-    .image-area {
-      flex: 1.2;
-      height: 100%;
-      background-color: #ffffff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-      position: relative;
-      border-right: 1px solid rgba(112, 134, 35, 0.05);
-    }
-
-    .deal-img {
-      max-width: 100%;
-      max-height: 100%;
-      width: auto;
-      height: auto;
-      object-fit: contain; /* Ensures TV and Trimmer fit perfectly without cropping */
-      transition: transform 0.4s ease;
-    }
-
-    .deal-slide.active .deal-img {
-      transform: scale(1.02);
-    }
-
-    .details-area {
-      flex: 1;
-      padding: 48px 48px 48px 64px; /* extra padding to prevent overlapping with next arrow */
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      background: #ffffff;
-    }
-
-    .deal-badge-row {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 20px;
-      align-items: center;
-    }
-
-    .limited-tag {
-      background-color: #fce8e6;
-      color: #c53929;
-      font-size: 12px;
-      font-weight: 700;
-      padding: 4px 12px;
-      border-radius: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .discount-badge {
-      background-color: #eaf1dc;
-      color: #556b2f;
-      font-size: 12px;
-      font-weight: 700;
-      padding: 4px 12px;
-      border-radius: 12px;
-    }
-
-    .product-title {
-      font-size: 32px;
-      font-weight: 700;
-      color: #1e2610;
-      margin-bottom: 12px;
-      line-height: 1.2;
-      font-family: 'Outfit', sans-serif;
-    }
-
-    .product-description {
-      margin-bottom: 20px;
-      color: #4a5435;
-      font-size: 15px;
-      line-height: 1.5;
-    }
-
-    .price-box {
-      background: #f8faf6;
-      padding: 20px;
-      border-radius: 16px;
-      border: 1px dashed rgba(112, 134, 35, 0.2);
-      margin-bottom: 24px;
-      display: grid;
-      grid-template-columns: auto auto;
-      align-items: center;
-      row-gap: 8px;
-      column-gap: 16px;
-      width: fit-content;
-    }
-
-    .original-price-label, .offer-price-label {
-      font-size: 13px;
-      color: #666;
-      font-weight: 500;
-    }
-
-    .original-price {
-      font-size: 20px;
-      text-decoration: line-through;
-      color: #a0a0a0;
-      font-weight: 600;
-    }
-
-    .offer-price {
-      font-size: 28px;
-      color: #e65c00;
-      font-weight: 800;
-    }
-
-    .deal-countdown {
-      margin-bottom: 30px;
-      font-size: 14px;
-      color: #63791d;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .deal-actions {
-      display: flex;
-      gap: 12px;
-      margin-top: 10px;
-    }
-
-    .add-to-cart-btn, .buy-now-btn {
-      padding: 12px 28px;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-family: 'Outfit', sans-serif;
-    }
-
-    .add-to-cart-btn {
-      background-color: #ffffff;
-      color: #708623;
-      border: 1.5px solid #708623;
-    }
-
-    .add-to-cart-btn:hover {
-      background-color: rgba(112, 134, 35, 0.05);
-      border-color: #556b2f;
-      color: #556b2f;
-    }
-
-    .buy-now-btn {
-      background-color: #708623;
-      color: #ffffff;
-      border: none;
-      box-shadow: 0 4px 12px rgba(112, 134, 35, 0.2);
-    }
-
-    .buy-now-btn:hover {
-      background-color: #556b2f;
-      transform: translateY(-1px);
-      box-shadow: 0 6px 18px rgba(112, 134, 35, 0.3);
-    }
-
-    /* Dots Navigation */
+    /* Dots */
     .dots-container {
       display: flex;
       justify-content: center;
       gap: 8px;
-      padding: 16px 0;
-      background: #ffffff;
-      border-top: 1px solid rgba(112, 134, 35, 0.05);
+      padding: 12px 0 20px;
+      background: transparent;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
     }
 
     .dot-btn {
-      width: 10px;
-      height: 10px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      background-color: #d1d9bf;
+      background-color: #FAF9F5;
+      opacity: 0.6;
       border: none;
       padding: 0;
       cursor: pointer;
       transition: all 0.3s ease;
+
+      &.active {
+        background-color: #2D3A1B;
+        opacity: 1;
+        width: 18px;
+        border-radius: 4px;
+      }
     }
 
-    .dot-btn.active {
-      background-color: #708623;
-      transform: scale(1.3);
-      width: 20px;
-      border-radius: 5px;
-    }
-
-    /* Responsive style */
+    /* Responsive */
     @media (max-width: 900px) {
       .deal-slides-frame {
         height: auto;
@@ -387,9 +398,27 @@ import { Product } from '../../../core/models/types';
         height: auto;
       }
 
+      .image-area {
+        height: 280px;
+        width: 100%;
+        padding: 24px;
+      }
+
+      .image-gradient-card {
+        height: 100%;
+      }
+
+      .details-area {
+        padding: 40px 32px 16px;
+      }
+
+      .product-title {
+        font-size: 26px;
+      }
+
       .nav-btn {
-        width: 40px;
-        height: 40px;
+        width: 36px;
+        height: 36px;
       }
 
       .prev-btn {
@@ -398,21 +427,6 @@ import { Product } from '../../../core/models/types';
 
       .next-btn {
         right: 8px;
-      }
-
-      .image-area {
-        height: 300px;
-        width: 100%;
-        border-right: none;
-        border-bottom: 1px solid rgba(112, 134, 35, 0.05);
-      }
-
-      .details-area {
-        padding: 32px 24px;
-      }
-      
-      .product-title {
-        font-size: 24px;
       }
     }
   `]
@@ -424,61 +438,49 @@ export class DealOfTheDayComponent implements OnInit, OnDestroy {
   deals = [
     {
       id: 'deal_1',
-      name: 'Dynamic Sports Running Shoes',
-      description: 'Premium quality running shoes with dynamic support and comfortable cushioning.',
-      originalPrice: 1999,
-      offerPrice: 1599,
+      name: 'Precision Audio Sonic 5.0 Pro',
+      description: 'Organic sound, precise engineering. Our limited edition wireless studio headphones offer pure clarity in every note.',
+      originalPrice: 399,
+      offerPrice: 299,
       stock: 50,
-      image: '/assets/deal-of-the-day/shoe_deal.webp'
+      image: '/assets/flat_50/headphone.webp'
     },
     {
       id: 'deal_2',
-      name: 'Precision Waterproof Beard Trimmer',
-      description: 'Precision beard trimmer with multiple length settings and self-sharpening blades.',
-      originalPrice: 2599,
-      offerPrice: 2199,
+      name: 'Classic Aura Gold Shades',
+      description: 'Handcrafted titanium frames offering superior UV protection and timeless aesthetic design.',
+      originalPrice: 160,
+      offerPrice: 120,
       stock: 35,
-      image: '/assets/deal-of-the-day/trimmer_deal.webp'
+      image: '/assets/flat_25/book.webp'
     },
     {
       id: 'deal_3',
-      name: '4K Ultra HD Smart LED Android TV',
-      description: 'Stunning 4K Ultra HD smart TV with dynamic range and android smart interface.',
-      originalPrice: 53599,
-      offerPrice: 50099,
+      name: 'Minimalist Studio Mic Pro',
+      description: 'Crystal clear studio recording microphone. Ideal for podcasting, streaming, and premium vocals.',
+      originalPrice: 250,
+      offerPrice: 187.5,
       stock: 15,
-      image: '/assets/deal-of-the-day/tv_deal.webp'
-    },
-    {
-      id: 'deal_4',
-      name: 'Premium Ultra Whey Protein Isolate',
-      description: 'High-quality whey protein isolate for efficient muscle recovery and building.',
-      originalPrice: 6599,
-      offerPrice: 6099,
-      stock: 40,
-      image: '/assets/deal-of-the-day/whey_deal.webp'
-    },
-    {
-      id: 'deal_5',
-      name: 'Noise Cancelling Wireless Earpods',
-      description: 'Wireless earpods with active noise cancellation and long-lasting battery life.',
-      originalPrice: 2099,
-      offerPrice: 1799,
-      stock: 60,
-      image: '/assets/deal-of-the-day/earpod_deal.webp'
+      image: '/assets/flat_50/mixie.webp'
     }
   ];
 
   activeSlide = 0;
+  countdownHours = 8;
+  countdownMinutes = 39;
+  countdownSeconds = 14;
   private intervalId: any;
+  private countdownIntervalId: any;
   private platformId = inject(PLATFORM_ID);
 
   ngOnInit() {
     this.startAutoPlay();
+    this.startCountdown();
   }
 
   ngOnDestroy() {
     this.stopAutoPlay();
+    this.stopCountdown();
   }
 
   startAutoPlay() {
@@ -486,7 +488,7 @@ export class DealOfTheDayComponent implements OnInit, OnDestroy {
       this.stopAutoPlay();
       this.intervalId = setInterval(() => {
         this.nextSlide();
-      }, 5000);
+      }, 6000);
     }
   }
 
@@ -494,6 +496,41 @@ export class DealOfTheDayComponent implements OnInit, OnDestroy {
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
+  }
+
+  startCountdown() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.stopCountdown();
+      this.countdownIntervalId = setInterval(() => {
+        if (this.countdownSeconds > 0) {
+          this.countdownSeconds--;
+        } else {
+          this.countdownSeconds = 59;
+          if (this.countdownMinutes > 0) {
+            this.countdownMinutes--;
+          } else {
+            this.countdownMinutes = 59;
+            if (this.countdownHours > 0) {
+              this.countdownHours--;
+            } else {
+              this.countdownHours = 8;
+              this.countdownMinutes = 39;
+              this.countdownSeconds = 14;
+            }
+          }
+        }
+      }, 1000);
+    }
+  }
+
+  stopCountdown() {
+    if (this.countdownIntervalId) {
+      clearInterval(this.countdownIntervalId);
+    }
+  }
+
+  pad(num: number): string {
+    return num.toString().padStart(2, '0');
   }
 
   prevSlide() {
@@ -522,10 +559,10 @@ export class DealOfTheDayComponent implements OnInit, OnDestroy {
       name: deal.name,
       description: deal.description || '',
       price: deal.offerPrice,
-      categoryId: 'sports-fitness',
+      categoryId: 'mobile-computers',
       stock: deal.stock || 10,
       imageUrl: deal.image,
-      rating: 4.5
+      rating: 4.8
     };
     this.cartService.addToCart(product, 1);
     alert(`${deal.name} added to cart!`);
@@ -538,10 +575,10 @@ export class DealOfTheDayComponent implements OnInit, OnDestroy {
       name: deal.name,
       description: deal.description || '',
       price: deal.offerPrice,
-      categoryId: 'sports-fitness',
+      categoryId: 'mobile-computers',
       stock: deal.stock || 10,
       imageUrl: deal.image,
-      rating: 4.5
+      rating: 4.8
     };
     this.cartService.addToCart(product, 1);
     this.router.navigate(['/checkout']);

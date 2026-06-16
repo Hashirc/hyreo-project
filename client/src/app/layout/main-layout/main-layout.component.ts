@@ -99,6 +99,7 @@ import { AuthService } from '../../core/services/auth.service';
       height: 100vh;
       display: flex;
       flex-direction: column;
+      background-color: #F7F9ED !important;
     }
 
     .sidenav {
@@ -148,6 +149,7 @@ import { AuthService } from '../../core/services/auth.service';
       flex-direction: column;
       min-height: 100vh;
       overflow-x: hidden;
+      background-color: #E0E5D3 !important;
     }
 
     .main-content {
@@ -158,6 +160,7 @@ import { AuthService } from '../../core/services/auth.service';
       max-width: 1200px;
       margin: 0 auto;
       padding: 24px 16px;
+      background-color: #E0E5D3;
     }
 
     @media (max-width: 600px) {

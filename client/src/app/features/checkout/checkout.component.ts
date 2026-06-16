@@ -230,6 +230,7 @@ import { ShippingAddress } from '../../core/models/types';
     .checkout-card {
       border-radius: 16px;
       border: 1px solid rgba(85, 107, 47, 0.08);
+      background-color: var(--bg-card);
       padding: 16px;
     }
 
@@ -264,6 +265,7 @@ import { ShippingAddress } from '../../core/models/types';
     .checkout-summary-card {
       border-radius: 16px;
       border: 1px solid rgba(85, 107, 47, 0.08);
+      background-color: var(--bg-card);
       padding: 16px;
       position: sticky;
       top: 24px;
@@ -482,7 +484,10 @@ export class CheckoutComponent {
         });
       },
       error: (err) => {
-        console.error('Checkout failed:', err);
+        console.error('Checkout failed (detailed):', err);
+        if (err && err.error) {
+          console.error('Checkout error payload:', err.error);
+        }
         alert('There was an error placing your order. Please try again.');
         this.isLoading.set(false);
       }

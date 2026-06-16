@@ -76,6 +76,14 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'Server is running', timestamp: new Date() });
 });
 
+// Request logger for debugging
+app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+  if (req.path.startsWith('/api/orders') || req.path.startsWith('/api/auth')) {
+    console.log(`[REQUEST] ${req.method} ${req.path} | Auth: ${req.headers.authorization ? 'present' : 'MISSING'} | Body keys: ${Object.keys(req.body || {}).join(',')}`);
+  }
+  next();
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);

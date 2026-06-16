@@ -10,16 +10,22 @@ import {
 export async function createOrder(req: AuthRequest, res: Response) {
   try {
     const userId = req.user?.uid;
+    console.log('[DEBUG createOrder] userId:', userId);
+    console.log('[DEBUG createOrder] body:', JSON.stringify(req.body, null, 2));
+
     if (!userId) {
+      console.log('[DEBUG createOrder] Unauthorized: no userId');
       return res.status(401).json({ error: 'Not authenticated' });
     }
 
     const { items, total, shippingAddress, paymentRef, couponCode } = req.body;
 
     if (!items || !Array.isArray(items) || items.length === 0) {
+      console.log('[DEBUG createOrder] Bad Request: items is missing or empty');
       return res.status(400).json({ error: 'Order items are required' });
     }
     if (total === undefined || total === null || !shippingAddress) {
+      console.log('[DEBUG createOrder] Bad Request: total or shippingAddress missing');
       return res.status(400).json({ error: 'Total and shipping address are required' });
     }
 
@@ -32,12 +38,14 @@ export async function createOrder(req: AuthRequest, res: Response) {
       paymentRef: paymentRef || 'pay_mock_' + Math.random().toString(36).substr(2, 9)
     });
 
+    console.log('[DEBUG createOrder] Success, newOrder:', newOrder);
+
     return res.status(201).json({
       message: 'Order created successfully',
       order: newOrder
     });
   } catch (error: any) {
-    console.error('Error creating order:', error);
+    console.error('Error creating order (detailed):', error);
     return res.status(500).json({ error: error.message || 'Failed to create order' });
   }
 }
