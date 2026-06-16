@@ -50,21 +50,30 @@ import { Order } from '../../../core/models/types';
                       <span class="step-label">Order Cancelled</span>
                     </div>
                   } @else {
-                    <div class="timeline-step" [class.active]="true" [class.completed]="order.status === 'processing' || order.status === 'shipped' || order.status === 'delivered'">
+                    <div class="timeline-step" [class.active]="true" [class.completed]="order.status === 'processing' || order.status === 'shipped' || order.status === 'out_for_delivery' || order.status === 'delivered'">
                       <div class="step-icon"><mat-icon>receipt_long</mat-icon></div>
                       <span class="step-label">Pending</span>
                     </div>
-                    <div class="timeline-line" [class.completed]="order.status === 'processing' || order.status === 'shipped' || order.status === 'delivered'"></div>
-                    <div class="timeline-step" [class.active]="order.status === 'processing' || order.status === 'shipped' || order.status === 'delivered'" [class.completed]="order.status === 'shipped' || order.status === 'delivered'">
+                    <div class="timeline-line" [class.completed]="order.status === 'processing' || order.status === 'shipped' || order.status === 'out_for_delivery' || order.status === 'delivered'"></div>
+                    
+                    <div class="timeline-step" [class.active]="order.status === 'processing' || order.status === 'shipped' || order.status === 'out_for_delivery' || order.status === 'delivered'" [class.completed]="order.status === 'shipped' || order.status === 'out_for_delivery' || order.status === 'delivered'">
                       <div class="step-icon"><mat-icon>autorenew</mat-icon></div>
                       <span class="step-label">Processing</span>
                     </div>
-                    <div class="timeline-line" [class.completed]="order.status === 'shipped' || order.status === 'delivered'"></div>
-                    <div class="timeline-step" [class.active]="order.status === 'shipped' || order.status === 'delivered'" [class.completed]="order.status === 'delivered'">
+                    <div class="timeline-line" [class.completed]="order.status === 'shipped' || order.status === 'out_for_delivery' || order.status === 'delivered'"></div>
+                    
+                    <div class="timeline-step" [class.active]="order.status === 'shipped' || order.status === 'out_for_delivery' || order.status === 'delivered'" [class.completed]="order.status === 'out_for_delivery' || order.status === 'delivered'">
                       <div class="step-icon"><mat-icon>local_shipping</mat-icon></div>
                       <span class="step-label">Shipped</span>
                     </div>
+                    <div class="timeline-line" [class.completed]="order.status === 'out_for_delivery' || order.status === 'delivered'"></div>
+
+                    <div class="timeline-step" [class.active]="order.status === 'out_for_delivery' || order.status === 'delivered'" [class.completed]="order.status === 'delivered'">
+                      <div class="step-icon"><mat-icon>directions_bike</mat-icon></div>
+                      <span class="step-label">Out for Delivery</span>
+                    </div>
                     <div class="timeline-line" [class.completed]="order.status === 'delivered'"></div>
+                    
                     <div class="timeline-step" [class.active]="order.status === 'delivered'" [class.completed]="order.status === 'delivered'">
                       <div class="step-icon"><mat-icon>done_all</mat-icon></div>
                       <span class="step-label">Delivered</span>
@@ -102,6 +111,11 @@ import { Order } from '../../../core/models/types';
                         <span class="total-price">\${{ order.total | number:'1.2-2' }}</span>
                       </div>
                       <div class="action-box">
+                        @if (order.status === 'pending' || order.status === 'processing') {
+                          <button mat-button color="warn" (click)="cancelOrder(order.id)" class="cancel-btn">
+                            <mat-icon>cancel</mat-icon> Cancel
+                          </button>
+                        }
                         <button mat-raised-button color="primary" [routerLink]="['/orders/track', order.id]" class="view-details-btn">
                           <mat-icon>local_shipping</mat-icon> Track & Details
                         </button>
@@ -389,6 +403,12 @@ import { Order } from '../../../core/models/types';
         margin-right: 4px;
       }
     }
+    
+    .cancel-btn {
+      height: 36px !important;
+      font-size: 13px !important;
+      margin-right: 8px;
+    }
 
     // Empty state
     .empty-orders-panel {
@@ -433,6 +453,11 @@ export class OrderHistoryComponent implements OnInit {
   readonly isLoading = signal(true);
 
   ngOnInit() {
+    this.loadOrders();
+  }
+
+  loadOrders() {
+    this.isLoading.set(true);
     this.orderService.getOrders().subscribe({
       next: (orders) => {
         this.orders.set(orders);
@@ -443,5 +468,20 @@ export class OrderHistoryComponent implements OnInit {
         this.isLoading.set(false);
       }
     });
+  }
+
+  cancelOrder(orderId: string) {
+    if (confirm('Are you sure you want to cancel this order?')) {
+      this.orderService.updateOrderStatus(orderId, 'cancelled').subscribe({
+        next: () => {
+          alert('Order cancelled successfully.');
+          this.loadOrders();
+        },
+        error: (err) => {
+          console.error('Failed to cancel order:', err);
+          alert('Failed to cancel order.');
+        }
+      });
+    }
   }
 }

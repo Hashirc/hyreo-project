@@ -1,10 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { AuthService } from '../../../core/services/auth.service';
+import { OrderService } from '../../../core/services/order.service';
 
 @Component({
   selector: 'app-profile',
@@ -45,6 +46,13 @@ import { AuthService } from '../../../core/services/auth.service';
             <span class="value uid">{{ authService.currentUser()?.uid }}</span>
           </div>
           
+          <mat-divider></mat-divider>
+
+          <div class="info-row">
+            <span class="label">Total Orders</span>
+            <span class="value">{{ isLoadingOrders() ? 'Loading...' : orderCount() }}</span>
+          </div>
+
           <div class="actions-row">
             <button mat-raised-button color="primary" routerLink="/orders" class="orders-btn">
               <mat-icon>history</mat-icon> View My Orders
@@ -158,6 +166,22 @@ import { AuthService } from '../../../core/services/auth.service';
     }
   `]
 })
-export class ProfileComponent {
+export class ProfileComponent implements OnInit {
   authService = inject(AuthService);
+  private orderService = inject(OrderService);
+
+  readonly orderCount = signal<number>(0);
+  readonly isLoadingOrders = signal(true);
+
+  ngOnInit() {
+    this.orderService.getOrders().subscribe({
+      next: (orders) => {
+        this.orderCount.set(orders.length);
+        this.isLoadingOrders.set(false);
+      },
+      error: () => {
+        this.isLoadingOrders.set(false);
+      }
+    });
+  }
 }

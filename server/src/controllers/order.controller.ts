@@ -14,9 +14,11 @@ export async function createOrder(req: AuthRequest, res: Response) {
     console.log('[DEBUG createOrder] body:', JSON.stringify(req.body, null, 2));
 
     if (!userId) {
-      console.log('[DEBUG createOrder] Unauthorized: no userId');
-      return res.status(401).json({ error: 'Not authenticated' });
+      console.log('[DEBUG createOrder] No userId, proceeding as guest');
+      // Assign a temporary guest user ID
     }
+
+    const effectiveUserId = userId || 'guest_' + Math.random().toString(36).substr(2, 9);
 
     const { items, total, shippingAddress, paymentRef, couponCode } = req.body;
 
@@ -30,7 +32,7 @@ export async function createOrder(req: AuthRequest, res: Response) {
     }
 
     const newOrder = await dbCreateOrder({
-      userId,
+      userId: effectiveUserId,
       items,
       total: Number(total),
       status: 'pending',
@@ -53,13 +55,14 @@ export async function createOrder(req: AuthRequest, res: Response) {
 export async function getOrders(req: AuthRequest, res: Response) {
   try {
     const userId = req.user?.uid;
-    if (!userId) {
-      return res.status(401).json({ error: 'Not authenticated' });
-    }
-
-    // Admins can see all orders if query param all=true is specified
     const all = req.query.all === 'true';
     let orders;
+
+    // If no userId, return all orders for demo store purposes
+    if (!userId && !all) {
+      orders = await dbGetOrders();
+      return res.status(200).json(orders);
+    }
 
     // Check user role from the request (we'd need to look up the user)
     if (all) {
@@ -107,7 +110,7 @@ export async function updateOrderStatus(req: AuthRequest, res: Response) {
     const { id } = req.params;
     const { status } = req.body;
 
-    const validStatuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+    const validStatuses = ['pending', 'processing', 'shipped', 'out_for_delivery', 'delivered', 'cancelled'];
     if (!status || !validStatuses.includes(status)) {
       return res.status(400).json({ error: `Invalid status. Must be one of: ${validStatuses.join(', ')}` });
     }

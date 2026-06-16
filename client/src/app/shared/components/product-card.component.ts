@@ -41,7 +41,7 @@ import { handleImageFallback } from '../../core/utils/image-fallback';
 
         <div class="product-footer">
           <div class="price-section">
-            <span class="price">${{ product().price }}</span>
+            <span class="price">\${{ product().price }}</span>
           </div>
 
           <div class="button-group">
@@ -247,13 +247,6 @@ export class ProductCardComponent {
 
   addToCart(): void {
     const product = this.product();
-    const cartItem: CartItem = {
-      productId: product.id,
-      quantity: 1,
-      price: product.price,
-      name: product.name,
-      imageUrl: product.imageUrl
-    };
-    this.cartService.addToCart(cartItem);
+    this.cartService.addToCart(product, 1);
   }
 }

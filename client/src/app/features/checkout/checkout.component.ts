@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CartService } from '../../core/services/cart.service';
 import { OrderService } from '../../core/services/order.service';
+import { AuthService } from '../../core/services/auth.service';
 import { ShippingAddress } from '../../core/models/types';
 
 @Component({
@@ -399,16 +400,21 @@ import { ShippingAddress } from '../../core/models/types';
     }
   `]
 })
-export class CheckoutComponent {
+export class CheckoutComponent implements OnInit {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   cartService = inject(CartService);
   private orderService = inject(OrderService);
+  private authService = inject(AuthService);
 
   readonly isLoading = signal(false);
   readonly orderSuccess = signal(false);
   readonly isApplyingCoupon = signal(false);
   readonly appliedCoupon = signal<any | null>(null);
+
+  ngOnInit() {
+    // Demo store: Guest checkout is allowed. No auth redirect.
+  }
 
   finalTotal() {
     const sub = this.cartService.cartTotal();

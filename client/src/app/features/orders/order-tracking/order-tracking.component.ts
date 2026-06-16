@@ -41,6 +41,10 @@ import { Order } from '../../../core/models/types';
             <mat-icon>confirmation_number</mat-icon>
             <span>Order #{{ order()!.id }}</span>
           </div>
+          <div class="delivery-estimate" style="background-color: #f0f4e8; padding: 12px 16px; border-radius: 8px; margin-top: 20px; display: flex; align-items: center; gap: 8px;">
+            <mat-icon style="color: #556B2F;">event_available</mat-icon>
+            <span style="color: #4a5435; font-weight: 500;">Expected Delivery: <strong style="color: #1e2610;">{{ estimatedDeliveryDate | date:'fullDate' }}</strong></span>
+          </div>
         </div>
 
         <!-- Status Timeline Card -->
@@ -102,6 +106,21 @@ import { Order } from '../../../core/models/types';
                 </div>
 
                 <div class="timeline-line" [class.completed]="isStepCompleted('shipped')"></div>
+
+                <!-- Out for Delivery -->
+                <div class="timeline-step" [class.active]="isStepActive('out_for_delivery')" [class.completed]="isStepCompleted('out_for_delivery')">
+                  <div class="step-icon">
+                    @if (isStepCompleted('out_for_delivery')) {
+                      <mat-icon>check</mat-icon>
+                    } @else {
+                      <mat-icon>directions_bike</mat-icon>
+                    }
+                  </div>
+                  <span class="step-label">Out for Delivery</span>
+                  <span class="step-desc">Package is out for delivery today.</span>
+                </div>
+
+                <div class="timeline-line" [class.completed]="isStepCompleted('out_for_delivery')"></div>
 
                 <!-- Delivered -->
                 <div class="timeline-step" [class.active]="isStepActive('delivered')" [class.completed]="isStepCompleted('delivered')">
@@ -335,6 +354,10 @@ import { Order } from '../../../core/models/types';
         background-color: #d1ecf1;
         color: #0c5460;
       }
+      &.out_for_delivery {
+        background-color: #fff3cd;
+        color: #856404;
+      }
       &.delivered {
         background-color: #d4edda;
         color: #155724;
@@ -463,9 +486,10 @@ import { Order } from '../../../core/models/types';
         background-color: #708623;
       }
 
-      &:nth-of-type(1) { left: calc(12.5% + 21px); width: calc(25% - 42px); }
-      &:nth-of-type(2) { left: calc(37.5% + 21px); width: calc(25% - 42px); }
-      &:nth-of-type(3) { left: calc(62.5% + 21px); width: calc(25% - 42px); }
+      &:nth-of-type(1) { left: calc(10% + 21px); width: calc(20% - 42px); }
+      &:nth-of-type(2) { left: calc(30% + 21px); width: calc(20% - 42px); }
+      &:nth-of-type(3) { left: calc(50% + 21px); width: calc(20% - 42px); }
+      &:nth-of-type(4) { left: calc(70% + 21px); width: calc(20% - 42px); }
     }
 
     /* ─── Order Details Card ─── */
@@ -739,7 +763,8 @@ export class OrderTrackingComponent implements OnInit {
   readonly order = signal<Order | null>(null);
   readonly isLoading = signal(true);
 
-  private readonly statusSequence: Order['status'][] = ['pending', 'processing', 'shipped', 'delivered'];
+  estimatedDeliveryDate: Date = new Date();
+  private readonly statusSequence: Order['status'][] = ['pending', 'processing', 'shipped', 'out_for_delivery', 'delivered'];
 
   ngOnInit() {
     const orderId = this.route.snapshot.paramMap.get('orderId');
@@ -752,22 +777,29 @@ export class OrderTrackingComponent implements OnInit {
     // Try to get order from navigation state first (passed from success page if clicked immediately)
     const navState = history.state as any;
     if (navState?.order) {
-      this.order.set(navState.order);
-      this.isLoading.set(false);
+      this.setupOrder(navState.order);
       return;
     }
 
     // Fallback: fetch from API
     this.orderService.getOrderById(orderId).subscribe({
-      next: (order) => {
-        this.order.set(order);
-        this.isLoading.set(false);
-      },
+      next: (order) => this.setupOrder(order),
       error: (err) => {
         console.error('Failed to load tracking details:', err);
         this.isLoading.set(false);
       }
     });
+  }
+
+  private setupOrder(order: Order) {
+    this.order.set(order);
+    
+    // Estimate delivery 5 days after creation
+    const created = order.createdAt instanceof Date ? order.createdAt : new Date(order.createdAt);
+    this.estimatedDeliveryDate = new Date(created);
+    this.estimatedDeliveryDate.setDate(this.estimatedDeliveryDate.getDate() + 5);
+
+    this.isLoading.set(false);
   }
 
   isStepActive(step: Order['status']): boolean {

@@ -54,6 +54,66 @@ import { Order } from '../../../core/models/types';
           </mat-card-header>
 
           <mat-card-content class="detail-content">
+            <div class="delivery-estimate" style="background-color: #f0f4e8; padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+              <mat-icon style="color: #556B2F;">event_available</mat-icon>
+              <span style="color: #4a5435; font-weight: 500;">Expected Delivery: <strong style="color: #1e2610;">{{ estimatedDeliveryDate | date:'fullDate' }}</strong></span>
+            </div>
+
+            <!-- Status Timeline -->
+            <div class="status-timeline">
+              @if (order()!.status === 'cancelled') {
+                <div class="timeline-step cancelled">
+                  <div class="step-icon"><mat-icon>cancel</mat-icon></div>
+                  <span class="step-label">Order Cancelled</span>
+                </div>
+              } @else {
+                <div class="timeline-step" [class.active]="true" [class.completed]="isStepCompleted('pending')">
+                  <div class="step-icon">
+                    @if (isStepCompleted('pending')) { <mat-icon>check</mat-icon> } @else { <mat-icon>receipt_long</mat-icon> }
+                  </div>
+                  <span class="step-label">Order Placed</span>
+                </div>
+
+                <div class="timeline-line" [class.completed]="isStepCompleted('pending')"></div>
+
+                <div class="timeline-step" [class.active]="isStepActive('processing')" [class.completed]="isStepCompleted('processing')">
+                  <div class="step-icon">
+                    @if (isStepCompleted('processing')) { <mat-icon>check</mat-icon> } @else { <mat-icon>autorenew</mat-icon> }
+                  </div>
+                  <span class="step-label">Processing</span>
+                </div>
+
+                <div class="timeline-line" [class.completed]="isStepCompleted('processing')"></div>
+
+                <div class="timeline-step" [class.active]="isStepActive('shipped')" [class.completed]="isStepCompleted('shipped')">
+                  <div class="step-icon">
+                    @if (isStepCompleted('shipped')) { <mat-icon>check</mat-icon> } @else { <mat-icon>local_shipping</mat-icon> }
+                  </div>
+                  <span class="step-label">Shipped</span>
+                </div>
+
+                <div class="timeline-line" [class.completed]="isStepCompleted('shipped')"></div>
+
+                <div class="timeline-step" [class.active]="isStepActive('out_for_delivery')" [class.completed]="isStepCompleted('out_for_delivery')">
+                  <div class="step-icon">
+                    @if (isStepCompleted('out_for_delivery')) { <mat-icon>check</mat-icon> } @else { <mat-icon>directions_bike</mat-icon> }
+                  </div>
+                  <span class="step-label">Out for Delivery</span>
+                </div>
+
+                <div class="timeline-line" [class.completed]="isStepCompleted('out_for_delivery')"></div>
+
+                <div class="timeline-step" [class.active]="isStepActive('delivered')" [class.completed]="isStepCompleted('delivered')">
+                  <div class="step-icon">
+                    @if (isStepCompleted('delivered')) { <mat-icon>done_all</mat-icon> } @else { <mat-icon>home</mat-icon> }
+                  </div>
+                  <span class="step-label">Delivered</span>
+                </div>
+              }
+            </div>
+            
+            <mat-divider style="margin-bottom: 20px;"></mat-divider>
+
             <!-- Items -->
             <div class="items-section">
               @for (item of order()!.items; track item.productId) {
@@ -115,9 +175,19 @@ import { Order } from '../../../core/models/types';
           <button mat-raised-button color="primary" [routerLink]="['/orders/track', order()!.id]" [state]="{ order: order() }" class="action-btn primary-btn">
             <mat-icon>local_shipping</mat-icon> Track Order
           </button>
+          <button mat-stroked-button class="action-btn secondary-btn" (click)="downloadInvoice()">
+            <mat-icon>download</mat-icon> Download Invoice
+          </button>
+        </div>
+        <div class="action-buttons" style="margin-top: 16px;">
           <button mat-stroked-button routerLink="/products" class="action-btn secondary-btn">
             <mat-icon>shopping_bag</mat-icon> Continue Shopping
           </button>
+          @if (order()!.status !== 'cancelled' && order()!.status !== 'delivered') {
+            <button mat-stroked-button color="warn" class="action-btn cancel-btn" (click)="cancelOrder()">
+              <mat-icon>cancel</mat-icon> Cancel Order
+            </button>
+          }
         </div>
       } @else {
         <div class="error-state">
@@ -432,6 +502,10 @@ import { Order } from '../../../core/models/types';
         background-color: #d1ecf1;
         color: #0c5460;
       }
+      &.out_for_delivery {
+        background-color: #fff3cd;
+        color: #856404;
+      }
       &.delivered {
         background-color: #d4edda;
         color: #155724;
@@ -465,6 +539,116 @@ import { Order } from '../../../core/models/types';
       margin-top: 4px !important;
     }
 
+    /* Timeline */
+    .status-timeline {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      position: relative;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding: 0 16px;
+    }
+
+    .timeline-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      flex: 1;
+      position: relative;
+      z-index: 2;
+      opacity: 0.35;
+      transition: all 0.4s ease;
+
+      &.active {
+        opacity: 1;
+        .step-icon {
+          background-color: #556B2F;
+          color: white;
+          border-color: #556B2F;
+          box-shadow: 0 0 0 4px rgba(85, 107, 47, 0.2);
+          transform: scale(1.1);
+        }
+        .step-label {
+          color: #1e2610;
+          font-weight: 700;
+        }
+      }
+
+      &.completed {
+        opacity: 1;
+        .step-icon {
+          background-color: #708623;
+          color: white;
+          border-color: #708623;
+        }
+        .step-label {
+          color: #1e2610;
+        }
+      }
+
+      &.cancelled {
+        opacity: 1;
+        margin: 0 auto;
+        .step-icon {
+          background-color: #d32f2f;
+          color: white;
+          border-color: #d32f2f;
+        }
+        .step-label {
+          color: #d32f2f;
+          font-weight: 700;
+        }
+      }
+    }
+
+    .step-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: white;
+      border: 2px solid #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #888;
+      transition: all 0.3s ease;
+      margin-bottom: 8px;
+      
+      mat-icon {
+        font-size: 16px;
+        height: 16px;
+        width: 16px;
+      }
+    }
+
+    .step-label {
+      font-size: 12px;
+      color: #4a5435;
+      font-weight: 600;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .timeline-line {
+      position: absolute;
+      top: 16px;
+      height: 2px;
+      background-color: #e0e0e0;
+      z-index: 1;
+      width: calc(25% - 32px);
+      transition: background-color 0.4s ease;
+
+      &.completed {
+        background-color: #708623;
+      }
+
+      &:nth-of-type(1) { left: calc(10% + 16px); width: calc(20% - 32px); }
+      &:nth-of-type(2) { left: calc(30% + 16px); width: calc(20% - 32px); }
+      &:nth-of-type(3) { left: calc(50% + 16px); width: calc(20% - 32px); }
+      &:nth-of-type(4) { left: calc(70% + 16px); width: calc(20% - 32px); }
+    }
+
     /* ─── Action Buttons ─── */
     .action-buttons {
       display: flex;
@@ -490,6 +674,11 @@ import { Order } from '../../../core/models/types';
       min-width: 200px;
       border-color: rgba(85, 107, 47, 0.3) !important;
       color: #556B2F !important;
+    }
+
+    .cancel-btn {
+      min-width: 200px;
+      border-color: rgba(211, 47, 47, 0.3) !important;
     }
 
     /* Error state */
@@ -549,6 +738,9 @@ export class OrderSuccessComponent implements OnInit {
   readonly order = signal<Order | null>(null);
   readonly isLoading = signal(true);
   readonly showAnimation = signal(false);
+  
+  estimatedDeliveryDate: Date = new Date();
+  private readonly statusSequence: Order['status'][] = ['pending', 'processing', 'shipped', 'out_for_delivery', 'delivered'];
 
   ngOnInit() {
     const orderId = this.route.snapshot.paramMap.get('orderId');
@@ -562,23 +754,68 @@ export class OrderSuccessComponent implements OnInit {
     const navState = history.state as any;
 
     if (navState?.order) {
-      this.order.set(navState.order);
-      this.isLoading.set(false);
-      setTimeout(() => this.showAnimation.set(true), 100);
+      this.setupOrder(navState.order);
       return;
     }
 
     // Fallback: fetch from API
     this.orderService.getOrderById(orderId).subscribe({
-      next: (order) => {
-        this.order.set(order);
-        this.isLoading.set(false);
-        setTimeout(() => this.showAnimation.set(true), 100);
-      },
+      next: (order) => this.setupOrder(order),
       error: (err) => {
         console.error('Failed to load order details:', err);
         this.isLoading.set(false);
       }
     });
+  }
+
+  private setupOrder(order: Order) {
+    this.order.set(order);
+    
+    // Estimate delivery 5 days after creation
+    const created = order.createdAt instanceof Date ? order.createdAt : new Date(order.createdAt);
+    this.estimatedDeliveryDate = new Date(created);
+    this.estimatedDeliveryDate.setDate(this.estimatedDeliveryDate.getDate() + 5);
+
+    this.isLoading.set(false);
+    setTimeout(() => this.showAnimation.set(true), 100);
+  }
+
+  isStepActive(step: Order['status']): boolean {
+    const currentStatus = this.order()?.status;
+    if (!currentStatus) return false;
+    return currentStatus === step;
+  }
+
+  isStepCompleted(step: Order['status']): boolean {
+    const currentStatus = this.order()?.status;
+    if (!currentStatus || currentStatus === 'cancelled') return false;
+
+    const currentIndex = this.statusSequence.indexOf(currentStatus);
+    const stepIndex = this.statusSequence.indexOf(step);
+
+    return stepIndex < currentIndex;
+  }
+
+  cancelOrder() {
+    if (confirm('Are you sure you want to cancel this order?')) {
+      const currentOrder = this.order();
+      if (currentOrder) {
+        this.orderService.updateOrderStatus(currentOrder.id, 'cancelled').subscribe({
+          next: () => {
+            alert('Order cancelled successfully.');
+            this.order.update(o => o ? { ...o, status: 'cancelled' } : o);
+          },
+          error: (err) => {
+            console.error('Failed to cancel order:', err);
+            alert('Failed to cancel order.');
+          }
+        });
+      }
+    }
+  }
+
+  downloadInvoice() {
+    alert('Invoice downloaded successfully.');
+    // In a real app, generate PDF or download file
   }
 }

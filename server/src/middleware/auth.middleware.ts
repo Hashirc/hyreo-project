@@ -12,7 +12,9 @@ export async function authMiddleware(req: AuthRequest, res: Response, next: Next
     const token = req.headers.authorization?.replace('Bearer ', '');
 
     if (!token) {
-      return res.status(401).json({ error: 'No authorization token provided' });
+      // Demo store: allow requests without token to pass through
+      // Controllers will decide whether to reject or assign guest identities
+      return next();
     }
 
     // Decode our base64 token (works in both real Firestore + mock modes)

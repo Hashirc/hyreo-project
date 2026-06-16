@@ -1,8 +1,9 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { Order, DashboardMetrics, OrderStatus } from '../models/types';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,13 +13,20 @@ export class OrderService {
   private apiUrl = `${environment.apiUrl}/orders`;
   private adminUrl = `${environment.apiUrl}/admin/dashboard`;
 
+  private authService = inject(AuthService);
+
   createOrder(orderData: {
     items: any[];
     total: number;
     shippingAddress: any;
     paymentRef: string;
   }): Observable<any> {
-    return this.http.post<any>(this.apiUrl, orderData);
+    const token = this.authService.token() || localStorage.getItem('auth_token');
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('Authorization', `Bearer ${token}`);
+    }
+    return this.http.post<any>(this.apiUrl, orderData, { headers });
   }
 
   getOrders(all = false): Observable<Order[]> {

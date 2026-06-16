@@ -69,7 +69,7 @@ export async function updateOrderStatus(req: AuthenticatedRequest, res: Response
     const { id } = req.params;
     const { status } = req.body;
 
-    const validStatuses: OrderStatus[] = ['pending', 'paid', 'shipped', 'delivered', 'cancelled'];
+    const validStatuses: OrderStatus[] = ['pending', 'processing', 'shipped', 'out_for_delivery', 'delivered', 'cancelled'];
     if (!status || !validStatuses.includes(status)) {
       return res.status(400).json({ message: `Invalid status. Must be one of: ${validStatuses.join(', ')}` });
     }

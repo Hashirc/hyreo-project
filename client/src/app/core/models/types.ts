@@ -40,7 +40,7 @@ export interface Cart {
   updatedAt?: string | Date;
 }
 
-export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'out_for_delivery' | 'delivered' | 'cancelled';
 
 export interface Coupon {
   id?: string;

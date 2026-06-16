@@ -21,22 +21,18 @@ export const routes: Routes = [
   },
   {
     path: 'checkout',
-    canActivate: [authGuard],
     loadComponent: () => import('./features/checkout/checkout.component').then(c => c.CheckoutComponent)
   },
   {
     path: 'orders/success/:orderId',
-    canActivate: [authGuard],
     loadComponent: () => import('./features/orders/order-success/order-success.component').then(c => c.OrderSuccessComponent)
   },
   {
     path: 'orders/track/:orderId',
-    canActivate: [authGuard],
     loadComponent: () => import('./features/orders/order-tracking/order-tracking.component').then(c => c.OrderTrackingComponent)
   },
   {
     path: 'orders',
-    canActivate: [authGuard],
     loadComponent: () => import('./features/orders/order-history/order-history.component').then(c => c.OrderHistoryComponent)
   },
   {

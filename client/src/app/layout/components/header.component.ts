@@ -177,7 +177,7 @@ export class HeaderComponent {
     public cartService: CartService
   ) {}
 
-  logout(): void {
-    this.authService.logout().subscribe();
+  async logout(): Promise<void> {
+    await this.authService.logout();
   }
 }

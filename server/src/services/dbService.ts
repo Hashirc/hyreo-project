@@ -1713,7 +1713,7 @@ export async function dbGetDashboardMetrics() {
 
   const ordersSnapshot = await db.collection('orders').get();
   let totalRevenue = 0;
-  ordersSnapshot.forEach(doc => {
+  ordersSnapshot.forEach((doc: any) => {
     totalRevenue += (doc.data()['total'] || 0);
   });
 

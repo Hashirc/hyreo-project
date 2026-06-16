@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DatePipe, DecimalPipe, TitleCasePipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
@@ -22,6 +22,7 @@ import { Order, DashboardMetrics, OrderStatus, Category } from '../../../core/mo
     ReactiveFormsModule,
     DatePipe,
     DecimalPipe,
+    TitleCasePipe,
     MatTabsModule,
     MatTableModule,
     MatFormFieldModule,
@@ -98,6 +99,17 @@ import { Order, DashboardMetrics, OrderStatus, Category } from '../../../core/mo
                       <td mat-cell *matCellDef="let ord" class="font-outfit font-weight-600 text-olive">#{{ ord.id }}</td>
                     </ng-container>
 
+                    <!-- Customer Column -->
+                    <ng-container matColumnDef="customer">
+                      <th mat-header-cell *matHeaderCellDef>Customer</th>
+                      <td mat-cell *matCellDef="let ord">
+                        <div class="customer-cell">
+                          <span class="customer-name">{{ ord.shippingAddress?.fullName || 'N/A' }}</span>
+                          <span class="customer-email">{{ ord.shippingAddress?.email || 'N/A' }}</span>
+                        </div>
+                      </td>
+                    </ng-container>
+
                     <!-- Date Column -->
                     <ng-container matColumnDef="date">
                       <th mat-header-cell *matHeaderCellDef>Date</th>
@@ -122,6 +134,17 @@ import { Order, DashboardMetrics, OrderStatus, Category } from '../../../core/mo
                       <td mat-cell *matCellDef="let ord" class="font-weight-600">\${{ ord.total | number:'1.2-2' }}</td>
                     </ng-container>
 
+                    <!-- Payment Column -->
+                    <ng-container matColumnDef="payment">
+                      <th mat-header-cell *matHeaderCellDef>Payment</th>
+                      <td mat-cell *matCellDef="let ord">
+                        <div class="payment-cell">
+                          <span class="payment-method">Online Payment</span>
+                          <span class="payment-ref">Ref: {{ ord.paymentRef || 'N/A' }}</span>
+                        </div>
+                      </td>
+                    </ng-container>
+
                     <!-- Status Column -->
                     <ng-container matColumnDef="status">
                       <th mat-header-cell *matHeaderCellDef>Status</th>
@@ -129,7 +152,7 @@ import { Order, DashboardMetrics, OrderStatus, Category } from '../../../core/mo
                         <mat-form-field appearance="outline" class="status-select-field">
                           <mat-select [value]="ord.status" (selectionChange)="onStatusChange(ord.id, $event.value)">
                             @for (st of statuses; track st) {
-                              <mat-option [value]="st">{{ st }}</mat-option>
+                              <mat-option [value]="st">{{ st | titlecase }}</mat-option>
                             }
                           </mat-select>
                         </mat-form-field>
@@ -383,6 +406,22 @@ import { Order, DashboardMetrics, OrderStatus, Category } from '../../../core/mo
       font-size: 13px;
     }
 
+    .customer-cell, .payment-cell {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .customer-name, .payment-method {
+      font-weight: 600;
+      color: #1e2610;
+    }
+
+    .customer-email, .payment-ref {
+      font-size: 12px;
+      color: #666;
+    }
+
     .status-select-field {
       width: 140px;
       margin-bottom: 0;
@@ -469,8 +508,8 @@ export class AdminDashboardComponent implements OnInit {
   readonly isOrdersLoading = signal(true);
   readonly isFormSubmitting = signal(false);
 
-  readonly displayedColumns = ['id', 'date', 'items', 'total', 'status'];
-  readonly statuses: OrderStatus[] = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+  readonly displayedColumns = ['id', 'customer', 'date', 'items', 'total', 'payment', 'status'];
+  readonly statuses: OrderStatus[] = ['pending', 'processing', 'shipped', 'out_for_delivery', 'delivered', 'cancelled'];
 
   productForm: FormGroup = this.fb.group({
     name: ['', Validators.required],
