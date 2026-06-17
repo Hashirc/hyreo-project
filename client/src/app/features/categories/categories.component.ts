@@ -1,267 +1,324 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-categories',
   standalone: true,
-  imports: [CommonModule, RouterLink, MatButtonModule, MatIconModule],
+  imports: [RouterLink, MatIconModule],
   template: `
     <div class="categories-page">
-      <section class="explore-section">
-        <div class="explore-header">
-          <h2 class="explore-title">Explore Essentials.</h2>
-          <p class="explore-subtitle">Discover our curated selection of high-end lifestyle categories,<br>designed for those who appreciate organic precision and refined living.</p>
+      <section class="categories-section">
+
+        <!-- Page Header -->
+        <div class="page-header">
+          <span class="section-tag">SHOP BY CATEGORY</span>
+          <h1 class="page-title">Explore Essentials.</h1>
+          <p class="page-subtitle">
+            Discover our curated selection of high-end lifestyle categories,
+            designed for those who appreciate quality and refined living.
+          </p>
         </div>
 
-        <div class="explore-grid">
-          <a routerLink="/products" [queryParams]="{ category: 'mobile-computers' }" class="bento-card bento-large bg-electronics">
-            <div class="bento-content">
-              <span class="new-arrival-badge">New Arrival</span>
-              <h3>Electronics</h3>
-              <p>Next-generation devices where high-tech<br>performance meets sculptural form.</p>
-              <button class="browse-btn" tabindex="-1">Browse Series <mat-icon>arrow_forward</mat-icon></button>
-            </div>
-          </a>
-          
-          <a routerLink="/products" [queryParams]="{ category: 'fashion' }" class="bento-card bento-tall bg-fashion">
-            <div class="bento-content">
-              <h3>Fashion</h3>
-              <p>Timeless silhouettes crafted from<br>premium sustainable fibers.</p>
+        <!-- Bento Grid -->
+        <div class="bento-grid">
+
+          <!-- Mobile & Laptops — Large hero (2 cols × 2 rows) -->
+          <a
+            routerLink="/products"
+            [queryParams]="{ category: 'mobile-computers' }"
+            class="bento-card hero-card"
+            style="background-image: url('https://images.unsplash.com/photo-1603791440384-56cd371ee9a7?auto=format&fit=crop&q=80&w=1200')">
+            <div class="card-overlay"></div>
+            <div class="card-content">
+              <span class="new-badge">New Arrival</span>
+              <h2>Mobile &amp; Laptops</h2>
+              <p>Next-generation smartphones and laptops where high-tech performance meets sculpted design.</p>
+              <span class="browse-btn">Browse Series <mat-icon>arrow_forward</mat-icon></span>
             </div>
           </a>
 
-          <a routerLink="/products" [queryParams]="{ category: 'home-lifestyle' }" class="bento-card bento-small bg-home">
-            <div class="bento-content">
-              <h3>Home & Living</h3>
+          <!-- Men's Fashion — 1 col × 1 row -->
+          <a
+            routerLink="/products"
+            [queryParams]="{ category: 'mens-fashion' }"
+            class="bento-card small-card"
+            style="background-image: url('https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?auto=format&fit=crop&q=80&w=800')">
+            <div class="card-overlay"></div>
+            <div class="card-content">
+              <h3>Men's Fashion</h3>
+              <p>Premium clothing &amp; accessories for the modern man.</p>
             </div>
           </a>
 
-          <a routerLink="/products" [queryParams]="{ category: 'sports-fitness' }" class="bento-card bento-small bg-sports">
-            <div class="bento-content">
-              <h3>Sports</h3>
+          <!-- Women's Fashion — 1 col × 1 row -->
+          <a
+            routerLink="/products"
+            [queryParams]="{ category: 'womens-fashion' }"
+            class="bento-card small-card"
+            style="background-image: url('https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&q=80&w=800')">
+            <div class="card-overlay"></div>
+            <div class="card-content">
+              <h3>Women's Fashion</h3>
+              <p>Timeless silhouettes crafted from premium sustainable fibers.</p>
             </div>
           </a>
 
-          <a routerLink="/products" [queryParams]="{ category: 'personal-care' }" class="bento-card bento-small bg-beauty">
-            <div class="bento-content">
-              <h3>Beauty</h3>
+          <!-- Home Appliances — 1 col × 1 row -->
+          <a
+            routerLink="/products"
+            [queryParams]="{ category: 'home-lifestyle' }"
+            class="bento-card small-card"
+            style="background-image: url('https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&q=80&w=800')">
+            <div class="card-overlay"></div>
+            <div class="card-content">
+              <h3>Home Appliances</h3>
+              <p>Refrigerators, washers &amp; kitchen essentials.</p>
             </div>
           </a>
+
+          <!-- Sports & Fitness — 1 col × 1 row -->
+          <a
+            routerLink="/products"
+            [queryParams]="{ category: 'sports-fitness' }"
+            class="bento-card small-card"
+            style="background-image: url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&q=80&w=800')">
+            <div class="card-overlay"></div>
+            <div class="card-content">
+              <h3>Sports &amp; Fitness</h3>
+              <p>Gym equipment and fitness gear for every level.</p>
+            </div>
+          </a>
+
+          <!-- Beauty — Wide card (2 cols × 1 row) -->
+          <a
+            routerLink="/products"
+            [queryParams]="{ category: 'personal-care' }"
+            class="bento-card wide-card"
+            style="background-image: url('https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&q=80&w=1200')">
+            <div class="card-overlay"></div>
+            <div class="card-content">
+              <h3>Beauty &amp; Skincare</h3>
+              <p>Premium skincare, cosmetics and self-care essentials curated for you.</p>
+            </div>
+          </a>
+
         </div>
 
-        <div class="concierge-card">
-          <div class="concierge-info">
+        <!-- Concierge Banner -->
+        <div class="concierge-banner">
+          <div class="concierge-text">
             <h3>Can't find what you're looking for?</h3>
-            <p>Our concierge team is available to help you source the<br>finest items from our global network of luxury partners.</p>
+            <p>Our concierge team is available to help you source the finest items from our global network of luxury partners.</p>
           </div>
           <div class="concierge-actions">
-            <button class="btn-primary-dark">Contact Concierge</button>
-            <button class="btn-outline-dark" routerLink="/products">View All Collections</button>
+            <button class="btn-primary">Contact Concierge</button>
+            <a routerLink="/products" class="btn-outline">View All Collections</a>
           </div>
         </div>
+
       </section>
     </div>
   `,
   styles: [`
+    /* ── Page Shell ── */
     .categories-page {
-      display: flex;
-      flex-direction: column;
-      padding: 48px 60px;
       background-color: #F7F9ED;
-      min-height: calc(100vh - 80px);
+      min-height: calc(100vh - 72px);
+      padding: 56px 60px 72px;
     }
 
-    .explore-section {
-      width: 100%;
+    .categories-section {
       max-width: 1200px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 32px;
+      gap: 40px;
     }
 
-    .explore-header {
-      margin-bottom: 8px;
+    /* ── Page Header ── */
+    .page-header {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
-    .explore-title {
+    .section-tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #5A664A;
+      text-transform: uppercase;
+    }
+
+    .page-title {
       font-family: 'Outfit', sans-serif;
-      font-size: 40px;
+      font-size: 44px;
       font-weight: 800;
       color: #1e2610;
-      margin: 0 0 12px 0;
-    }
-
-    .explore-subtitle {
-      font-size: 15px;
-      color: #4a5435;
       margin: 0;
-      line-height: 1.5;
+      line-height: 1.1;
     }
 
-    .explore-grid {
+    .page-subtitle {
+      font-size: 15px;
+      color: #556B2F;
+      margin: 0;
+      line-height: 1.6;
+      max-width: 560px;
+    }
+
+    /* ── Bento Grid ── */
+    .bento-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      grid-auto-rows: 280px;
-      gap: 24px;
+      grid-template-rows: 300px 300px 220px;
+      gap: 20px;
     }
 
+    /* ── Card Base ── */
     .bento-card {
-      border-radius: 28px;
       position: relative;
+      border-radius: 28px;
       overflow: hidden;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
-      padding: 32px;
+      text-decoration: none;
       background-size: cover;
       background-position: center;
-      background-color: #4a5435;
-      color: #ffffff;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-      text-decoration: none;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-
-      &::before {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 60%;
-        background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-        z-index: 1;
-      }
+      background-color: #2D3A1B;
+      color: #fff;
+      cursor: pointer;
+      transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                  box-shadow 0.35s ease;
 
       &:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
-      }
-    }
+        transform: translateY(-6px) scale(1.01);
+        box-shadow: 0 20px 48px rgba(45, 58, 27, 0.20);
 
-    .bento-content {
-      position: relative;
-      z-index: 2;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
+        .card-overlay {
+          opacity: 0.75;
+        }
 
-      h3 {
-        font-family: 'Outfit', sans-serif;
-        font-size: 28px;
-        font-weight: 700;
-        margin: 0 0 8px 0;
-      }
-
-      p {
-        font-size: 14px;
-        line-height: 1.4;
-        color: rgba(255,255,255,0.85);
-        margin: 0;
-      }
-    }
-
-    .bento-large {
-      grid-column: span 2;
-      grid-row: span 2;
-    }
-
-    .bento-tall {
-      grid-column: span 1;
-      grid-row: span 2;
-    }
-
-    .bento-small {
-      grid-column: span 1;
-      grid-row: span 1;
-      padding: 24px;
-
-      .bento-content {
-        h3 {
-          font-size: 20px;
-          margin: 0;
+        .browse-btn mat-icon {
+          transform: translateX(4px);
         }
       }
     }
 
-    .new-arrival-badge {
-      background-color: #556B2F;
-      color: #ffffff;
-      font-size: 11px;
+    /* Overlay */
+    .card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(10,16,6,0.88) 0%, rgba(10,16,6,0.35) 55%, transparent 100%);
+      transition: opacity 0.35s ease;
+      opacity: 0.65;
+    }
+
+    /* Content */
+    .card-content {
+      position: relative;
+      z-index: 2;
+      padding: 28px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+
+      h2 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 32px;
+        font-weight: 800;
+        margin: 0;
+        line-height: 1.15;
+        color: #fff;
+      }
+
+      h3 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 22px;
+        font-weight: 700;
+        margin: 0;
+        color: #fff;
+      }
+
+      p {
+        font-size: 13px;
+        line-height: 1.45;
+        color: rgba(255, 255, 255, 0.82);
+        margin: 0;
+        max-width: 360px;
+      }
+    }
+
+    .new-badge {
+      background-color: #6B8E23;
+      color: #fff;
+      font-size: 10px;
       font-weight: 700;
-      padding: 6px 12px;
-      border-radius: 16px;
-      margin-bottom: 12px;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.8px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      width: fit-content;
+      text-transform: uppercase;
     }
 
     .browse-btn {
-      background-color: #ffffff;
-      color: #1e2610;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 24px;
-      font-weight: 600;
-      font-size: 14px;
-      margin-top: 16px;
       display: flex;
       align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
+      gap: 6px;
+      background-color: #ffffff;
+      color: #1e2610;
+      border-radius: 24px;
+      padding: 10px 20px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      width: fit-content;
+      margin-top: 6px;
 
       mat-icon {
-        font-size: 18px;
-        height: 18px;
-        width: 18px;
-      }
-
-      &:hover {
-        background-color: #f0f0f0;
+        font-size: 17px;
+        height: 17px;
+        width: 17px;
+        transition: transform 0.25s ease;
       }
     }
 
-    /* Backgrounds */
-    .bg-electronics {
-      background-color: #2D3A1B;
-      background-image: url('https://images.unsplash.com/photo-1546868871-7041f2a55e12?auto=format&fit=crop&q=80&w=800');
+    /* ── Layout Variants ── */
+    .hero-card {
+      grid-column: span 2;
+      grid-row: span 2;
     }
 
-    .bg-fashion {
-      background-color: #4a5435;
-      background-image: url('https://images.unsplash.com/photo-1434389678240-619da01c3df6?auto=format&fit=crop&q=80&w=600');
+    .small-card {
+      grid-column: span 1;
+      grid-row: span 1;
+
+      .card-content {
+        padding: 22px 24px;
+        p { font-size: 12px; }
+      }
     }
 
-    .bg-home {
-      background-color: #8c9c71;
-      background-image: url('https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&q=80&w=400');
+    .wide-card {
+      grid-column: span 2;
+      grid-row: span 1;
     }
 
-    .bg-sports {
-      background-color: #6a7c50;
-      background-image: url('https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&q=80&w=400');
-    }
-
-    .bg-beauty {
-      background-color: #3b4528;
-      background-image: url('https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&q=80&w=400');
-    }
-
-    .concierge-card {
-      background-color: #f4f6ec;
-      border: 1px solid rgba(85, 107, 47, 0.1);
-      border-radius: 24px;
-      padding: 40px;
+    /* ── Concierge Banner ── */
+    .concierge-banner {
+      background-color: #EDEEE4;
+      border: 1px solid rgba(85, 107, 47, 0.10);
+      border-radius: 28px;
+      padding: 40px 48px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 16px;
+      gap: 32px;
     }
 
-    .concierge-info {
+    .concierge-text {
       h3 {
         font-family: 'Outfit', sans-serif;
         font-size: 24px;
@@ -269,71 +326,107 @@ import { MatIconModule } from '@angular/material/icon';
         color: #1e2610;
         margin: 0 0 8px 0;
       }
-
       p {
         font-size: 14px;
         color: #556B2F;
         margin: 0;
-        line-height: 1.5;
+        line-height: 1.55;
+        max-width: 480px;
       }
     }
 
     .concierge-actions {
       display: flex;
-      gap: 16px;
+      gap: 14px;
+      flex-shrink: 0;
     }
 
-    .btn-primary-dark {
+    .btn-primary {
       background-color: #4a5435;
-      color: #ffffff;
+      color: #fff;
       border: none;
-      padding: 12px 24px;
+      padding: 12px 28px;
       border-radius: 24px;
-      font-weight: 600;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
       font-size: 14px;
       cursor: pointer;
       transition: background-color 0.2s ease;
 
-      &:hover {
-        background-color: #384028;
-      }
+      &:hover { background-color: #384028; }
     }
 
-    .btn-outline-dark {
+    .btn-outline {
       background-color: transparent;
       color: #4a5435;
-      border: 1px solid #4a5435;
-      padding: 12px 24px;
+      border: 2px solid #4a5435;
+      padding: 10px 28px;
       border-radius: 24px;
-      font-weight: 600;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
       font-size: 14px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      transition: background-color 0.2s ease;
 
-      &:hover {
-        background-color: rgba(74, 84, 53, 0.05);
-      }
+      &:hover { background-color: rgba(74, 84, 53, 0.06); }
     }
 
-    @media (max-width: 900px) {
-      .categories-page {
-        padding: 24px;
+    /* ── Responsive ── */
+    @media (max-width: 1024px) {
+      .categories-page { padding: 40px 32px 56px; }
+      .page-title { font-size: 36px; }
+    }
+
+    @media (max-width: 768px) {
+      .categories-page { padding: 32px 20px 48px; }
+      .page-title { font-size: 30px; }
+
+      .bento-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto;
       }
-      .explore-grid {
-        grid-template-columns: 1fr;
-        grid-auto-rows: minmax(200px, auto);
-      }
-      .bento-large, .bento-tall, .bento-small {
-        grid-column: span 1;
+
+      .hero-card {
+        grid-column: span 2;
         grid-row: span 1;
+        min-height: 260px;
       }
-      .concierge-card {
+
+      .small-card {
+        grid-column: span 1;
+        min-height: 200px;
+      }
+
+      .wide-card {
+        grid-column: span 2;
+        min-height: 200px;
+      }
+
+      .concierge-banner {
         flex-direction: column;
-        gap: 24px;
         align-items: flex-start;
+        padding: 32px 28px;
+        gap: 24px;
+      }
+
+      .concierge-actions { flex-wrap: wrap; }
+    }
+
+    @media (max-width: 480px) {
+      .bento-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-card,
+      .small-card,
+      .wide-card {
+        grid-column: span 1;
+        min-height: 220px;
       }
     }
   `]
 })
-export class CategoriesComponent {
-}
+export class CategoriesComponent {}
