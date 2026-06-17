@@ -47,18 +47,10 @@ import { CartService } from '../../core/services/cart.service';
         <!-- Center: Nav links -->
         <nav class="desktop-nav">
           <a routerLink="/products" class="nav-link">Shop</a>
-          <button class="nav-link-btn" [matMenuTriggerFor]="categoriesMenu">
-            Categories <mat-icon>keyboard_arrow_down</mat-icon>
-          </button>
+          <a routerLink="/categories" class="nav-link">Categories</a>
           <a routerLink="/" class="nav-link">Deals</a>
           <a routerLink="/orders" class="nav-link">Orders</a>
         </nav>
-
-        <mat-menu #categoriesMenu="matMenu" class="categories-menu-panel">
-          @for (cat of categories; track cat.slug) {
-            <a mat-menu-item [routerLink]="['/category', cat.slug]">{{ cat.name }}</a>
-          }
-        </mat-menu>
 
         <!-- Search Bar -->
         <div class="search-bar">
