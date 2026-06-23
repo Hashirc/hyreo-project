@@ -20,7 +20,7 @@ const newProducts = [
     categoryId: 'mobile-computers',
     subCategory: 'Mobiles',
     stock: 25,
-    imageUrl: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=500&auto=format&fit=crop&q=60',
+    imageUrl: "C:\Users\hashi\OneDrive\Desktop\mobile and laptop\Apple iPhone 15 Pro (128GB).png",
     rating: 4.8
   },
   {
@@ -31,7 +31,7 @@ const newProducts = [
     categoryId: 'mobile-computers',
     subCategory: 'Laptops',
     stock: 15,
-    imageUrl: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500&auto=format&fit=crop&q=60',
+    imageUrl: "C:\Users\hashi\OneDrive\Desktop\projects\hyreo project\client\src\assets\mobiles and laptops\Apple MacBook Air M3 13-inch.png",
     rating: 4.9
   },
   {
@@ -42,7 +42,7 @@ const newProducts = [
     categoryId: 'mobile-computers',
     subCategory: 'Tablets',
     stock: 20,
-    imageUrl: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500&auto=format&fit=crop&q=60',
+    imageUrl: "C:\Users\hashi\OneDrive\Desktop\projects\hyreo project\client\src\assets\mobiles and laptops\Apple iPad Air M2 11-inch.png",
     rating: 4.7
   },
   {
@@ -53,7 +53,7 @@ const newProducts = [
     categoryId: 'mobile-computers',
     subCategory: 'Headphones',
     stock: 40,
-    imageUrl: 'https://images.unsplash.com/photo-1588449668338-d134ae7f3630?w=500&auto=format&fit=crop&q=60',
+    imageUrl: "C:\Users\hashi\OneDrive\Desktop\projects\hyreo project\client\src\assets\mobiles and laptops\Apple AirPods Pro (2nd Generation).png",
     rating: 4.8
   },
 
@@ -255,7 +255,7 @@ const newProducts = [
 
 async function seedNewProducts() {
   console.log(`\n🚀 Seeding ${newProducts.length} new high-quality brand products into Firestore...\n`);
-  
+
   for (const product of newProducts) {
     try {
       await db.collection('products').doc(product.id).set(product);
