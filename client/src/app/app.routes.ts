@@ -16,6 +16,20 @@ export const routes: Routes = [
     loadComponent: () => import('./features/products/product-detail/product-detail.component').then(c => c.ProductDetailComponent)
   },
   {
+    path: 'offers/25-off',
+    loadComponent: () => import('./features/offers/offer-page/offer-page.component').then(c => c.OfferPageComponent),
+    data: { discount: 25 }
+  },
+  {
+    path: 'offers/50-off',
+    loadComponent: () => import('./features/offers/offer-page/offer-page.component').then(c => c.OfferPageComponent),
+    data: { discount: 50 }
+  },
+  {
+    path: 'wishlist',
+    loadComponent: () => import('./features/wishlist/wishlist.component').then(c => c.WishlistComponent)
+  },
+  {
     path: 'categories',
     loadComponent: () => import('./features/categories/categories.component').then(c => c.CategoriesComponent)
   },
@@ -48,9 +62,32 @@ export const routes: Routes = [
     loadComponent: () => import('./features/auth/register/register.component').then(c => c.RegisterComponent)
   },
   {
-    path: 'auth/profile',
+    path: 'account',
     canActivate: [authGuard],
     loadComponent: () => import('./features/auth/profile/profile.component').then(c => c.ProfileComponent)
+  },
+  {
+    path: 'auth/profile',
+    redirectTo: 'account',
+    pathMatch: 'full'
+  },
+  {
+    path: 'settings',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/settings/settings.component').then(c => c.SettingsComponent)
+  },
+  {
+    path: 'admin/login',
+    loadComponent: () => import('./features/admin/admin-login/admin-login.component').then(c => c.AdminLoginComponent)
+  },
+  {
+    path: 'admin/signup',
+    loadComponent: () => import('./features/admin/admin-register/admin-register.component').then(c => c.AdminRegisterComponent)
+  },
+  {
+    path: 'admin/register',
+    redirectTo: 'admin/signup',
+    pathMatch: 'full'
   },
   {
     path: 'admin',

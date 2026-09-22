@@ -233,36 +233,4 @@ export function verifyPassword(email: string, password: string): boolean {
 
 export { generateToken, decodeToken, generateId };
 
-// ---------- Seed default users ----------
-
-function seedDefaults() {
-  ensureCollection('users');
-
-  // Admin user
-  const adminUid = 'admin-uid-001';
-  collections['users'][adminUid] = {
-    uid: adminUid,
-    email: 'admin@olive.com',
-    displayName: 'Admin User',
-    role: 'admin',
-    createdAt: new Date(),
-  };
-  passwordStore['admin@olive.com'] = hashPassword('password123');
-
-  // Customer user
-  const customerUid = 'customer-uid-001';
-  collections['users'][customerUid] = {
-    uid: customerUid,
-    email: 'customer@olive.com',
-    displayName: 'Demo Customer',
-    role: 'customer',
-    createdAt: new Date(),
-  };
-  passwordStore['customer@olive.com'] = hashPassword('password123');
-
-  console.log('✓ Mock DB seeded with default users:');
-  console.log('  • admin@olive.com / password123 (Admin)');
-  console.log('  • customer@olive.com / password123 (Customer)');
-}
-
-seedDefaults();
+// Seeding disabled to remove demo accounts

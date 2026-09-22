@@ -13,6 +13,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/services/auth.service';
 import { CartService } from '../../core/services/cart.service';
+import { WishlistService } from '../../core/services/wishlist.service';
 
 @Component({
   selector: 'app-header',
@@ -60,49 +61,20 @@ import { CartService } from '../../core/services/cart.service';
 
         <!-- Right side actions -->
         <div class="header-actions">
+          <!-- Wishlist Icon -->
+          <button mat-icon-button routerLink="/wishlist" aria-label="Wishlist" class="icon-btn wishlist-icon-btn">
+            <mat-icon [matBadge]="wishlistService.wishlistCount()" matBadgeColor="accent" *ngIf="wishlistService.wishlistCount() > 0">favorite</mat-icon>
+            <mat-icon *ngIf="wishlistService.wishlistCount() === 0">favorite_border</mat-icon>
+          </button>
+
           <button mat-icon-button routerLink="/cart" aria-label="Shopping Cart" class="icon-btn">
             <mat-icon [matBadge]="cartService.cartCount()" matBadgeColor="warn" *ngIf="cartService.cartCount() > 0">shopping_cart</mat-icon>
             <mat-icon *ngIf="cartService.cartCount() === 0">shopping_cart</mat-icon>
           </button>
 
-          <button mat-icon-button [matMenuTriggerFor]="accountMenu" aria-label="User Account" class="icon-btn">
+          <button mat-icon-button routerLink="/account" aria-label="User Account" class="icon-btn">
             <mat-icon>person_outline</mat-icon>
           </button>
-
-          <mat-menu #accountMenu="matMenu" class="account-menu-panel">
-            @if (authService.currentUser()) {
-              <div class="menu-header">
-                <div class="user-name">{{ authService.currentUser()?.displayName }}</div>
-                <div class="user-email">{{ authService.currentUser()?.email }}</div>
-                <span class="badge" [class.badge-admin]="authService.currentUser()?.role === 'admin'" [class.badge-customer]="authService.currentUser()?.role === 'customer'">
-                  {{ authService.currentUser()?.role }}
-                </span>
-              </div>
-              <mat-divider></mat-divider>
-              <a mat-menu-item routerLink="/auth/profile">
-                <mat-icon>person</mat-icon>
-                <span>My Profile</span>
-              </a>
-              <button mat-menu-item (click)="logout()">
-                <mat-icon>logout</mat-icon>
-                <span>Logout</span>
-              </button>
-            } @else {
-              <div class="menu-header">
-                <div class="user-name">Welcome, Guest</div>
-                <p class="menu-sub">Please sign in to manage orders.</p>
-              </div>
-              <mat-divider></mat-divider>
-              <a mat-menu-item routerLink="/auth/login">
-                <mat-icon>login</mat-icon>
-                <span>Sign In</span>
-              </a>
-              <a mat-menu-item routerLink="/auth/register">
-                <mat-icon>person_add</mat-icon>
-                <span>Register</span>
-              </a>
-            }
-          </mat-menu>
 
           <!-- Action Capsule Button -->
           @if (authService.currentUser()?.role === 'admin') {
@@ -261,6 +233,29 @@ import { CartService } from '../../core/services/cart.service';
       }
     }
 
+    .wishlist-icon-btn {
+      color: #e53935;
+
+      &:hover {
+        background-color: rgba(229, 57, 53, 0.06);
+      }
+    }
+
+    .menu-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 18px;
+      height: 18px;
+      background: #e53935;
+      color: white;
+      border-radius: 10px;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 0 5px;
+      margin-left: 6px;
+    }
+
     .auth-pill-btn {
       background-color: #2D3A1B !important;
       color: #ffffff !important;
@@ -373,6 +368,7 @@ import { CartService } from '../../core/services/cart.service';
 export class HeaderComponent {
   authService = inject(AuthService);
   cartService = inject(CartService);
+  wishlistService = inject(WishlistService);
   private router = inject(Router);
 
   toggleSidenav = output<void>();

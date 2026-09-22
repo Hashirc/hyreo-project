@@ -51,7 +51,7 @@ import { AuthService } from '../../core/services/auth.service';
           <mat-divider></mat-divider>
           
           @if (authService.isAuthenticated()) {
-            <a mat-list-item routerLink="/auth/profile" routerLinkActive="active-item" (click)="sidenav.close()">
+            <a mat-list-item routerLink="/account" routerLinkActive="active-item" (click)="sidenav.close()">
               <mat-icon matListItemIcon>person</mat-icon>
               <span matListItemTitle>My Profile</span>
             </a>

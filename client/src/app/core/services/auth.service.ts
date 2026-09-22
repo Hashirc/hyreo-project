@@ -1,6 +1,8 @@
 import { Injectable, inject, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
 import { User } from '../models/types';
 import { initializeApp } from 'firebase/app';
@@ -102,13 +104,14 @@ export class AuthService {
       });
   }
 
-  async login(email: string, password: string): Promise<any> {
+  async login(email: string, password: string, role?: 'customer' | 'admin'): Promise<any> {
     if (this.isFirebaseMock) {
       // Mock Client Login — send email + password to server for validation
       return new Promise((resolve, reject) => {
         this.http.post<{ user: User, token: string }>(`${environment.apiUrl}/auth/login`, {
           email,
           password,
+          role
         }).subscribe({
           next: (res) => {
             this.currentUser.set(res.user);
@@ -128,14 +131,14 @@ export class AuthService {
     const idToken = await credentials.user.getIdToken();
     this.setToken(idToken);
     return new Promise((resolve, reject) => {
-      this.http.post<{ user: User, token: string }>(`${environment.apiUrl}/auth/login`, { email, token: idToken })
+      this.http.post<{ user: User, token: string }>(`${environment.apiUrl}/auth/login`, { email, token: idToken, role })
         .subscribe({
           next: (res) => {
             this.currentUser.set(res.user);
             localStorage.setItem('user_profile', JSON.stringify(res.user));
             resolve(res.user);
           },
-          error: (err) => reject(err)
+          error: (err) => reject(err.error || err)
         });
     });
   }
@@ -184,11 +187,76 @@ export class AuthService {
     });
   }
 
+  updateProfile(data: any): Observable<any> {
+    return this.http.put<{ user: User }>(`${environment.apiUrl}/auth/profile`, data).pipe(
+      tap(res => {
+        if (res && res.user) {
+          this.currentUser.set(res.user);
+          localStorage.setItem('user_profile', JSON.stringify(res.user));
+        }
+      })
+    );
+  }
+
+  changePassword(data: any): Observable<any> {
+    return this.http.put<any>(`${environment.apiUrl}/auth/change-password`, data);
+  }
+
+  updateAddresses(addresses: any[]): Observable<any> {
+    return this.http.put<{ user: User }>(`${environment.apiUrl}/auth/addresses`, { addresses }).pipe(
+      tap(res => {
+        if (res && res.user) {
+          this.currentUser.set(res.user);
+          localStorage.setItem('user_profile', JSON.stringify(res.user));
+        }
+      })
+    );
+  }
+
+  adminLoginPromise(data: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.http.post<{ user: User, token: string }>(`${environment.apiUrl}/auth/admin/login`, data)
+        .subscribe({
+          next: (res) => {
+            this.currentUser.set(res.user);
+            this.setToken(res.token);
+            localStorage.setItem('user_profile', JSON.stringify(res.user));
+            resolve(res.user);
+          },
+          error: (err) => reject(err.error || { message: 'Admin login failed' })
+        });
+    });
+  }
+
+  adminSignupPromise(data: any): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.http.post<{ user: User, token: string }>(`${environment.apiUrl}/auth/admin/register`, data)
+        .subscribe({
+          next: (res) => {
+            this.currentUser.set(res.user);
+            this.setToken(res.token);
+            localStorage.setItem('user_profile', JSON.stringify(res.user));
+            resolve(res.user);
+          },
+          error: (err) => reject(err.error || { message: 'Admin registration failed' })
+        });
+    });
+  }
+
+  checkAdminExists(): Observable<{ exists: boolean }> {
+    return this.http.get<{ exists: boolean }>(`${environment.apiUrl}/auth/admin/exists`);
+  }
+
   async logout(): Promise<void> {
+    const isAdmin = this.isAdmin();
     if (!this.isFirebaseMock) {
       await signOut(this.auth);
     }
     this.clearSession();
-    this.router.navigate(['/auth/login']);
+    if (isAdmin) {
+      this.router.navigate(['/admin/login']);
+    } else {
+      this.router.navigate(['/auth/login']);
+    }
   }
 }

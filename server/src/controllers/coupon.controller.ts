@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { db } from '../config/firebase';
 import { Coupon } from '../models';
+import { broadcast } from '../services/realtime';
 
 export async function createCoupon(req: Request, res: Response) {
   try {
@@ -14,7 +15,9 @@ export async function createCoupon(req: Request, res: Response) {
     }
 
     const docRef = await db.collection('coupons').add(couponData);
-    res.status(201).json({ id: docRef.id, ...couponData });
+    const createdCoupon = { id: docRef.id, ...couponData };
+    broadcast('offer_change', { type: 'create', offerId: docRef.id, offer: createdCoupon });
+    res.status(201).json(createdCoupon);
   } catch (error: any) {
     res.status(500).json({ error: 'Failed to create coupon' });
   }
@@ -46,9 +49,24 @@ export async function validateCoupon(req: Request, res: Response) {
       return res.status(400).json({ error: 'Coupon has expired' });
     }
 
-    res.json(coupon);
+    res.json({ id: snapshot.docs[0].id, ...coupon });
   } catch (error: any) {
     res.status(500).json({ error: 'Failed to validate coupon' });
+  }
+}
+
+export async function updateCoupon(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const bodyWithoutId = { ...req.body };
+    delete bodyWithoutId.id;
+    
+    await db.collection('coupons').doc(id).update(bodyWithoutId);
+    const updatedCoupon = { id, ...bodyWithoutId };
+    broadcast('offer_change', { type: 'update', offerId: id, offer: updatedCoupon });
+    res.json(updatedCoupon);
+  } catch (error: any) {
+    res.status(500).json({ error: 'Failed to update coupon' });
   }
 }
 
@@ -56,6 +74,7 @@ export async function deleteCoupon(req: Request, res: Response) {
   try {
     const { id } = req.params;
     await db.collection('coupons').doc(id).delete();
+    broadcast('offer_change', { type: 'delete', offerId: id });
     res.json({ message: 'Coupon deleted successfully' });
   } catch (error: any) {
     res.status(500).json({ error: 'Failed to delete coupon' });

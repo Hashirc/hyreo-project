@@ -1,0 +1,22 @@
+- [x] Backend Implementation
+  - [x] Modify `server/src/middleware/auth.middleware.ts`
+  - [x] Modify `server/src/controllers/auth.controller.ts`
+  - [x] Create `server/src/routes/admin.routes.ts`
+  - [x] Modify `server/src/server.ts`
+  - [x] Modify `server/src/routes/product.routes.ts`
+  - [x] Modify `server/src/routes/order.routes.ts`
+- [/] Frontend Implementation
+  - [ ] Modify `client/src/app/shared/components/product-card/product-card.component.ts`
+  - [ ] Modify `client/src/app/core/services/auth.service.ts`
+  - [ ] Create `client/src/app/core/services/user.service.ts`
+  - [ ] Modify `client/src/app/core/services/index.ts`
+  - [ ] Modify `client/src/app/core/admin.guard.ts`
+  - [ ] Modify `client/src/app/features/auth/login/login.component.ts`
+  - [ ] Modify `client/src/app/features/auth/register/register.component.ts`
+  - [ ] Create `client/src/app/features/admin/admin-login/admin-login.component.ts`
+  - [ ] Create `client/src/app/features/admin/admin-register/admin-register.component.ts`
+  - [ ] Modify `client/src/app/app.routes.ts`
+  - [ ] Modify `client/src/app/features/admin/admin-dashboard/admin-dashboard.component.ts`
+- [ ] Verification
+  - [ ] Build and check errors
+  - [ ] Verify functionality

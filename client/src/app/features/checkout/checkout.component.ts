@@ -12,6 +12,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CartService } from '../../core/services/cart.service';
 import { OrderService } from '../../core/services/order.service';
 import { AuthService } from '../../core/services/auth.service';
+import { CouponService } from '../../core/services/coupon.service';
 import { ShippingAddress } from '../../core/models/types';
 
 @Component({
@@ -406,6 +407,7 @@ export class CheckoutComponent implements OnInit {
   cartService = inject(CartService);
   private orderService = inject(OrderService);
   private authService = inject(AuthService);
+  private couponService = inject(CouponService);
 
   readonly isLoading = signal(false);
   readonly orderSuccess = signal(false);
@@ -439,16 +441,17 @@ export class CheckoutComponent implements OnInit {
     if (!code) return;
     
     this.isApplyingCoupon.set(true);
-    // Mock Validation for now
-    setTimeout(() => {
-      if (code.toUpperCase() === 'WELCOME10') {
-        this.appliedCoupon.set({ code: 'WELCOME10', discountValue: 10 });
-      } else {
-        alert('Invalid or expired coupon code');
+    this.couponService.validateCoupon(code).subscribe({
+      next: (coupon) => {
+        this.appliedCoupon.set({ code: coupon.code, discountValue: coupon.discountValue });
+        this.isApplyingCoupon.set(false);
+      },
+      error: (err) => {
+        alert(err.error?.error || 'Invalid or expired coupon code');
         this.appliedCoupon.set(null);
+        this.isApplyingCoupon.set(false);
       }
-      this.isApplyingCoupon.set(false);
-    }, 800);
+    });
   }
 
   onPlaceOrder() {

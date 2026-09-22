@@ -4,6 +4,7 @@ import { environment } from '../../../environments/environment';
 import { Cart, CartItem, Product } from '../models/types';
 import { AuthService } from './auth.service';
 import { OrderService } from './order.service';
+import { RealtimeService } from './realtime.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,7 @@ export class CartService {
   private http = inject(HttpClient);
   private authService = inject(AuthService);
   private orderService = inject(OrderService);
+  private realtimeService = inject(RealtimeService);
   private apiUrl = `${environment.apiUrl}/cart`;
 
   // Signals for Cart state
@@ -29,6 +31,39 @@ export class CartService {
   private lastOrderedItems: any[] | null = null;
 
   constructor() {
+    this.realtimeService.init();
+
+    // Listen to real-time product updates
+    this.realtimeService.productChanged$.subscribe((change) => {
+      if (change.type === 'update') {
+        const updatedProduct = change.product;
+        const currentItems = [...this.cartItems()];
+        let changed = false;
+        
+        currentItems.forEach((item, idx) => {
+          if (item.productId === updatedProduct.id) {
+            currentItems[idx] = {
+              ...item,
+              name: updatedProduct.name,
+              price: updatedProduct.price,
+              imageUrl: updatedProduct.imageUrl
+            };
+            changed = true;
+          }
+        });
+        
+        if (changed) {
+          this.saveCart(currentItems);
+        }
+      } else if (change.type === 'delete') {
+        const deletedId = change.productId;
+        const currentItems = this.cartItems().filter(item => item.productId !== deletedId);
+        if (currentItems.length !== this.cartItems().length) {
+          this.saveCart(currentItems);
+        }
+      }
+    });
+
     // Monkey patch OrderService.createOrder to capture ordered items
     const originalCreateOrder = this.orderService.createOrder.bind(this.orderService);
     this.orderService.createOrder = (orderData: any) => {

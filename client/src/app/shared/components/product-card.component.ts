@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatRippleModule } from '@angular/material/core';
 import { Product } from '../../core/models/product.model';
 import { CartService } from '../../core/services/cart.service';
+import { WishlistService } from '../../core/services/wishlist.service';
 import { CartItem } from '../../core/models/cart.model';
 import { handleImageFallback } from '../../core/utils/image-fallback';
 
@@ -23,6 +24,15 @@ import { handleImageFallback } from '../../core/utils/image-fallback';
           <mat-icon>star</mat-icon>
           <span>{{ product().rating }}</span>
         </div>
+        <!-- Wishlist Heart Button -->
+        <button
+          class="wishlist-btn"
+          [class.active]="isWishlisted()"
+          (click)="toggleWishlist($event)"
+          [attr.aria-label]="isWishlisted() ? 'Remove from wishlist' : 'Add to wishlist'"
+          title="{{ isWishlisted() ? 'Remove from wishlist' : 'Add to wishlist' }}">
+          <mat-icon>{{ isWishlisted() ? 'favorite' : 'favorite_border' }}</mat-icon>
+        </button>
       </div>
 
       <mat-card-content class="product-content">
@@ -114,6 +124,57 @@ import { handleImageFallback } from '../../core/utils/image-fallback';
       gap: 4px;
       font-weight: 600;
       font-size: 14px;
+    }
+
+    /* Wishlist heart button */
+    .wishlist-btn {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      z-index: 2;
+      padding: 0;
+
+      mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+        color: #999;
+        transition: all 0.25s ease;
+      }
+
+      &:hover {
+        background: white;
+        transform: scale(1.1);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+
+        mat-icon {
+          color: #e53935;
+        }
+      }
+
+      &.active {
+        background: #fff0f0;
+
+        mat-icon {
+          color: #e53935;
+        }
+
+        &:hover {
+          background: #ffd6d6;
+        }
+      }
     }
 
     .product-content {
@@ -237,11 +298,20 @@ import { handleImageFallback } from '../../core/utils/image-fallback';
 })
 export class ProductCardComponent {
   product = input.required<Product>();
+  private cartService = inject(CartService);
+  private wishlistService = inject(WishlistService);
 
-  constructor(private cartService: CartService) {}
+  isWishlisted(): boolean {
+    return this.wishlistService.isInWishlist(this.product().id);
+  }
+
+  toggleWishlist(event: Event): void {
+    event.stopPropagation();
+    event.preventDefault();
+    this.wishlistService.toggleWishlist(this.product() as any);
+  }
 
   handleImageError(event: any): void {
-    // Cast type to Product if models differ slightly
     handleImageFallback(event, this.product() as any);
   }
 

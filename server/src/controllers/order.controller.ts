@@ -6,6 +6,7 @@ import {
   dbUpdateOrderStatus,
   dbGetDashboardMetrics
 } from '../services/dbService';
+import { broadcast } from '../services/realtime';
 
 export async function createOrder(req: AuthRequest, res: Response) {
   try {
@@ -41,6 +42,9 @@ export async function createOrder(req: AuthRequest, res: Response) {
     });
 
     console.log('[DEBUG createOrder] Success, newOrder:', newOrder);
+    
+    // Broadcast realtime event
+    broadcast('order_change', { type: 'create', orderId: newOrder.id, order: newOrder });
 
     return res.status(201).json({
       message: 'Order created successfully',
@@ -119,6 +123,9 @@ export async function updateOrderStatus(req: AuthRequest, res: Response) {
     if (!success) {
       return res.status(404).json({ error: `Order with ID ${id} not found` });
     }
+
+    // Broadcast status change
+    broadcast('order_change', { type: 'update', orderId: id, status });
 
     return res.status(200).json({
       message: `Order status updated to ${status} successfully`

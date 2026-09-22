@@ -80,14 +80,7 @@ import { AuthService } from '../../../core/services/auth.service';
               }
             </mat-form-field>
 
-            <mat-form-field appearance="outline" class="field">
-              <mat-label>Account Type</mat-label>
-              <mat-icon matPrefix class="field-prefix-icon">manage_accounts</mat-icon>
-              <mat-select formControlName="role">
-                <mat-option value="customer">Customer</mat-option>
-                <mat-option value="admin">Administrator</mat-option>
-              </mat-select>
-            </mat-form-field>
+
 
             <button mat-raised-button color="primary" type="submit" class="submit-btn" id="register-submit-btn" [disabled]="registerForm.invalid || isLoading()">
               @if (isLoading()) {
@@ -356,8 +349,7 @@ export class RegisterComponent {
   registerForm: FormGroup = this.fb.group({
     displayName: ['', [Validators.required]],
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
-    role: ['customer', [Validators.required]]
+    password: ['', [Validators.required, Validators.minLength(6)]]
   });
 
   onSubmit() {
@@ -365,9 +357,9 @@ export class RegisterComponent {
 
     this.isLoading.set(true);
     this.errorMessage.set(null);
-    const { email, password, displayName, role } = this.registerForm.value;
+    const { email, password, displayName } = this.registerForm.value;
 
-    this.authService.register(email, password, displayName, role)
+    this.authService.register(email, password, displayName, 'customer')
       .then(() => {
         this.router.navigate(['/']);
       })

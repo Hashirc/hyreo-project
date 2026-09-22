@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { DealOfTheDayComponent } from './deal-of-the-day/deal-of-the-day.component';
 import { ProductCardComponent } from '../../shared/components/product-card/product-card.component';
 import { ProductService } from '../../core/services/product.service';
+import { RealtimeService } from '../../core/services/realtime.service';
 import { Product } from '../../core/models/types';
 
 @Component({
@@ -21,7 +22,7 @@ import { Product } from '../../core/models/types';
       <section class="promo-cards-section">
         <div class="promo-grid">
           <!-- Card 1: Dark Forest Green -->
-          <div class="promo-card dark-card" (click)="filterOffer('50')">
+          <div class="promo-card dark-card" routerLink="/offers/50-off">
             <div class="promo-card-content">
               <span class="promo-badge">LIMITED TIME OFFER</span>
               <h2>Flat 50% Off</h2>
@@ -32,7 +33,7 @@ import { Product } from '../../core/models/types';
           </div>
 
           <!-- Card 2: Light Sage Green -->
-          <div class="promo-card light-card" (click)="filterOffer('25')">
+          <div class="promo-card light-card" routerLink="/offers/25-off">
             <div class="promo-card-content">
               <span class="promo-badge">PERSONAL CARE</span>
               <h2>Flat 25% Off</h2>
@@ -441,6 +442,7 @@ import { Product } from '../../core/models/types';
 })
 export class HomeComponent implements OnInit {
   private productService = inject(ProductService);
+  private realtimeService = inject(RealtimeService);
 
   allProducts: Product[] = [];
   curatedProducts = signal<Product[]>([]);
@@ -448,6 +450,15 @@ export class HomeComponent implements OnInit {
   currentOffer = signal<string>('all');
 
   ngOnInit() {
+    this.realtimeService.init();
+
+    this.realtimeService.productChanged$.subscribe(() => {
+      this.loadCuratedProducts();
+    });
+    this.realtimeService.categoryChanged$.subscribe(() => {
+      this.loadCuratedProducts();
+    });
+
     this.loadCuratedProducts();
   }
 
@@ -468,12 +479,9 @@ export class HomeComponent implements OnInit {
 
   filterOffer(offer: string) {
     this.currentOffer.set(offer);
-    if (offer === '50') {
-      this.curatedProducts.set(this.allProducts.filter(p => p.categoryId === 'mobile-computers').slice(0, 12));
-    } else if (offer === '25') {
-      this.curatedProducts.set(this.allProducts.filter(p => p.categoryId === 'sports-fitness').slice(0, 12));
-    } else {
-      this.curatedProducts.set(this.allProducts.slice(0, 12));
-    }
+    const filtered = this.allProducts.filter(
+      p => !p.id.startsWith('flat50_') && !p.id.startsWith('flat25_') && !p.id.startsWith('deal_')
+    );
+    this.curatedProducts.set(filtered.slice(0, 12));
   }
 }

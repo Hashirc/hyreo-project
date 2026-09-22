@@ -5,6 +5,7 @@ const authController_1 = require("../controllers/authController");
 const productController_1 = require("../controllers/productController");
 const cartController_1 = require("../controllers/cartController");
 const orderController_1 = require("../controllers/orderController");
+const wishlistController_1 = require("../controllers/wishlistController");
 const auth_1 = require("../middleware/auth");
 const router = (0, express_1.Router)();
 // Authentication Routes
@@ -18,6 +19,10 @@ router.get('/categories', productController_1.getCategories);
 // Cart Routes
 router.get('/cart', auth_1.authenticateToken, cartController_1.getCart);
 router.post('/cart/items', auth_1.authenticateToken, cartController_1.updateCart);
+// Wishlist Routes
+router.get('/wishlist', auth_1.authenticateToken, wishlistController_1.getWishlist);
+router.post('/wishlist/add', auth_1.authenticateToken, wishlistController_1.addToWishlist);
+router.delete('/wishlist/:productId', auth_1.authenticateToken, wishlistController_1.removeFromWishlist);
 // Orders Routes
 router.post('/orders', auth_1.authenticateToken, orderController_1.createOrder);
 router.get('/orders', auth_1.authenticateToken, orderController_1.getOrders);

@@ -2,8 +2,14 @@ export interface User {
   uid: string;
   displayName: string;
   email: string;
+  username?: string;
   role: 'customer' | 'admin';
   createdAt?: string | Date;
+  phone?: string;
+  dob?: string;
+  gender?: string;
+  photoURL?: string;
+  addresses?: any[];
 }
 
 export interface Category {
@@ -23,7 +29,11 @@ export interface Product {
   stock: number;
   imageUrl: string;
   rating: number;
+  reviews?: number;
   createdAt?: string | Date;
+  discount?: number;
+  specifications?: any;
+  status?: string;
 }
 
 export interface CartItem {
@@ -45,11 +55,12 @@ export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'out_for_delive
 export interface Coupon {
   id?: string;
   code: string;
-  discountType: 'percentage' | 'fixed';
+  discountType?: 'percentage' | 'fixed';
   discountValue: number;
-  expiryDate: string | Date;
+  expiryDate?: string | Date;
   isActive: boolean;
-  createdAt: string | Date;
+  description?: string;
+  createdAt?: string | Date;
 }
 
 export interface Review {
@@ -89,4 +100,16 @@ export interface DashboardMetrics {
   totalOrders: number;
   totalUsers: number;
   totalRevenue: number;
+  totalCategories: number;
+  totalWishlistItems: number;
+  totalReviews: number;
+  averageRating: number;
+  conversionRate: number;
+  averageOrderValue: number;
+  revenueToday: number;
+  ordersToday: number;
+  activeUsersToday: number;
+  pendingOrdersCount: number;
+  charts?: any;
+  activityLogs?: any[];
 }

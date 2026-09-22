@@ -6,12 +6,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-admin-login',
   standalone: true,
   imports: [
     RouterLink,
@@ -21,36 +20,34 @@ import { AuthService } from '../../../core/services/auth.service';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatDividerModule,
     MatProgressSpinnerModule
   ],
   template: `
     <div class="auth-page">
-      <!-- Left Branding Panel -->
+      <!-- Left Branding Panel (Admin Specific) -->
       <div class="brand-panel">
         <div class="brand-panel-content">
           <div class="brand-logo">
-            <span class="logo-text">QUICK KART</span>
+            <span class="logo-text">QUICK KART ADMIN</span>
           </div>
-          <h1 class="brand-headline">Discover a world of premium products, curated for you.</h1>
-          <p class="brand-sub">Shop with confidence. Fast shipping, secure checkout, and exceptional quality — every time.</p>
+          <h1 class="brand-headline">Manage products, orders, users and store stats in one place.</h1>
+          <p class="brand-sub">Secure administrative environment. Unauthorized access attempts will be monitored and logged.</p>
           <div class="trust-signals">
             <div class="trust-item">
-              <div class="trust-icon"><span>🚚</span></div>
-              <span>Free Global Shipping</span>
+              <div class="trust-icon"><span>📊</span></div>
+              <span>Real-time Store Analytics</span>
             </div>
             <div class="trust-item">
-              <div class="trust-icon"><span>🔒</span></div>
-              <span>SSL Secure Checkout</span>
+              <div class="trust-icon"><span>📦</span></div>
+              <span>Inventory & Product Control</span>
             </div>
             <div class="trust-item">
-              <div class="trust-icon"><span>💬</span></div>
-              <span>24/7 Expert Support</span>
+              <div class="trust-icon"><span>👥</span></div>
+              <span>User & Account Moderation</span>
             </div>
           </div>
           <div class="brand-decor-circle c1"></div>
           <div class="brand-decor-circle c2"></div>
-          <div class="brand-decor-circle c3"></div>
         </div>
       </div>
 
@@ -58,8 +55,9 @@ import { AuthService } from '../../../core/services/auth.service';
       <div class="form-panel">
         <div class="form-content">
           <div class="form-header">
-            <h2 class="form-title">Welcome Back</h2>
-            <p class="form-subtitle">Sign in to your account to continue shopping</p>
+            <span class="admin-badge">ADMIN PORTAL</span>
+            <h2 class="form-title">Welcome, Officer</h2>
+            <p class="form-subtitle">Sign in to access your dashboard controls</p>
           </div>
 
           @if (errorMessage()) {
@@ -71,14 +69,11 @@ import { AuthService } from '../../../core/services/auth.service';
 
           <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
             <mat-form-field appearance="outline" class="field">
-              <mat-label>Email Address</mat-label>
-              <mat-icon matPrefix class="field-prefix-icon">alternate_email</mat-icon>
-              <input matInput type="email" formControlName="email" placeholder="you@example.com">
-              @if (loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched) {
-                <mat-error>Email is required</mat-error>
-              }
-              @if (loginForm.get('email')?.hasError('email') && loginForm.get('email')?.touched) {
-                <mat-error>Enter a valid email address</mat-error>
+              <mat-label>Username or Email</mat-label>
+              <mat-icon matPrefix class="field-prefix-icon">admin_panel_settings</mat-icon>
+              <input matInput type="text" formControlName="usernameOrEmail" placeholder="Enter username or email">
+              @if (loginForm.get('usernameOrEmail')?.hasError('required') && loginForm.get('usernameOrEmail')?.touched) {
+                <mat-error>Username or Email is required</mat-error>
               }
             </mat-form-field>
 
@@ -94,24 +89,17 @@ import { AuthService } from '../../../core/services/auth.service';
               }
             </mat-form-field>
 
-            <button mat-raised-button color="primary" type="submit" class="submit-btn" id="login-submit-btn" [disabled]="loginForm.invalid || isLoading()">
+            <button mat-raised-button color="primary" type="submit" class="submit-btn" [disabled]="loginForm.invalid || isLoading()">
               @if (isLoading()) {
                 <mat-spinner diameter="22"></mat-spinner>
               } @else {
-                <mat-icon>login</mat-icon> Sign In
+                <mat-icon>login</mat-icon> Sign In to Admin Panel
               }
             </button>
           </form>
 
-          <div class="admin-login-box">
-            <mat-divider class="divider"></mat-divider>
-            <button mat-stroked-button color="accent" type="button" class="admin-btn" (click)="onAdminQuickLogin()" [disabled]="isLoading()">
-              <mat-icon>admin_panel_settings</mat-icon> Quick Admin Login
-            </button>
-          </div>
-
           <div class="alt-link">
-            <p>New to Quick Kart? <a routerLink="/auth/register" class="link-olive">Create an account</a></p>
+            <p>New Administrator? <a routerLink="/admin/signup" class="link-olive">Register Admin Account</a></p>
           </div>
         </div>
       </div>
@@ -130,7 +118,7 @@ import { AuthService } from '../../../core/services/auth.service';
 
     /* ---- Left brand panel ---- */
     .brand-panel {
-      background: linear-gradient(145deg, #1E2712 0%, #2D3A1B 45%, #3F5425 100%);
+      background: linear-gradient(145deg, #2D3A1B 0%, #3D4D20 50%, #43542B 100%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -154,16 +142,16 @@ import { AuthService } from '../../../core/services/auth.service';
       font-family: 'Outfit', sans-serif;
       font-weight: 800;
       font-size: 22px;
-      letter-spacing: 3px;
+      letter-spacing: 2px;
       color: #D8E5BE;
       text-transform: uppercase;
     }
 
     .brand-headline {
       font-family: 'Outfit', sans-serif;
-      font-size: 36px;
+      font-size: 34px;
       font-weight: 800;
-      line-height: 1.2;
+      line-height: 1.25;
       color: #ffffff;
       margin-bottom: 20px;
     }
@@ -212,14 +200,13 @@ import { AuthService } from '../../../core/services/auth.service';
     }
     .c1 { width: 350px; height: 350px; bottom: -120px; right: -100px; }
     .c2 { width: 220px; height: 220px; top: -60px; right: 80px; }
-    .c3 { width: 140px; height: 140px; top: 30%; left: -50px; }
 
     /* ---- Right form panel ---- */
     .form-panel {
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: var(--bg-light);
+      background-color: #FAFBF7;
       padding: 48px 32px;
     }
 
@@ -230,6 +217,18 @@ import { AuthService } from '../../../core/services/auth.service';
 
     .form-header {
       margin-bottom: 32px;
+    }
+
+    .admin-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      background-color: #EBF0D8;
+      color: #556B2F;
+      font-size: 11px;
+      font-weight: 800;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      letter-spacing: 1px;
     }
 
     .form-title {
@@ -264,8 +263,10 @@ import { AuthService } from '../../../core/services/auth.service';
     .submit-btn {
       height: 52px !important;
       margin-top: 12px;
-      font-size: 16px !important;
+      font-size: 15px !important;
       letter-spacing: 0.5px;
+      background-color: #556B2F !important;
+      color: white !important;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -273,6 +274,10 @@ import { AuthService } from '../../../core/services/auth.service';
 
       mat-spinner { margin: 0 auto; }
       mat-icon { margin-right: 4px; }
+      
+      &:hover {
+        background-color: #3d4d1f !important;
+      }
     }
 
     .alt-link {
@@ -286,36 +291,6 @@ import { AuthService } from '../../../core/services/auth.service';
         font-weight: 700;
         text-decoration: none;
         &:hover { text-decoration: underline; }
-      }
-    }
-
-    .divider {
-      margin: 20px 0;
-    }
-
-    .admin-login-box {
-      margin-bottom: 16px;
-    }
-
-    .admin-btn {
-      width: 100%;
-      height: 48px !important;
-      font-size: 15px !important;
-      font-weight: 600;
-      color: #2D3A1B !important;
-      border-color: #2D3A1B !important;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      border-radius: 12px;
-
-      mat-icon {
-        color: #2D3A1B;
-      }
-
-      &:hover {
-        background-color: rgba(45, 58, 27, 0.08);
       }
     }
 
@@ -349,7 +324,7 @@ import { AuthService } from '../../../core/services/auth.service';
     }
   `]
 })
-export class LoginComponent {
+export class AdminLoginComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
@@ -360,8 +335,8 @@ export class LoginComponent {
   readonly errorMessage = signal<string | null>(null);
 
   loginForm: FormGroup = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]]
+    usernameOrEmail: ['', Validators.required],
+    password: ['', Validators.required]
   });
 
   onSubmit() {
@@ -369,38 +344,18 @@ export class LoginComponent {
 
     this.isLoading.set(true);
     this.errorMessage.set(null);
-    const { email, password } = this.loginForm.value;
+    const { usernameOrEmail, password } = this.loginForm.value;
 
-    this.authService.login(email, password)
-      .then((user) => {
+    this.authService.adminLoginPromise({ usernameOrEmail, password })
+      .then(() => {
         let returnUrl = this.route.snapshot.queryParams['returnUrl'];
         if (!returnUrl) {
-          returnUrl = user?.role === 'admin' ? '/admin' : '/';
+          returnUrl = '/admin';
         }
         this.router.navigateByUrl(returnUrl);
       })
       .catch((err) => {
-        this.errorMessage.set(err.message || 'Login failed. Please check your credentials.');
-      })
-      .finally(() => {
-        this.isLoading.set(false);
-      });
-  }
-
-  onAdminQuickLogin() {
-    this.loginForm.patchValue({
-      email: 'admin@olive.com',
-      password: 'password123'
-    });
-    this.isLoading.set(true);
-    this.errorMessage.set(null);
-
-    this.authService.login('admin@olive.com', 'password123', 'admin')
-      .then(() => {
-        this.router.navigate(['/admin']);
-      })
-      .catch((err) => {
-        this.errorMessage.set(err.message || 'Admin login failed.');
+        this.errorMessage.set(err.error || err.message || 'Login failed. Verify admin credentials.');
       })
       .finally(() => {
         this.isLoading.set(false);

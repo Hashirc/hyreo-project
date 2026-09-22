@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { db } from '../config/firebase';
 import { Product, Category } from '../models/index';
+import { broadcast } from '../services/realtime';
 
 export async function getAllProducts(req: Request, res: Response) {
   try {
@@ -83,11 +84,10 @@ export async function createProduct(req: Request, res: Response) {
     };
 
     const docRef = await db.collection('products').add(newProduct);
+    const createdProduct = { ...newProduct, id: docRef.id };
+    broadcast('product_change', { type: 'create', productId: docRef.id, product: createdProduct });
 
-    res.status(201).json({
-      ...newProduct,
-      id: docRef.id
-    });
+    res.status(201).json(createdProduct);
   } catch (error) {
     console.error('Error creating product:', error);
     res.status(500).json({ error: 'Failed to create product' });
@@ -100,13 +100,11 @@ export async function updateProduct(req: Request, res: Response) {
     const updateData = { ...req.body, updatedAt: new Date() };
 
     await db.collection('products').doc(id).update(updateData);
-
     const updatedDoc = await db.collection('products').doc(id).get();
+    const updatedProduct = { id: updatedDoc.id, ...updatedDoc.data() };
+    broadcast('product_change', { type: 'update', productId: id, product: updatedProduct });
 
-    res.json({
-      id: updatedDoc.id,
-      ...updatedDoc.data()
-    });
+    res.json(updatedProduct);
   } catch (error) {
     console.error('Error updating product:', error);
     res.status(500).json({ error: 'Failed to update product' });
@@ -118,6 +116,7 @@ export async function deleteProduct(req: Request, res: Response) {
     const { id } = req.params;
 
     await db.collection('products').doc(id).delete();
+    broadcast('product_change', { type: 'delete', productId: id });
 
     res.json({ message: 'Product deleted successfully' });
   } catch (error) {
@@ -149,7 +148,9 @@ export async function createCategory(req: Request, res: Response) {
   try {
     const categoryData: Category = req.body;
     const docRef = await db.collection('categories').add(categoryData);
-    res.status(201).json({ ...categoryData, id: docRef.id });
+    const createdCategory = { ...categoryData, id: docRef.id };
+    broadcast('category_change', { type: 'create', categoryId: docRef.id, category: createdCategory });
+    res.status(201).json(createdCategory);
   } catch (error: any) {
     res.status(500).json({ error: 'Failed to create category' });
   }
@@ -161,7 +162,9 @@ export async function updateCategory(req: Request, res: Response) {
     const bodyWithoutId = { ...req.body };
     delete bodyWithoutId.id;
     await db.collection('categories').doc(id).update(bodyWithoutId);
-    res.json({ id, ...bodyWithoutId });
+    const updatedCategory = { id, ...bodyWithoutId };
+    broadcast('category_change', { type: 'update', categoryId: id, category: updatedCategory });
+    res.json(updatedCategory);
   } catch (error: any) {
     res.status(500).json({ error: 'Failed to update category' });
   }
@@ -171,6 +174,7 @@ export async function deleteCategory(req: Request, res: Response) {
   try {
     const { id } = req.params;
     await db.collection('categories').doc(id).delete();
+    broadcast('category_change', { type: 'delete', categoryId: id });
     res.json({ message: 'Category deleted successfully' });
   } catch (error: any) {
     res.status(500).json({ error: 'Failed to delete category' });

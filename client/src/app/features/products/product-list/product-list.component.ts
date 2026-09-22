@@ -10,6 +10,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatChipsModule } from '@angular/material/chips';
 import { ProductService } from '../../../core/services/product.service';
+import { RealtimeService } from '../../../core/services/realtime.service';
 import { Product, Category } from '../../../core/models/types';
 import { ProductCardComponent } from '../../../shared/components/product-card/product-card.component';
 import { combineLatest } from 'rxjs';
@@ -554,6 +555,7 @@ export class ProductListComponent implements OnInit {
   private productService = inject(ProductService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private realtimeService = inject(RealtimeService);
 
   // States
   readonly categories = signal<Category[]>([]);
@@ -630,6 +632,16 @@ export class ProductListComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.realtimeService.init();
+
+    this.realtimeService.productChanged$.subscribe(() => {
+      this.loadProducts();
+    });
+    this.realtimeService.categoryChanged$.subscribe(() => {
+      this.loadCategories();
+      this.loadProducts();
+    });
+
     this.loadCategories();
   }
 

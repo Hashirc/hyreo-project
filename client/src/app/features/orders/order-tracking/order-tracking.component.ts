@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { OrderService } from '../../../core/services/order.service';
+import { RealtimeService } from '../../../core/services/realtime.service';
 import { Order } from '../../../core/models/types';
 
 @Component({
@@ -759,6 +760,7 @@ import { Order } from '../../../core/models/types';
 export class OrderTrackingComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private orderService = inject(OrderService);
+  private realtimeService = inject(RealtimeService);
 
   readonly order = signal<Order | null>(null);
   readonly isLoading = signal(true);
@@ -767,6 +769,8 @@ export class OrderTrackingComponent implements OnInit {
   private readonly statusSequence: Order['status'][] = ['pending', 'processing', 'shipped', 'out_for_delivery', 'delivered'];
 
   ngOnInit() {
+    this.realtimeService.init();
+
     const orderId = this.route.snapshot.paramMap.get('orderId');
 
     if (!orderId) {
@@ -774,7 +778,17 @@ export class OrderTrackingComponent implements OnInit {
       return;
     }
 
-    // Try to get order from navigation state first (passed from success page if clicked immediately)
+    // Reload order on status update event
+    this.realtimeService.orderChanged$.subscribe((change) => {
+      if (!change.orderId || change.orderId === orderId || String(change.orderId) === String(orderId)) {
+        this.orderService.getOrderById(orderId).subscribe({
+          next: (order) => this.setupOrder(order),
+          error: (err) => console.error('Failed to sync order tracking status:', err)
+        });
+      }
+    });
+
+    // Try to get order from navigation state first
     const navState = history.state as any;
     if (navState?.order) {
       this.setupOrder(navState.order);

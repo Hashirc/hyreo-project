@@ -1,6 +1,14 @@
 import { admin, db, useMockDb } from '../config/firebase';
 import { User, Category, Product, Cart, Order, CartItem, OrderStatus } from '../models/types';
 
+// Wishlist types
+interface WishlistDoc {
+  userId: string;
+  productIds: string[];
+  updatedAt: Date;
+}
+
+
 // Mock DB Storage
 let mockUsers: User[] = [];
 let mockCategories: Category[] = [
@@ -1679,10 +1687,12 @@ export async function dbCreateOrder(orderData: Omit<Order, 'id' | 'createdAt'>):
 }
 
 export async function dbUpdateOrderStatus(orderId: string, status: OrderStatus): Promise<boolean> {
+  const now = new Date();
   if (useMockDb) {
     const idx = mockOrders.findIndex(o => o.id === orderId);
     if (idx !== -1) {
       mockOrders[idx].status = status;
+      (mockOrders[idx] as any).updatedAt = now;
       return true;
     }
     return false;
@@ -1692,35 +1702,343 @@ export async function dbUpdateOrderStatus(orderId: string, status: OrderStatus):
   const orderDoc = await orderRef.get();
   if (!orderDoc.exists) return false;
 
-  await orderRef.update({ status });
+  await orderRef.update({
+    status,
+    updatedAt: admin.firestore.FieldValue.serverTimestamp()
+  });
   return true;
 }
 
 // User Dashboard Metrics
 export async function dbGetDashboardMetrics() {
+  let productsList: any[] = [];
+  let ordersList: any[] = [];
+  let usersList: any[] = [];
+  let categoriesList: any[] = [];
+  let wishlistsList: any[] = [];
+
   if (useMockDb) {
-    const totalProducts = mockProducts.length;
-    const totalOrders = mockOrders.length;
-    // unique users from mockUsers
-    const totalUsers = mockUsers.length;
-    const totalRevenue = mockOrders.reduce((acc, order) => acc + (order.total || 0), 0);
-    return { totalProducts, totalOrders, totalUsers, totalRevenue };
+    productsList = mockProducts || [];
+    ordersList = mockOrders || [];
+    usersList = mockUsers || [];
+    
+    // Fetch mock categories from Firestore
+    const catSnapshot = await db.collection('categories').get();
+    catSnapshot.forEach((doc: any) => {
+      categoriesList.push({ id: doc.id, ...doc.data() });
+    });
+    
+    // Fetch mock wishlists from Firestore
+    const wishSnapshot = await db.collection('wishlists').get();
+    wishSnapshot.forEach((doc: any) => {
+      wishlistsList.push({ id: doc.id, ...doc.data() });
+    });
+  } else {
+    // Firestore DB
+    const prodsSnapshot = await db.collection('products').get();
+    prodsSnapshot.forEach((doc: any) => {
+      productsList.push({ id: doc.id, ...doc.data() });
+    });
+
+    const ordersSnapshot = await db.collection('orders').get();
+    ordersSnapshot.forEach((doc: any) => {
+      ordersList.push({ id: doc.id, ...doc.data() });
+    });
+
+    const usersSnapshot = await db.collection('users').get();
+    usersSnapshot.forEach((doc: any) => {
+      usersList.push({ id: doc.id, ...doc.data() });
+    });
+
+    const catSnapshot = await db.collection('categories').get();
+    catSnapshot.forEach((doc: any) => {
+      categoriesList.push({ id: doc.id, ...doc.data() });
+    });
+
+    const wishSnapshot = await db.collection('wishlists').get();
+    wishSnapshot.forEach((doc: any) => {
+      wishlistsList.push({ id: doc.id, ...doc.data() });
+    });
   }
 
-  const prodsCount = (await db.collection('products').count().get()).data().count;
-  const ordersCount = (await db.collection('orders').count().get()).data().count;
-  const usersCount = (await db.collection('users').count().get()).data().count;
+  // 1. KPI Calculations
+  const totalProducts = productsList.length;
+  const totalCategories = categoriesList.length;
+  const totalOrders = ordersList.length;
+  const totalCustomers = usersList.filter(u => u.role === 'customer').length;
+  const totalRevenue = ordersList.filter(o => o.status !== 'cancelled').reduce((acc, o) => acc + (o.total || 0), 0);
 
-  const ordersSnapshot = await db.collection('orders').get();
-  let totalRevenue = 0;
-  ordersSnapshot.forEach((doc: any) => {
-    totalRevenue += (doc.data()['total'] || 0);
+  const pendingOrders = ordersList.filter(o => o.status === 'pending').length;
+  const processingOrders = ordersList.filter(o => o.status === 'processing').length;
+  const deliveredOrders = ordersList.filter(o => o.status === 'delivered').length;
+  const cancelledOrders = ordersList.filter(o => o.status === 'cancelled').length;
+
+  const totalWishlistItems = wishlistsList.reduce((acc, w) => acc + (w.productIds ? w.productIds.length : 0), 0);
+
+  const now = new Date();
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+  const totalSalesToday = ordersList
+    .filter(o => {
+      const orderDate = new Date(o.createdAt);
+      return orderDate >= startOfToday && o.status !== 'cancelled';
+    })
+    .reduce((acc, o) => acc + (o.total || 0), 0);
+
+  const totalSalesThisMonth = ordersList
+    .filter(o => {
+      const orderDate = new Date(o.createdAt);
+      return orderDate >= startOfMonth && o.status !== 'cancelled';
+    })
+    .reduce((acc, o) => acc + (o.total || 0), 0);
+
+  const lowStockProducts = productsList.filter(p => p.stock > 0 && p.stock <= 5).length;
+  const outOfStockProducts = productsList.filter(p => p.stock <= 0).length;
+
+  // 2. Recent Activities
+  const recentOrders = [...ordersList]
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .slice(0, 5)
+    .map(o => ({
+      id: o.id,
+      customerName: o.shippingAddress?.fullName || 'Guest',
+      total: o.total,
+      status: o.status,
+      createdAt: o.createdAt
+    }));
+
+  const recentProducts = [...productsList]
+    .sort((a, b) => {
+      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return dateB - dateA;
+    })
+    .slice(0, 5);
+
+  const recentCustomers = [...usersList]
+    .filter(u => u.role === 'customer')
+    .sort((a, b) => {
+      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return dateB - dateA;
+    })
+    .slice(0, 5)
+    .map(u => ({
+      uid: u.uid,
+      displayName: u.displayName || 'Unnamed User',
+      email: u.email,
+      createdAt: u.createdAt
+    }));
+
+  const reviewsSnapshot = await db.collection('reviews').get();
+  const reviewsList: any[] = [];
+  reviewsSnapshot.forEach((doc: any) => {
+    reviewsList.push({ id: doc.id, ...doc.data() });
+  });
+  const recentReviews = reviewsList
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .slice(0, 5);
+
+  // 3. Chart Datasets
+  // Monthly revenue chart
+  const monthlyRevenue: { month: string; revenue: number }[] = [];
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date();
+    d.setMonth(d.getMonth() - i);
+    const mLabel = monthNames[d.getMonth()] + ' ' + d.getFullYear().toString().slice(-2);
+    const rev = ordersList
+      .filter(o => {
+        const oDate = new Date(o.createdAt);
+        return oDate.getMonth() === d.getMonth() && oDate.getFullYear() === d.getFullYear() && o.status !== 'cancelled';
+      })
+      .reduce((acc, o) => acc + (o.total || 0), 0);
+    monthlyRevenue.push({ month: mLabel, revenue: rev });
+  }
+
+  // Orders overview breakdown
+  const ordersOverview = [
+    { name: 'Pending', value: pendingOrders },
+    { name: 'Processing', value: processingOrders },
+    { name: 'Delivered', value: deliveredOrders },
+    { name: 'Cancelled', value: cancelledOrders }
+  ];
+
+  // Sales Trend chart
+  const salesTrend: { date: string; sales: number }[] = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const daySales = ordersList
+      .filter(o => {
+        const oDate = new Date(o.createdAt);
+        return oDate.getDate() === d.getDate() && oDate.getMonth() === d.getMonth() && oDate.getFullYear() === d.getFullYear() && o.status !== 'cancelled';
+      })
+      .reduce((acc, o) => acc + (o.total || 0), 0);
+    salesTrend.push({ date: dateStr, sales: daySales });
+  }
+
+  // Top selling products
+  const productQuantities: { [prodId: string]: { name: string; quantity: number } } = {};
+  ordersList
+    .filter(o => o.status !== 'cancelled')
+    .forEach(o => {
+      if (o.items && Array.isArray(o.items)) {
+        o.items.forEach((item: any) => {
+          if (!productQuantities[item.productId]) {
+            productQuantities[item.productId] = { name: item.name, quantity: 0 };
+          }
+          productQuantities[item.productId].quantity += (item.quantity || 0);
+        });
+      }
+    });
+  const topSellingProducts = Object.keys(productQuantities)
+    .map(id => ({
+      id,
+      name: productQuantities[id].name,
+      quantity: productQuantities[id].quantity
+    }))
+    .sort((a, b) => b.quantity - a.quantity)
+    .slice(0, 5);
+
+  // Most viewed products (using rating as a proxy)
+  const mostViewedProducts = [...productsList]
+    .sort((a, b) => (b.rating || 0) - (a.rating || 0))
+    .slice(0, 5)
+    .map(p => ({
+      id: p.id,
+      name: p.name,
+      rating: p.rating || 0,
+      price: p.price
+    }));
+
+  // Category performance
+  const categorySales: { [catId: string]: number } = {};
+  categoriesList.forEach(c => {
+    categorySales[c.id] = 0;
+  });
+  ordersList
+    .filter(o => o.status !== 'cancelled')
+    .forEach(o => {
+      if (o.items && Array.isArray(o.items)) {
+        o.items.forEach((item: any) => {
+          const prod = productsList.find(p => p.id === item.productId);
+          const catId = prod ? prod.categoryId : 'other';
+          if (categorySales[catId] === undefined) {
+            categorySales[catId] = 0;
+          }
+          categorySales[catId] += (item.price * item.quantity);
+        });
+      }
+    });
+  const categoryPerformance = Object.keys(categorySales).map(id => {
+    const catName = categoriesList.find(c => c.id === id)?.name || id;
+    return {
+      category: catName,
+      sales: categorySales[id]
+    };
   });
 
   return {
-    totalProducts: prodsCount,
-    totalOrders: ordersCount,
-    totalUsers: usersCount,
-    totalRevenue
+    metrics: {
+      totalProducts,
+      totalCategories,
+      totalOrders,
+      totalCustomers,
+      totalRevenue,
+      pendingOrders,
+      processingOrders,
+      deliveredOrders,
+      cancelledOrders,
+      totalWishlistItems,
+      totalSalesToday,
+      totalSalesThisMonth,
+      lowStockProducts,
+      outOfStockProducts
+    },
+    recentActivity: {
+      recentOrders,
+      recentProducts,
+      recentCustomers,
+      recentReviews
+    },
+    charts: {
+      monthlyRevenue,
+      ordersOverview,
+      salesTrend,
+      topSellingProducts,
+      mostViewedProducts,
+      categoryPerformance
+    }
   };
+}
+
+// ─── Wishlist Services ─────────────────────────────────────────────────────
+
+export async function dbGetWishlist(userId: string): Promise<WishlistDoc> {
+  const empty: WishlistDoc = { userId, productIds: [], updatedAt: new Date() };
+
+  if (useMockDb) {
+    const doc = await db.collection('wishlists').doc(userId).get();
+    if (!doc.exists) return empty;
+    const data = doc.data();
+    return { userId, productIds: data?.productIds || [], updatedAt: new Date() };
+  }
+
+  const doc = await db.collection('wishlists').doc(userId).get();
+  if (!doc.exists) return empty;
+  const data = doc.data();
+  return {
+    userId,
+    productIds: data?.productIds || [],
+    updatedAt: data?.updatedAt?.toDate() || new Date()
+  };
+}
+
+export async function dbAddToWishlist(userId: string, productId: string): Promise<WishlistDoc> {
+  const current = await dbGetWishlist(userId);
+  if (!current.productIds.includes(productId)) {
+    current.productIds.push(productId);
+  }
+  current.updatedAt = new Date();
+
+  if (useMockDb) {
+    await db.collection('wishlists').doc(userId).set({
+      userId,
+      productIds: current.productIds,
+      updatedAt: current.updatedAt
+    });
+    return current;
+  }
+
+  await db.collection('wishlists').doc(userId).set({
+    userId,
+    productIds: current.productIds,
+    updatedAt: admin.firestore.FieldValue.serverTimestamp()
+  });
+  return current;
+}
+
+export async function dbRemoveFromWishlist(userId: string, productId: string): Promise<WishlistDoc> {
+  const current = await dbGetWishlist(userId);
+  current.productIds = current.productIds.filter(id => id !== productId);
+  current.updatedAt = new Date();
+
+  if (useMockDb) {
+    await db.collection('wishlists').doc(userId).set({
+      userId,
+      productIds: current.productIds,
+      updatedAt: current.updatedAt
+    });
+    return current;
+  }
+
+  await db.collection('wishlists').doc(userId).set({
+    userId,
+    productIds: current.productIds,
+    updatedAt: admin.firestore.FieldValue.serverTimestamp()
+  });
+  return current;
 }

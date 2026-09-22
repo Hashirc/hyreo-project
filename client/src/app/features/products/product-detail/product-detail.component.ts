@@ -7,6 +7,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ProductService } from '../../../core/services/product.service';
 import { CartService } from '../../../core/services/cart.service';
+import { RealtimeService } from '../../../core/services/realtime.service';
 import { Product } from '../../../core/models/types';
 import { handleImageFallback } from '../../../core/utils/image-fallback';
 import { ProductCardComponent } from '../../../shared/components/product-card/product-card.component';
@@ -694,6 +695,9 @@ export class ProductDetailComponent implements OnInit {
   private cartService = inject(CartService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private realtimeService = inject(RealtimeService);
+
+  activeProductId: string | null = null;
 
   readonly product = signal<Product | null>(null);
   readonly quantity = signal<number>(1);
@@ -708,36 +712,63 @@ export class ProductDetailComponent implements OnInit {
   });
 
   ngOnInit() {
+    this.realtimeService.init();
+
+    // Listen to real-time changes
+    this.realtimeService.productChanged$.subscribe((change) => {
+      if (change.productId === this.activeProductId) {
+        if (change.type === 'delete') {
+          alert('This product is no longer available.');
+          this.router.navigate(['/products']);
+        } else {
+          this.reloadProductDetails(change.productId);
+        }
+      } else if (change.type === 'update' || change.type === 'delete' || change.type === 'create') {
+        // Reload similar products if something in the category changes
+        const prod = this.product();
+        if (prod) {
+          this.reloadSimilarProducts(prod);
+        }
+      }
+    });
+
     this.route.paramMap.subscribe(params => {
       const id = params.get('id');
       if (id) {
-        this.isLoading.set(true);
-        this.activeImageIndex.set(0);
-        this.quantity.set(1);
-        
-        this.productService.getProductById(id).subscribe({
-          next: (prod) => {
-            this.product.set(prod);
-            this.isLoading.set(false);
-            
-            // Load similar products
-            this.productService.getProducts(prod.categoryId).subscribe({
-              next: (allProds) => {
-                const filtered = allProds.filter(p => p.id !== prod.id);
-                this.similarProducts.set(filtered.slice(0, 4));
-              },
-              error: (err) => {
-                console.error('Failed to load similar products', err);
-              }
-            });
-          },
-          error: (err) => {
-            console.error('Failed to load product', err);
-            this.isLoading.set(false);
-          }
-        });
+        this.activeProductId = id;
+        this.reloadProductDetails(id);
       } else {
         this.isLoading.set(false);
+      }
+    });
+  }
+
+  private reloadProductDetails(id: string) {
+    this.isLoading.set(true);
+    this.activeImageIndex.set(0);
+    this.quantity.set(1);
+    
+    this.productService.getProductById(id).subscribe({
+      next: (prod) => {
+        this.product.set(prod);
+        this.isLoading.set(false);
+        this.reloadSimilarProducts(prod);
+      },
+      error: (err) => {
+        console.error('Failed to load product', err);
+        this.isLoading.set(false);
+      }
+    });
+  }
+
+  private reloadSimilarProducts(prod: Product) {
+    this.productService.getProducts(prod.categoryId).subscribe({
+      next: (allProds) => {
+        const filtered = allProds.filter(p => p.id !== prod.id);
+        this.similarProducts.set(filtered.slice(0, 4));
+      },
+      error: (err) => {
+        console.error('Failed to load similar products', err);
       }
     });
   }

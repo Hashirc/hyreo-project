@@ -3,6 +3,7 @@ import { registerUser, loginUser, getCurrentUserProfile } from '../controllers/a
 import { getProducts, getProductById, getCategories, createProduct } from '../controllers/productController';
 import { getCart, updateCart } from '../controllers/cartController';
 import { createOrder, getOrders, updateOrderStatus, getDashboardMetrics } from '../controllers/orderController';
+import { getWishlist, addToWishlist, removeFromWishlist } from '../controllers/wishlistController';
 import { authenticateToken, requireAdmin } from '../middleware/auth';
 
 const router = Router();
@@ -20,6 +21,11 @@ router.get('/categories', getCategories);
 // Cart Routes
 router.get('/cart', authenticateToken as any, getCart as any);
 router.post('/cart/items', authenticateToken as any, updateCart as any);
+
+// Wishlist Routes
+router.get('/wishlist', authenticateToken as any, getWishlist as any);
+router.post('/wishlist/add', authenticateToken as any, addToWishlist as any);
+router.delete('/wishlist/:productId', authenticateToken as any, removeFromWishlist as any);
 
 // Orders Routes
 router.post('/orders', authenticateToken as any, createOrder as any);

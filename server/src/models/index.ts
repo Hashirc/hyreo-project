@@ -29,6 +29,9 @@ export interface Product {
   reviews?: number;
   createdAt: Date;
   updatedAt?: Date;
+  discount?: number;
+  specifications?: any;
+  status?: string;
 }
 
 export interface CartItem {

@@ -12,25 +12,25 @@ import {
   getReviews,
   deleteReview
 } from '../controllers/product.controller';
-import { authMiddleware } from '../middleware/auth.middleware';
+import { authMiddleware, requireAdmin } from '../middleware/auth.middleware';
 
 const router = Router();
 
 // Categories
 router.get('/categories', getCategories);
-router.post('/categories', authMiddleware, createCategory);
-router.put('/categories/:id', authMiddleware, updateCategory);
-router.delete('/categories/:id', authMiddleware, deleteCategory);
+router.post('/categories', authMiddleware, requireAdmin as any, createCategory);
+router.put('/categories/:id', authMiddleware, requireAdmin as any, updateCategory);
+router.delete('/categories/:id', authMiddleware, requireAdmin as any, deleteCategory);
 
 // Reviews
 router.get('/reviews', getReviews);
-router.delete('/reviews/:id', authMiddleware, deleteReview);
+router.delete('/reviews/:id', authMiddleware, requireAdmin as any, deleteReview);
 
 // Products
 router.get('/', getAllProducts);
 router.get('/:id', getProductById);
-router.post('/', authMiddleware, createProduct);
-router.put('/:id', authMiddleware, updateProduct);
-router.delete('/:id', authMiddleware, deleteProduct);
+router.post('/', authMiddleware, requireAdmin as any, createProduct);
+router.put('/:id', authMiddleware, requireAdmin as any, updateProduct);
+router.delete('/:id', authMiddleware, requireAdmin as any, deleteProduct);
 
 export default router;
